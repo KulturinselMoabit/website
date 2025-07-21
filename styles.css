@@ -229,7 +229,6 @@ body {
   gap: var(--gutter);
   padding: 6rem 0;
 }
-/* Breites Bild: 3:1 */
 .index-gallery__wide {
   width: 100%;
   aspect-ratio: 3 / 1;
@@ -241,7 +240,6 @@ body {
   object-fit: cover;
   display: block;
 }
-/* Drei Quadrate: 1:1 */
 .index-gallery__quads {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -304,16 +302,24 @@ body {
   .page-img {
     padding: 0 var(--pad-sm);
   }
-  .index-gallery {
-    padding: 4rem 0;
-  }
-  .index-gallery__wide {
-    aspect-ratio: 3 / 1;
-  }
-  .index-gallery__quads {
+  .gallery-quads {
     grid-template-columns: 1fr;
   }
-  .index-gallery__quad {
-    aspect-ratio: 1 / 1;
+  
+  /* Mobile drop-down für page-inner */
+  .page-inner {
+    display: flex !important;
+    flex-direction: column;
+    gap: var(--gutter);
+    align-items: center;   /* zentriert Bild und Textblock */
+  }
+  .page-img {
+    margin-bottom: var(--gutter);
+  }
+  /* zentriere Überschriften auf mobilen Geräten */
+  .page-text h1,
+  .page-text h2,
+  .page-text h3 {
+    text-align: center;
   }
 }
