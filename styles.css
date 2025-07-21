@@ -115,7 +115,6 @@ body {
   position: absolute;
   top: calc(1rem + 5px);
   right: var(--pad-sm);
-  left: auto;
   z-index: 1000;
 }
 .menu-toggle span {
@@ -152,7 +151,7 @@ body {
   display: block;
 }
 
-/* Typografie */
+/* Textbereich */
 .page-text {
   grid-column: 2 / -1;
 }
@@ -185,17 +184,14 @@ body {
   line-height: 1.75;
   text-align: justify;
 }
-
-/* Globale Regel für Bilder in .page-text */
 .page-text img {
   width: 100%;
   height: auto;
   display: block;
 }
-
 .page-text ul {
   margin-left: 1.5rem;
-  padding-left: 0.5rem;
+  padding-left: .5rem;
   list-style-position: outside;
 }
 .page-text a {
@@ -205,8 +201,6 @@ body {
 .page-text a:hover {
   color: var(--highlight);
 }
-
-/* Button */
 .page-text .btn-primary {
   display: inline-block;
   margin-top: 2rem;
@@ -222,7 +216,7 @@ body {
   transform: translateY(-2px);
 }
 
-/* Spezielle Index-Galerie */
+/* Index-Galerie */
 .index-gallery {
   display: flex;
   flex-direction: column;
@@ -302,24 +296,33 @@ body {
   .page-img {
     padding: 0 var(--pad-sm);
   }
-  .gallery-quads {
-    grid-template-columns: 1fr;
-  }
-  
-  /* Mobile drop-down für page-inner */
   .page-inner {
     display: flex !important;
     flex-direction: column;
     gap: var(--gutter);
-    align-items: center;   /* zentriert Bild und Textblock */
+    align-items: center;
   }
   .page-img {
     margin-bottom: var(--gutter);
   }
-  /* zentriere Überschriften auf mobilen Geräten */
   .page-text h1,
   .page-text h2,
   .page-text h3 {
     text-align: center;
+  }
+}
+
+/* — QR-Code-Override — */
+.page-text img.qr-code {
+  width: 150px;
+  height: auto;
+  display: block;
+  margin: 1.5rem 0;
+  object-fit: contain;
+}
+@media (max-width: 768px) {
+  .page-text img.qr-code {
+    width: 120px;
+    height: auto;
   }
 }
