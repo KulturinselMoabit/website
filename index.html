@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Kulturinsel Moabit</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header id="site-header">
+    <div class="container header-inner">
+      <div class="logo">
+        <img src="logo.svg" alt="Logo Kulturinsel Moabit" />
+      </div>
+      <nav class="site-nav">
+        <button class="menu-toggle" aria-label="Menü öffnen / schließen">
+          <span></span><span></span><span></span>
+        </button>
+        <ul>
+          <li><a href="index.html" class="active">Startseite</a></li>
+          <li><a href="fete.html">Fête du Seeee</a></li>
+          <li><a href="jamsession.html">Jamsession</a></li>
+          <li><a href="mitmachen.html">Mitmachen</a></li>
+          <li><a href="ueber-uns.html">Über uns</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- MAIN -->
+  <main>
+
+    <!-- INDEX-GALERIE -->
+    <section class="container index-gallery">
+      <!-- Großes Bild -->
+      <div class="index-gallery__wide">
+        <img src="1.png" alt="Großes Bild" class="index-gallery__wide-img" />
+      </div>
+      <!-- Drei quadratische Bilder -->
+      <div class="index-gallery__quads">
+        <div class="index-gallery__quad">
+          <img src="2.jpg" alt="Bild 2" class="index-gallery__quad-img" />
+        </div>
+        <div class="index-gallery__quad">
+          <img src="3.jpg" alt="Bild 3" class="index-gallery__quad-img" />
+        </div>
+        <div class="index-gallery__quad">
+          <img src="4.jpg" alt="Bild 4" class="index-gallery__quad-img" />
+        </div>
+      </div>
+    </section>
+
+    <!-- Hier könnten weitere Sektionen folgen… -->
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer id="site-footer">
+    <div class="container footer-inner">
+      <p>
+        <a href="impressum.html">Impressum</a> |
+        <a href="kontakt.html">Kontakt</a> |
+        <a href="datenschutz.html">Datenschutz</a>
+      </p>
+      <p>© 2025 Kulturinsel Moabit – alle Rechte vorbehalten</p>
+    </div>
+  </footer>
+
+  <!-- JS: Burger-Menü -->
+  <script>
+    const btn = document.querySelector('.menu-toggle');
+    const nav = document.querySelector('.site-nav ul');
+    btn.addEventListener('click', () => {
+      nav.classList.toggle('open');
+      btn.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

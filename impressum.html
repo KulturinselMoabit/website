@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Impressum – Kulturinsel Moabit</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&display=swap"
+        rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header id="site-header">
+    <div class="container header-inner">
+      <div class="logo">
+        <img src="logo.svg" alt="Logo Kulturinsel Moabit">
+      </div>
+      <nav class="site-nav">
+        <button class="menu-toggle" aria-label="Menü öffnen / schließen">
+          <span></span><span></span><span></span>
+        </button>
+        <ul>
+          <li><a href="index.html">Startseite</a></li>
+          <li><a href="fete.html">Fête du Seeee</a></li>
+          <li><a href="jamsession.html">Jamsession</a></li>
+          <li><a href="mitmachen.html">Mitmachen</a></li>
+          <li><a href="ueber-uns.html">Über uns</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- MAIN -->
+  <main>
+    <section class="container page-inner">
+      <div class="page-img">
+        <img src="impressum.png" alt="Impressum">
+      </div>
+      <div class="page-text">
+        <h1>Impressum</h1>
+
+        <p>Angaben gemäß § 5 TMG</p>
+        <h3>Projektgruppe Kulturinsel Moabit</h3>
+
+        <p><strong>Verantwortlich für den Inhalt:</strong><br>
+        Ruslan Aliev<br>
+        Havelberger Straße 16a<br>
+        10559 Berlin</p>
+
+        <p>E-Mail: <a href="mailto:kulturinselmoabit@gmail.com">kulturinselmoabit@gmail.com</a><br>
+        Instagram: <a href="https://www.instagram.com/kulturinsel_moabit/" target="_blank">@kulturinsel_moabit</a></p>
+
+        <h3>Haftung für Inhalte</h3>
+        <p>Die Inhalte unserer Seiten wurden mit größter Sorgfalt erstellt. Für die Richtigkeit, Vollständigkeit und Aktualität der Inhalte können wir jedoch keine Gewähr übernehmen.</p>
+
+        <h3>Haftung für Links</h3>
+        <p>Unser Angebot enthält Links zu externen Webseiten Dritter, auf deren Inhalte wir keinen Einfluss haben. Deshalb können wir für diese fremden Inhalte auch keine Gewähr übernehmen. Für die Inhalte der verlinkten Seiten ist stets der jeweilige Anbieter oder Betreiber der Seiten verantwortlich.</p>
+
+        <h3>Datenschutz</h3>
+        <p>Hinweise zum Datenschutz finden Sie <a href="datenschutz.html">hier</a>.</p>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer id="site-footer">
+    <div class="container footer-inner">
+      <p>
+        <a href="impressum.html">Impressum</a> |
+        <a href="kontakt.html">Kontakt</a> |
+        <a href="datenschutz.html">Datenschutz</a>
+      </p>
+      <p>© 2025 Kulturinsel Moabit – alle Rechte vorbehalten</p>
+    </div>
+  </footer>
+
+  <script>
+    const btn = document.querySelector('.menu-toggle');
+    const nav = document.querySelector('.site-nav ul');
+    btn.addEventListener('click', () => {
+      nav.classList.toggle('open');
+      btn.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

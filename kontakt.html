@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Kontakt – Kulturinsel Moabit</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link 
+    href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&display=swap" 
+    rel="stylesheet" 
+  />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header id="site-header">
+    <div class="container header-inner">
+      <div class="logo">
+        <img src="logo.svg" alt="Logo Kulturinsel Moabit" />
+      </div>
+      <nav class="site-nav">
+        <button class="menu-toggle" aria-label="Menü öffnen / schließen">
+          <span></span><span></span><span></span>
+        </button>
+        <ul>
+          <li><a href="index.html">Startseite</a></li>
+          <li><a href="fete/index.html">Fête du Seeee</a></li>
+          <li><a href="jam/index.html">Jamsession</a></li>
+          <li><a href="mitmachen.html">Mitmachen</a></li>
+          <li><a href="ueber-uns.html">Über uns</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- MAIN -->
+  <main>
+    <section class="container page-inner">
+      <div class="page-img">
+        <img src="kontakt.png" alt="Kontaktbild" />
+      </div>
+      <div class="page-text">
+        <h3>Schreib uns gerne an:</h3>
+        <p><a href="mailto:kulturinselmoabit@gmail.com">kulturinselmoabit@gmail.com</a></p>
+
+        <h3>Folge uns auf Instagram:</h3>
+        <img src="qr-insta.svg" alt="QR-Code Instagram" class="qr-code" />
+        <p><a href="https://www.instagram.com/kulturinsel_moabit/" target="_blank">@kulturinsel_moabit</a></p>
+
+        <h3>Unser Helferkanal auf Telegram:</h3>
+        <img src="qr-tele.svg" alt="QR-Code Telegram" class="qr-code" />
+        <p><a href="https://t.me/+NIJ6NnYH2Z80NjQy" target="_blank">t.me/+NIJ6NnYH2Z80NjQy</a></p>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer id="site-footer">
+    <div class="container footer-inner">
+      <p>
+        <a href="impressum.html">Impressum</a> |
+        <a href="kontakt.html">Kontakt</a> |
+        <a href="datenschutz.html">Datenschutz</a>
+      </p>
+      <p>© 2025 Kulturinsel Moabit – alle Rechte vorbehalten</p>
+    </div>
+  </footer>
+
+  <script>
+    const btn = document.querySelector('.menu-toggle');
+    const nav = document.querySelector('.site-nav ul');
+    btn.addEventListener('click', () => {
+      nav.classList.toggle('open');
+      btn.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

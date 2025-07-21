@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Jamsession – Kulturinsel Moabit</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&display=swap"
+        rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header id="site-header">
+    <div class="container header-inner">
+      <div class="logo">
+        <img src="logo.svg" alt="Logo Kulturinsel Moabit">
+      </div>
+      <nav class="site-nav">
+        <button class="menu-toggle" aria-label="Menü öffnen / schließen">
+          <span></span><span></span><span></span>
+        </button>
+        <ul>
+          <li><a href="index.html">Startseite</a></li>
+          <li><a href="fete.html">Fête du Seeee</a></li>
+          <li><a href="jamsession.html" class="active">Jamsession</a></li>
+          <li><a href="mitmachen.html">Mitmachen</a></li>
+          <li><a href="ueber-uns.html">Über uns</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- MAIN -->
+  <main>
+    <section class="container page-inner">
+      <div class="page-img">
+        <!-- Falls du ein passendes Bild hast, hier einsetzen -->
+        <img src="jamsession.jpg" alt="Jam-Session">
+      </div>
+      <div class="page-text">
+        <h1>Get up your ass and jam!</h1>
+        
+        <div class="divider"></div>
+	<h3>Nächster Termin 24.07.2025, Kulturfabrik Moabit</h3>
+        <p>Hallo liebe Musikbegeisterte! 🥁🎸🎧</p>
+
+        <p>Lust auf spontanes Musizieren, kreative Sounds und gute Vibes?<br>
+        Dann komm vorbei zur Jam-Session! 🪇🎷🎻</p>
+
+        <p>Wir, die Kulturinsel Moabit 🏝️, wollen gemeinsam mit der Kulturfabrik Moabit – und vor allem mit euch – jamen!  
+        Egal ob du Gitarre 🎸 spielst, singst 🎤, Beats baust oder einfach mitklatscht 👏 – jede*r ist willkommen!</p>
+
+        <p>Kommt vorbei, bringt eure Instrumente, Ideen und gute Laune mit – wir freuen uns auf einen offenen, lockeren Abend voller Musik und Miteinander.</p>
+
+        <ul>
+          <li>🧭 <strong>Ort:</strong> Kulturfabrik Moabit, Lehrter Str. 35, 10557 Berlin</li>
+          <li>🗓️ <strong>Datum:</strong> 24.07.2025</li>
+          <li>⏰ <strong>Uhrzeit:</strong> 19:00 Uhr</li>
+        </ul>
+
+        <p><strong>Let’s jam! 🎉🎊🎉</strong></p>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer id="site-footer">
+    <div class="container footer-inner">
+      <p>
+        <a href="impressum.html">Impressum</a> |
+        <a href="kontakt.html">Kontakt</a> |
+        <a href="datenschutz.html">Datenschutz</a>
+      </p>
+      <p>© 2025 Kulturinsel Moabit – alle Rechte vorbehalten</p>
+    </div>
+  </footer>
+
+  <script>
+    const btn = document.querySelector('.menu-toggle');
+    const nav = document.querySelector('.site-nav ul');
+    btn.addEventListener('click', () => {
+      nav.classList.toggle('open');
+      btn.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>
