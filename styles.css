@@ -177,7 +177,7 @@ body {
   margin: 2rem 0 1rem;
 }
 .page-text h3 {
-  font-size: 1.125rem;
+  font-size: 1 rem;
   font-weight: 700;
   margin: 1.5rem 0 .75rem;
 }
@@ -197,11 +197,10 @@ body {
 }
 .page-text p {
   margin-bottom: 1.5rem;
-  font-size: 1.125rem;
-  line-height: 1.75;
+  font-size: 1rem;
+  line-height: 1.2;
   text-align: justify;
 }
-/* Standard: vol­le Breite */
 .page-text img.fullwidth {
   width: 100%;
   height: auto;
@@ -211,13 +210,6 @@ body {
 }
 
 /* ----------Bilder im Text-------------- */
-.page-text img.fullwidth {
-  width: 100%;
-  height: auto;
-  display: block;
-  box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
-}
-
 .page-text img.float-left-third {
   float: left;
   width: 33.333%;
