@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Datenschutz – Kulturinsel Moabit</title>
+  <link rel="canonical" href="https://kulturinselmoabit.org/datenschutz.html" />
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&display=swap"
+        rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header id="site-header">
+    <div class="container header-inner">
+      <div class="logo">
+        <img src="logo.svg" alt="Logo Kulturinsel Moabit">
+      </div>
+      <nav class="site-nav">
+        <button class="menu-toggle" aria-label="Menü öffnen / schließen">
+          <span></span><span></span><span></span>
+        </button>
+        <ul>
+          <li><a href="/" class="active">Startseite</a></li>
+          <li><a href="/fete/">Fête du Seeee</a></li>
+          <li><a href="/jam/">Jamsession</a></li>
+          <li><a href="/mitmachen/">Mitmachen</a></li>
+          <li><a href="/uber-uns/">Über uns</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- MAIN -->
+  <main>
+    <section class="container page-inner">
+      <div class="page-img">
+        <img src="datenschutz.png" alt="Datenschutzerklärung">
+      </div>
+      <div class="page-text">
+        <h1>Datenschutzerklärung</h1>
+        <div class="divider"></div>
+
+        <h2>1. Datenschutz auf einen Blick</h2>
+        <p>Wir nehmen den Schutz Ihrer persönlichen Daten ernst. Die Nutzung unserer Website (bzw. unseres Social-Media-Auftritts) ist in der Regel ohne Angabe personenbezogener Daten möglich. Soweit auf unseren Seiten personenbezogene Daten erhoben werden (z. B. Name, E-Mail-Adresse), erfolgt dies stets auf freiwilliger Basis. Diese Daten werden ohne Ihre ausdrückliche Zustimmung nicht an Dritte weitergegeben.</p>
+
+        <h2>2. Verantwortliche Stelle</h2>
+        <p>Projektgruppe Kulturinsel Moabit<br>
+        Verantwortlich: Ruslan Aliev<br>
+        Havelberger Straße 16a<br>
+        10559 Berlin<br>
+        E-Mail: <a href="mailto:kulturinselmoabit@gmail.com">kulturinselmoabit@gmail.com</a></p>
+
+        <h2>3. Erhebung und Verarbeitung von Daten</h2>
+        <p>Beim Besuch unserer Website oder unseres Instagram-Profils speichert der Hostinganbieter bzw. Instagram automatisch bestimmte Informationen, etwa:</p>
+        <ul>
+          <li>IP-Adresse</li>
+          <li>verwendeter Browsertyp</li>
+          <li>Datum und Uhrzeit des Zugriffs</li>
+        </ul>
+        <p>Diese Daten dienen der technischen Sicherheit und werden nicht dauerhaft gespeichert oder ausgewertet.</p>
+
+        <h2>4. Kontaktaufnahme</h2>
+        <p>Wenn Sie uns per E-Mail kontaktieren, werden Ihre Angaben ausschließlich zur Bearbeitung der Anfrage verwendet. Eine Weitergabe an Dritte erfolgt nicht.</p>
+
+        <h2>5. Nutzung von Instagram</h2>
+        <p>Auf unserer Seite verlinken wir auf unsere Präsenz beim Dienst Instagram. Bitte beachten Sie, dass beim Besuch dieser Plattform Daten durch Instagram (Meta Platforms Ireland Ltd.) erhoben und verarbeitet werden. Auf die Datenverarbeitung dort haben wir keinen Einfluss. Informationen hierzu finden Sie in der <a href="https://help.instagram.com/519522125107875">Datenschutzrichtlinie von Instagram</a>.</p>
+
+        <h2>6. Ihre Rechte</h2>
+        <p>Sie haben jederzeit das Recht auf:</p>
+        <ul>
+          <li>Auskunft über Ihre gespeicherten Daten</li>
+          <li>Berichtigung unrichtiger Daten</li>
+          <li>Löschung Ihrer Daten, soweit keine gesetzliche Aufbewahrungspflicht besteht</li>
+          <li>Einschränkung der Verarbeitung</li>
+          <li>Widerspruch gegen die Verarbeitung</li>
+        </ul>
+        <p>Zur Ausübung Ihrer Rechte genügt eine formlose Mitteilung an: <a href="mailto:kulturinselmoabit@gmail.com">kulturinselmoabit@gmail.com</a></p>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer id="site-footer">
+    <div class="container footer-inner">
+      <p>
+        <a href="impressum.html">Impressum</a> |
+        <a href="kontakt.html">Kontakt</a> |
+        <a href="datenschutz.html">Datenschutz</a>
+      </p>
+      <p>© 2025 Kulturinsel Moabit – alle Rechte vorbehalten</p>
+    </div>
+  </footer>
+
+  <script>
+    const btn = document.querySelector('.menu-toggle');
+    const nav = document.querySelector('.site-nav ul');
+    btn.addEventListener('click', () => {
+      nav.classList.toggle('open');
+      btn.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>
