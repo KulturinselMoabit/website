@@ -28,6 +28,17 @@ body {
   body {
     padding: 0 var(--pad-sm);
   }
+  .page-text img.fullwidth,
+  .page-text img.float-left-third,
+  .page-text img.float-right-third,
+  .page-text img.float-half-left,
+  .page-text img.float-half-right {
+    float: none;
+    width: 100%;
+    margin: 0 auto 1em;
+    display: block;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+  }
 }
 
 /* Container */
@@ -200,22 +211,48 @@ body {
   margin: 0;
 }
 
-/* 1/3 Breite, linksbündig und Text umfließt rechts */
+/* ----------Bilder im Text-------------- */
+.page-text img.fullwidth {
+  width: 100%;
+  height: auto;
+  display: block;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+}
+
 .page-text img.float-left-third {
   float: left;
   width: 33.333%;
   height: auto;
-  margin: 0 1em 1em 0; /* oben/rechts/unten/links */
+  margin: 0 1em 1em 0;
   display: block;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
 }
 
-/* 1/3 Breite, rechtsbündig und Text umfließt links */
 .page-text img.float-right-third {
   float: right;
   width: 33.333%;
   height: auto;
-  margin: 0 0 1em 1em; /* oben/rechts/unten/links */
+  margin: 0 0 1em 1em;
   display: block;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+}
+
+.page-text img.float-half-left {
+  float: left;
+  width: 50%;
+  height: auto;
+  margin: 0 1em 1em 0;
+  display: block;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+}
+
+.page-text img.float-half-right {
+  float: right;
+  width: 50%;
+  height: auto;
+  margin: 0 0 1em 1em;
+  display: block;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
 }
 
 /* Aufräum-Clearfix nach schwimmenden Elementen */
