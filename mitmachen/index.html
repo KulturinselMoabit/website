@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Mitmachen – Kulturinsel Moabit</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header id="site-header">
+    <div class="container header-inner">
+      <div class="logo">
+        <img src="/logo.svg" alt="Logo Kulturinsel Moabit" />
+      </div>
+      <nav class="site-nav">
+        <button class="menu-toggle" aria-label="Menü öffnen / schließen">
+          <span></span><span></span><span></span>
+        </button>
+        <ul>
+          <li><a href="/index.html">Startseite</a></li>
+          <li><a href="/fete/">Fête du Seeee</a></li>
+          <li><a href="/jam/">Jamsession</a></li>
+          <li><a href="/mitmachen/" class="active">Mitmachen</a></li>
+          <li><a href="/uber-uns/">Über uns</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- MAIN -->
+  <main>
+    <section class="container page-inner">
+      <div class="page-img">
+        <img src="/mitmachen.jpg" alt="Mitmachen bei der Fête du Seeee" />
+      </div>
+      <div class="page-text">
+        <h1>Mach mit bei der Fête du Seeee!</h1>
+        <div class="divider"></div>
+        <p>Wir, die Kulturinsel Moabit, sind eine Gruppe, die sich seit über einem Jahrzehnt für Kultur und kulturelle Teilhabe engagiert. Dieses Jahr organisieren wir ein zweitägiges Kulturfest im Strandbad Tegelsee – und suchen noch musikalische Beiträge!</p>
+        <p>Die Organisation und Durchführung stemmen wir komplett ehrenamtlich, auch alle Künstler*innen spenden ihr musikalisches Können. Wenn du Lust hast, Teil der Fête du Seeee zu sein, melde dich gern bei uns!</p>
+        <p><strong>Was dich erwartet:</strong> Eine außergewöhnliche Location, zwei Bühnen mit Technik, ein erfahrenes Orga-Team, tolle Nebenacts und ein buntes Publikum.</p>
+        <a href="/kontakt.html" class="btn-primary">Jetzt mitmachen</a>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer id="site-footer">
+    <div class="container footer-inner">
+      <p>
+        <a href="/impressum.html">Impressum</a> |
+        <a href="/kontakt.html">Kontakt</a> |
+        <a href="/datenschutz.html">Datenschutz</a>
+      </p>
+      <p>© 2025 Kulturinsel Moabit – alle Rechte vorbehalten</p>
+    </div>
+  </footer>
+
+  <script>
+    const btn = document.querySelector('.menu-toggle');
+    const nav = document.querySelector('.site-nav ul');
+    btn.addEventListener('click', () => {
+      nav.classList.toggle('open');
+      btn.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>
