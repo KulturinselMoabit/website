@@ -184,16 +184,38 @@ body {
   line-height: 1.75;
   text-align: justify;
 }
-.page-text-full img {
+/* Standard: vol­le Breite */
+.page-text img.fullwidth {
   width: 100%;
   height: auto;
   display: block;
+  float: none;
+  margin: 0;
 }
-.page-text-right img {
+
+/* 1/3 Breite, linksbündig und Text umfließt rechts */
+.page-text img.float-left-third {
+  float: left;
+  width: 33.333%;
+  height: auto;
+  margin: 0 1em 1em 0; /* oben/rechts/unten/links */
+  display: block;
+}
+
+/* 1/3 Breite, rechtsbündig und Text umfließt links */
+.page-text img.float-right-third {
   float: right;
   width: 33.333%;
-  max-width: 33.333%;
+  height: auto;
+  margin: 0 0 1em 1em; /* oben/rechts/unten/links */
   display: block;
+}
+
+/* Aufräum-Clearfix nach schwimmenden Elementen */
+.page-text::after {
+  content: "";
+  display: block;
+  clear: both;
 }
 .page-text ul {
   margin-left: 1.5rem;
