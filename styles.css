@@ -184,9 +184,15 @@ body {
   line-height: 1.75;
   text-align: justify;
 }
-.page-text img {
+.page-text-full img {
   width: 100%;
   height: auto;
+  display: block;
+}
+.page-text-right img {
+  float: right;
+  width: 33.333%;
+  max-width: 33.333%;
   display: block;
 }
 .page-text ul {
