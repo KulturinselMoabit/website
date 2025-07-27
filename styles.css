@@ -179,7 +179,7 @@ body {
   border: none;
 }
 .page-text .divider_long {
-  width: 3rem;
+  width: 9rem;
   height: 1px;
   background: var(--highlight);
   margin: 0 auto 2rem;
