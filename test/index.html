@@ -196,9 +196,17 @@
     }
   </script>
 
-  <!-- JS: Slideshow – nimmt automatisch 1–9.jpg/.mp4 aus demselben Ordner -->
- <script>
+<script>
 (function () {
+  // Erwartete Struktur in der HTML (bereits vorhanden):
+  // <section class="fete-hero">
+  //   <div class="fete-slider" id="feteSlider">
+  //     <button class="fete-control prev">‹</button>
+  //     <button class="fete-control next">›</button>
+  //     <div class="fete-dots"></div>
+  //   </div>
+  // </section>
+
   const slider = document.getElementById('feteSlider');
   if (!slider) return;
 
@@ -206,23 +214,57 @@
   const prevBtn  = slider.querySelector('.fete-control.prev');
   const nextBtn  = slider.querySelector('.fete-control.next');
 
-  // Basis-Pfad (z. B. /fete/)
-  const base = location.pathname.endsWith('/')
-    ? location.pathname
-    : location.pathname.replace(/[^/]+$/, '/');
+  // Ordner der aktuellen Seite (funktioniert mit /fete/ und /fete/index.html)
+  const baseURL = new URL('./', location.href);
+  const maxN = 9;
 
-  const numbers = Array.from({ length: 9 }, (_, i) => i + 1);
-  const slides = [];
-  let current = 0;
+  // Hilfsloader (ohne fetch/HEAD, funktioniert zuverlässig auf GH Pages)
+  function loadImage(url) {
+    return new Promise(resolve => {
+      const img = new Image();
+      img.onload = () => resolve({ ok: true, el: img });
+      img.onerror = () => resolve({ ok: false });
+      img.src = url + '?v=' + Date.now(); // Cache-Buster
+      img.loading = 'lazy';
+      img.decoding = 'async';
+    });
+  }
+  function loadVideo(url) {
+    return new Promise(resolve => {
+      const v = document.createElement('video');
+      v.preload = 'metadata';
+      v.muted = true; v.playsInline = true; v.loop = true;
+      const ok = () => { cleanup(); resolve({ ok: true, el: v }); };
+      const err = () => { cleanup(); resolve({ ok: false }); };
+      function cleanup(){ v.removeEventListener('loadedmetadata', ok); v.removeEventListener('error', err); }
+      v.addEventListener('loadedmetadata', ok);
+      v.addEventListener('error', err);
+      v.src = url + '?v=' + Date.now(); // Cache-Buster
+    });
+  }
 
-  function createDot(idx) {
+  function makeSlide(node, idx) {
+    const wrap = document.createElement('div');
+    wrap.className = 'fete-slide';
+    wrap.setAttribute('data-index', idx);
+    wrap.setAttribute('aria-hidden', 'true');
+    wrap.appendChild(node);
+    slider.insertBefore(wrap, dotsWrap);
+    return wrap;
+  }
+  function makeDot(idx) {
     const b = document.createElement('button');
     b.className = 'fete-dot';
     b.type = 'button';
     b.setAttribute('aria-label', 'Slide ' + (idx + 1));
     b.addEventListener('click', () => show(idx));
+    dotsWrap.appendChild(b);
     return b;
   }
+
+  let slides = [];
+  let dots   = [];
+  let current = 0;
 
   function show(i) {
     if (!slides.length) return;
@@ -230,88 +272,45 @@
     slides.forEach((el, idx) => {
       const active = idx === current;
       el.classList.toggle('active', active);
+      el.setAttribute('aria-hidden', active ? 'false' : 'true');
       const v = el.querySelector('video');
       if (v) { active ? v.play().catch(()=>{}) : v.pause(); }
-      el.setAttribute('aria-hidden', active ? 'false' : 'true');
     });
-    dotsWrap.querySelectorAll('.fete-dot')
-      .forEach((d, idx) => d.classList.toggle('active', idx === current));
-  }
-
-  function testImage(src) {
-    return new Promise(res => {
-      const img = new Image();
-      img.onload  = () => res({ ok: true, el: img });
-      img.onerror = () => res({ ok: false });
-      img.src = src + '?v=' + Date.now(); // Cache-Buster beim Ersetzen
-    });
-  }
-
-  function testVideo(src) {
-    return new Promise(res => {
-      const v = document.createElement('video');
-      v.muted = true; v.playsInline = true;
-      const onOk  = () => { cleanup(); res({ ok: true, el: v }); };
-      const onErr = () => { cleanup(); res({ ok: false }); };
-      function cleanup() {
-        v.removeEventListener('loadedmetadata', onOk);
-        v.removeEventListener('error', onErr);
-      }
-      v.addEventListener('loadedmetadata', onOk);
-      v.addEventListener('error', onErr);
-      v.src = src + '?v=' + Date.now(); // Cache-Buster
-      v.preload = 'metadata';
-    });
+    dots.forEach((d, idx) => d.classList.toggle('active', idx === current));
   }
 
   (async function init() {
-    for (const n of numbers) {
-      const imgPath = `${base}${n}.jpg`;
-      const vidPath = `${base}${n}.mp4`;
+    const found = [];
+    for (let n = 1; n <= maxN; n++) {
+      const jpg = new URL(`${n}.jpg`, baseURL).href;
+      const mp4 = new URL(`${n}.mp4`, baseURL).href;
 
-      let r = await testImage(imgPath);
-      if (r.ok) {
-        const wrap = document.createElement('div');
-        wrap.className = 'fete-slide';
-        wrap.setAttribute('data-index', slides.length);
-        wrap.setAttribute('aria-hidden', 'true');
-        r.el.alt = `Festivalbild ${n}`;
-        r.el.loading = 'lazy';
-        wrap.appendChild(r.el);
-        slider.insertBefore(wrap, dotsWrap);
-        dotsWrap.appendChild(createDot(slides.length));
-        slides.push(wrap);
-        continue;
-      }
+      let r = await loadImage(jpg);
+      if (r.ok) { r.el.alt = `Festivalbild ${n}`; found.push({ node: r.el }); continue; }
 
-      r = await testVideo(vidPath);
-      if (r.ok) {
-        const wrap = document.createElement('div');
-        wrap.className = 'fete-slide';
-        wrap.setAttribute('data-index', slides.length);
-        wrap.setAttribute('aria-hidden', 'true');
-        const v = r.el;
-        v.loop = true; v.muted = true; v.playsInline = true; v.preload = 'metadata';
-        wrap.appendChild(v);
-        slider.insertBefore(wrap, dotsWrap);
-        dotsWrap.appendChild(createDot(slides.length));
-        slides.push(wrap);
-      }
+      r = await loadVideo(mp4);
+      if (r.ok) { found.push({ node: r.el }); }
     }
 
-    if (!slides.length) return;
+    if (!found.length) return;
 
-    // Controls + Keyboard + Swipe
-    prevBtn?.addEventListener('click', () => show(current - 1));
-    nextBtn?.addEventListener('click', () => show(current + 1));
-    slider.addEventListener('keydown', (e) => {
+    found.forEach((item, idx) => {
+      const slide = makeSlide(item.node, idx);
+      slides.push(slide);
+      dots.push(makeDot(idx));
+    });
+
+    prevBtn && prevBtn.addEventListener('click', () => show(current - 1));
+    nextBtn && nextBtn.addEventListener('click', () => show(current + 1));
+
+    // Keyboard & Swipe (leichtgewichtig)
+    slider.setAttribute('tabindex','0');
+    slider.addEventListener('keydown', e => {
       if (e.key === 'ArrowLeft')  show(current - 1);
       if (e.key === 'ArrowRight') show(current + 1);
     });
-    slider.setAttribute('tabindex', '0');
-
     let sx = null;
-    slider.addEventListener('touchstart', e => { sx = e.touches[0].clientX; }, { passive: true });
+    slider.addEventListener('touchstart', e => { sx = e.touches[0].clientX; }, {passive:true});
     slider.addEventListener('touchend',   e => {
       if (sx == null) return;
       const dx = e.changedTouches[0].clientX - sx;
@@ -323,8 +322,8 @@
   })();
 })();
 </script>
-<noscript>Bitte JavaScript aktivieren, um die Slideshow zu sehen.</noscript>
 
 </body>
 </html>
+
 
