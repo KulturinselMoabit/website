@@ -394,8 +394,8 @@ body {
 /* Größen-Steuerung */
 :root {
   --lineup-min: 1.8rem;
-  --lineup-vw:  7.5vw;   /* bei Bedarf größer/kleiner drehen */
-  --lineup-max: 6rem;
+  --lineup-vw:  5vw;   /* bei Bedarf größer/kleiner drehen */
+  --lineup-max: 3rem;
   --lineup-row-gap: .5em; /* deutlicher Abstand zwischen Band-Zeilen */
 }
 
@@ -467,6 +467,7 @@ body {
   .lineup { margin: 1.6rem 0 2rem; }
   .lineup-daytag { margin-top: .5rem; }
 }
+
 
 
 
