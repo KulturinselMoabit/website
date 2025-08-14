@@ -391,21 +391,102 @@ body {
 }
 
 /* ===================================================================== */
-/* =====================  FÊTE: LINE-UP – NEU  ========================= */
+/* ===================  ERGÄNZUNGEN FÜR FÊTE-SEITE  ==================== */
 /* ===================================================================== */
 
-/* Stellschrauben für Line-up-Größe (gewünscht: 5vw statt 7.5vw, 3rem statt 5rem) */
+/* Vollbreit wie Startseite: Bildspalte weg, Text über volle Breite */
+.page-inner--wide .page-img { display: none; }
+.page-inner--wide .page-text { grid-column: 1 / -1; }
+
+/* ===== Hero-Slideshow ===== */
+.fete-hero { margin: 2rem 0 2.5rem; }
+.fete-slider {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;           /* bei Bedarf: 3 / 1 */
+  overflow: hidden;
+  border: 2px solid var(--primary);
+  border-radius: 12px;
+  background: #ddd;
+}
+.fete-slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity .35s ease;
+  pointer-events: none;
+}
+.fete-slide.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+.fete-slide img,
+.fete-slide video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+/* Controls */
+.fete-control {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  border: 2px solid var(--primary);
+  background: var(--bg);
+  color: var(--primary);
+  font-weight: 800;
+  width: 2.2rem;
+  height: 2.2rem;
+  line-height: 2rem;
+  border-radius: 999px;
+  text-align: center;
+  cursor: pointer;
+  opacity: .9;
+}
+.fete-control:hover { opacity: 1; }
+.fete-control.prev { left: .6rem; }
+.fete-control.next { right: .6rem; }
+/* Dots */
+.fete-dots {
+  position: absolute;
+  left: 0; right: 0; bottom: .5rem;
+  display: flex;
+  justify-content: center;
+  gap: .4rem;
+  padding: 0 .5rem;
+}
+.fete-dot {
+  width: .6rem;
+  height: .6rem;
+  border-radius: 999px;
+  border: 2px solid var(--primary);
+  background: var(--bg);
+  opacity: .85;
+  cursor: pointer;
+}
+.fete-dot.active {
+  background: var(--highlight);
+  opacity: 1;
+}
+@media (max-width: 768px) {
+  .fete-hero { margin: 1.25rem 0 2rem; }
+  .fete-control { width: 2rem; height: 2rem; line-height: 1.8rem; }
+}
+
+/* ===== FÊTE: LINE-UP ===== */
+
+/* Stellschrauben für Line-up-Größe (gewünscht: 5vw max 3rem) */
 :root{
-  --lineup-min: 1.8rem;  /* klein auf sehr schmalen Screens */
-  --lineup-vw:  5vw;     /* responsive Anteil (vorher 7.5vw) */
-  --lineup-max: 3rem;    /* Obergrenze Desktop (vorher 5rem) */
-  --lineup-row-gap: .6em;/* Abstand zwischen Band-Reihen */
+  --lineup-min: 1.8rem;     /* klein auf sehr schmalen Screens */
+  --lineup-vw:  5vw;        /* responsive Anteil (vorher 7.5vw) */
+  --lineup-max: 3rem;       /* Obergrenze Desktop (vorher 5rem) */
+  --lineup-row-gap: .6em;   /* Abstand zwischen Band-Reihen */
 }
 
 /* Container + Heading */
 .lineup { margin: 2.2rem 0 2.2rem; }
 .lineup-wrap { text-align: center; }
-
 .lineup .lineup-heading{
   font-weight: 800;
   text-transform: uppercase;
@@ -437,7 +518,7 @@ body {
   justify-content: center;
   align-items: center;             /* gleiche Vertikallage in einer Reihe */
   row-gap: var(--lineup-row-gap);  /* einheitlicher Reihenabstand */
-  text-align: center;              /* Mehrzeiler in einem Namen zentriert */
+  text-align: center;              /* Mehrzeiler zentriert */
 }
 
 /* Einträge: „gestempelte“ Optik; Größe via clamp + Variablen */
