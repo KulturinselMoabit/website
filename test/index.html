@@ -13,8 +13,8 @@
   <!-- „gestempelte“ Schrift nur fürs Line-up -->
   <link href="https://fonts.googleapis.com/css2?family=Rubik+Dirt&display=swap" rel="stylesheet">
 
-  <!-- CSS (mit Cache-Buster) -->
-  <link rel="stylesheet" href="/styles.css?v=7" />
+  <!-- CSS (mit Cache-Buster, damit der Browser die aktuelle Datei lädt) -->
+  <link rel="stylesheet" href="/styles.css?v=8" />
 
   <!-- Event JSON-LD -->
   <script type="application/ld+json">
@@ -200,7 +200,7 @@
     }
   </script>
 
-  <!-- JS: Slideshow-Loader (robuster Pfad, JPG/MP4, korrekte Reihenfolge, Pfeile/Dots) -->
+  <!-- JS: Slideshow-Loader (robuster Ordnerpfad, JPG/MP4, richtige Reihenfolge, Pfeile/Dots) -->
   <script>
   (function(){
     const slider = document.getElementById('feteSlider');
@@ -222,10 +222,18 @@
     if (!nextBtn){ nextBtn = mk('button','fete-control next','›'); nextBtn.setAttribute('aria-label','Nächstes'); slider.appendChild(nextBtn); }
     if (!dotsWrap){ dotsWrap = mk('div','fete-dots'); dotsWrap.setAttribute('role','tablist'); dotsWrap.setAttribute('aria-label','Slideshow-Navigation'); slider.appendChild(dotsWrap); }
 
-    // Robuster Ordner via URL-API (ergibt immer …/test/ oder …/fete/)
-    const dirURL = new URL('.', document.baseURI);
-    const NUMS = Array.from({length: 9}, (_, i) => i + 1);
+    // *** ROBUSTER ORDNERPFAD ***
+    // Liefert immer z. B. "/test/" oder "/fete/" – egal, ob Seite mit oder ohne Slash aufgerufen wurde.
+    function folderPath(){
+      const p = location.pathname;
+      if (p.endsWith('/')) return p;                                 // /test/
+      if (/\/index\.html?$/i.test(p)) return p.replace(/index\.html?$/i,''); // /test/index.html -> /test/
+      if (p.includes('.')) return p.replace(/[^/]+$/, '');           // /foo/bar.html -> /foo/
+      return p + '/';                                                // /test -> /test/
+    }
+    const base = location.origin + folderPath();
 
+    // Loader (.jpg -> .mp4)
     function loadImage(url){
       return new Promise(resolve=>{
         const img = new Image();
@@ -248,21 +256,30 @@
       });
     }
     async function probe(n){
-      // 1) .jpg, 2) .mp4
-      const jpg = new URL(`${n}.jpg`, dirURL).href;
+      // zuerst .jpg, dann .mp4
+      const jpg = base + `${n}.jpg`;
       let r = await loadImage(jpg);
       if (r.ok){ r.node.alt = `Festivalbild ${n}`; return {idx:n, node:r.node}; }
-      const mp4 = new URL(`${n}.mp4`, dirURL).href;
+      const mp4 = base + `${n}.mp4`;
       r = await loadVideo(mp4);
       if (r.ok){ return {idx:n, node:r.node}; }
       return null;
     }
 
     (async function init(){
-      // alles parallel prüfen, dann sortiert einbauen -> 1,2,3,…
-      const results = await Promise.all(NUMS.map(probe));
+      const want = 9;
+      const results = await Promise.all(Array.from({length: want}, (_,i)=>probe(i+1)));
       const items = results.filter(Boolean).sort((a,b)=>a.idx - b.idx);
-      if (!items.length){ if (hero && hero.parentNode) hero.parentNode.removeChild(hero); return; }
+      if (!items.length){
+        // sichtbarer kleiner Hinweis, wenn gar nichts gefunden wurde
+        if (hero){
+          const msg = document.createElement('div');
+          msg.textContent = 'Keine Medien gefunden (erwartet: 1.jpg … 9.jpg / .mp4 im gleichen Ordner).';
+          msg.style.cssText = 'padding:1rem;border:2px solid #016DAF;border-radius:8px;background:#fff;text-align:center;';
+          hero.appendChild(msg);
+        }
+        return;
+      }
 
       const slides = [], dots = [];
       function addSlide(node, i){
@@ -281,7 +298,7 @@
       }
       items.forEach((it,i)=>addSlide(it.node, i));
 
-      // Pfeile & Dots ans Ende -> sicher über Slides
+      // Pfeile & Dots ans Ende -> über Slides
       slider.appendChild(prevBtn);
       slider.appendChild(nextBtn);
       slider.appendChild(dotsWrap);
