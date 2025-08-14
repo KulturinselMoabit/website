@@ -395,7 +395,7 @@ body {
 .lineup-wrap { text-align: center; }
 
 .lineup-heading {
-  font-weight: 800;
+  font-weight: 300;
   text-transform: uppercase;
   letter-spacing: .08em;
   margin-bottom: .6rem;
@@ -456,3 +456,4 @@ body {
   .lineup { margin: 1.75rem 0 2rem; }
   .lineup-daytag { margin-top: .5rem; }
 }
+
