@@ -390,12 +390,19 @@ body {
   }
 }
 /* ===== FÊTE: LINE-UP (nur neue Klassen) ===== */
-.lineup {
-  margin: 2.5rem 0 3rem;
+
+.lineup { margin: 2.5rem 0 3rem; }
+.lineup-wrap { text-align: center; }
+
+.lineup-heading {
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  margin-bottom: .6rem;
+  font-size: clamp(1rem, 2.6vw, 1.35rem);
 }
-.lineup-wrap {
-  text-align: center;
-}
+
+/* Tag wie im Beispiel */
 .lineup-daytag {
   display: inline-block;
   background: var(--primary);
@@ -404,26 +411,48 @@ body {
   letter-spacing: .06em;
   border-radius: 6px;
   padding: .35rem .6rem;
-  font-size: .9rem;
-  margin: 0 0 .75rem 0;
+  font-size: .95rem;
+  margin: .25rem 0 .75rem 0;
 }
-.lineup-row {
-  /* „gestempelte“ Optik nur hier */
+
+/* Die Liste der Acts pro Tag */
+.acts {
+  list-style: none;
+  margin: 0 0 1.4rem 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+/* jeder Act: groß, „gestempelt“, mittig */
+.acts li {
   font-family: "Rubik Dirt", "Montserrat", sans-serif;
   text-transform: uppercase;
-  letter-spacing: .04em;
-  line-height: .95;
+  letter-spacing: .03em;
+  line-height: .9;
   color: var(--primary);
-  margin: .15em 0 .25em 0;
-  word-break: break-word;
-  /* alle Acts gleich groß */
-  font-size: clamp(2rem, 8.5vw, 4.4rem);
+  /* 2.5x größer als vorher: sehr groß, aber responsive */
+  font-size: clamp(2.4rem, 13vw, 10rem);
+  /* etwas Luft links/rechts, damit die Punkte genug Platz haben */
+  padding: 0 .12em;
+  text-align: center;
 }
-.lineup-row::selection,
-.lineup-daytag::selection { background: #ffd6cd; }
 
+/* Punkt nur zwischen Geschwistern – standardmäßig vor JEDEM außer dem ersten */
+.acts li + li::before {
+  content: "•";
+  display: inline-block;
+  margin: 0 .18em 0 .2em;
+  transform: translateY(-0.03em);
+  opacity: .9;
+}
+
+/* Wenn ein Eintrag am Zeilenanfang steht (per JS gesetzt), kein Punkt davor */
+.acts li.row-start::before { content: none; }
+
+/* mobile Feintuning */
 @media (max-width: 768px) {
   .lineup { margin: 1.75rem 0 2rem; }
   .lineup-daytag { margin-top: .5rem; }
 }
-
