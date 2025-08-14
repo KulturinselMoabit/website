@@ -389,84 +389,132 @@ body {
     height: auto;
   }
 }
-/* ===== FÊTE: LINE-UP – korrigiert ===== */
+/* ===== FÊTE: Seite vollbreit unter Menü ===== */
+.page-inner--wide .page-img { display: none; }          /* rundes Bild weg */
+.page-inner--wide .page-text { grid-column: 1 / -1; }   /* Textbereich über volle Containerbreite */
 
-/* Größen-Steuerung */
+/* ===== FÊTE: Hero-Slideshow ===== */
+.fete-hero {
+  margin: 2rem 0 2.5rem;
+}
+.fete-slider {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;          /* bei Bedarf: 3/1 wie Startseite */
+  overflow: hidden;
+  border: 2px solid var(--primary);
+  border-radius: 12px;
+  background: #ddd;
+}
+.fete-slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity .35s ease;
+  pointer-events: none;
+}
+.fete-slide.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+.fete-slide img,
+.fete-slide video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Controls */
+.fete-control {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  border: 2px solid var(--primary);
+  background: var(--bg);
+  color: var(--primary);
+  font-weight: 800;
+  width: 2.2rem;
+  height: 2.2rem;
+  line-height: 2rem;
+  border-radius: 999px;
+  text-align: center;
+  cursor: pointer;
+  opacity: .9;
+}
+.fete-control:hover { opacity: 1; }
+.fete-control.prev { left: .6rem; }
+.fete-control.next { right: .6rem; }
+
+/* Dots */
+.fete-dots {
+  position: absolute;
+  left: 0; right: 0; bottom: .5rem;
+  display: flex;
+  justify-content: center;
+  gap: .4rem;
+  padding: 0 .5rem;
+}
+.fete-dot {
+  width: .6rem;
+  height: .6rem;
+  border-radius: 999px;
+  border: 2px solid var(--primary);
+  background: var(--bg);
+  opacity: .85;
+  cursor: pointer;
+}
+.fete-dot.active {
+  background: var(--highlight);   /* rot wie gewünscht */
+  opacity: 1;
+}
+
+@media (max-width: 768px) {
+  .fete-hero { margin: 1.25rem 0 2rem; }
+  .fete-control { width: 2rem; height: 2rem; line-height: 1.8rem; }
+}
+
+/* ===== FÊTE: Line-up Feinschliff (nur falls noch nicht drin) ===== */
 :root {
   --lineup-min: 1.8rem;
-  --lineup-vw:  5vw;   /* bei Bedarf größer/kleiner drehen */
-  --lineup-max: 3rem;
-  --lineup-row-gap: .5em; /* deutlicher Abstand zwischen Band-Zeilen */
+  --lineup-vw:  7.5vw;
+  --lineup-max: 6rem;
+  --lineup-row-gap: .6em;
 }
 
-.lineup { margin: 2.2rem 0 2.8rem; }
-.lineup-wrap { text-align: center; }
-
-.lineup-heading {
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: .08em;
-  margin-bottom: .6rem;
-  font-size: clamp(1rem, 2.6vw, 1.35rem);
-}
-
-.lineup-daytag {
-  display: inline-block;
-  background: var(--primary);
-  color: #fff;
-  font-weight: 800;
-  letter-spacing: .06em;
-  border-radius: 6px;
-  padding: .35rem .6rem;
-  font-size: .95rem;
-  margin: .25rem 0 .75rem 0;
-}
-
-/* Container: zentriert, sauberer Zeilenabstand */
 .acts {
-  list-style: none;
-  margin: 0 0 1.4rem 0;
-  padding: 0;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  align-items: center;          /* gleiche Vertikallage in einer Reihe */
-  row-gap: var(--lineup-row-gap); /* EINHEITLICHER Abstand zwischen Reihen */
-  text-align: center;           /* mehrzeilige Namen zentriert */
+  text-align: center;
+  row-gap: var(--lineup-row-gap);
+  margin: 0 0 1.4rem 0;
+  padding: 0;
+  list-style: none;
+  align-items: center;
 }
-
-/* Einträge: „gestempelte“ Optik, responsive Größe */
 .acts li {
   font-family: "Rubik Dirt", "Montserrat", sans-serif;
   text-transform: uppercase;
   letter-spacing: .03em;
-  line-height: .9;              /* enger Umbruch innerhalb eines Namens */
+  line-height: .9;
   color: var(--primary);
   font-size: clamp(var(--lineup-min), var(--lineup-vw), var(--lineup-max));
   padding: 0 .12em;
 }
-
-/* Punkt zwischen Acts – in Seiten-Highlight */
-.acts li + li::before {
+/* Punkte in Rot – als Abschluss des vorherigen Elements */
+.acts li + li::before { content: none !important; }
+.acts li::after {
   content: "•";
   display: inline-block;
-  margin: 0 .18em 0 .2em;
   vertical-align: middle;
+  margin: 0 .22em 0 .24em;
   color: var(--highlight);
   opacity: .95;
 }
+.acts li:last-child::after { content: none; }
 
-/* Kein Punkt am Zeilenanfang (per JS gesetzt) */
-.acts li.row-start::before { content: none; }
 
-/* !!! Entferne/überschreibe diese alte Regel, falls vorhanden:
-   .acts li.row-start:not(:first-child) { margin-top: .35em; } */
-.acts li.row-start:not(:first-child) { margin-top: 0; }
-
-@media (max-width: 768px) {
-  .lineup { margin: 1.6rem 0 2rem; }
-  .lineup-daytag { margin-top: .5rem; }
-}
 
 
 
