@@ -477,8 +477,8 @@ body {
 /* ===== FÊTE: Line-up Feinschliff (nur falls noch nicht drin) ===== */
 :root {
   --lineup-min: 1.8rem;
-  --lineup-vw:  7.5vw;
-  --lineup-max: 6rem;
+  --lineup-vw:  5vw;
+  --lineup-max: 3rem;
   --lineup-row-gap: .6em;
 }
 
@@ -513,6 +513,7 @@ body {
   opacity: .95;
 }
 .acts li:last-child::after { content: none; }
+
 
 
 
