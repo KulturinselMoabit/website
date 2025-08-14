@@ -394,8 +394,8 @@ body {
 /* --> HIER komfortable Stellschrauben für die Textgröße <-- */
 :root {
   --lineup-min: 1.8rem;   /* klein auf sehr schmalen Screens */
-  --lineup-vw:  7.5vw;    /* responsiver Anteil (vorher 13vw -> sehr groß) */
-  --lineup-max: 6rem;     /* Obergrenze Desktop ~96px (vorher 10rem) */
+  --lineup-vw:  5vw;    /* responsiver Anteil (vorher 13vw -> sehr groß) */
+  --lineup-max: 4rem;     /* Obergrenze Desktop ~96px (vorher 10rem) */
 }
 
 .lineup { margin: 2.2rem 0 2.8rem; }
@@ -455,6 +455,7 @@ body {
   .lineup { margin: 1.6rem 0 2rem; }
   .lineup-daytag { margin-top: .5rem; }
 }
+
 
 
 
