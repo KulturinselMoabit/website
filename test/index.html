@@ -322,8 +322,39 @@
   })();
 })();
 </script>
+<script>
+(function () {
+  function updateLineupSeparators() {
+    document.querySelectorAll('.lineup .acts').forEach(ul => {
+      const items = Array.from(ul.children);
+      let lastTop = null;
+      items.forEach((li, idx) => {
+        li.classList.remove('row-start');
+        const t = li.offsetTop;
+        if (idx === 0 || lastTop === null || Math.abs(t - lastTop) > 1) {
+          li.classList.add('row-start'); // neuer Zeilenanfang -> kein Punkt davor
+          lastTop = t;
+        }
+      });
+    });
+  }
+
+  // Debounce bei Resize
+  const debounced = (() => {
+    let id; return () => { clearTimeout(id); id = setTimeout(updateLineupSeparators, 100); };
+  })();
+
+  window.addEventListener('load', updateLineupSeparators);
+  window.addEventListener('resize', debounced);
+  window.addEventListener('orientationchange', debounced);
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(updateLineupSeparators);
+  }
+})();
+</script>
 
 </body>
 </html>
+
 
 
