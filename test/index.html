@@ -207,16 +207,24 @@
   const nextBtn  = slider.querySelector('.fete-control.next');
   const hero     = slider.closest('.fete-hero');
 
+  // >>> Kern: immer das Ordner-URL ermitteln (mit trailing slash), egal ob /test, /test/ oder /test/index.html
+  const dirURL = new URL('.', location.href);  // z.B. https://kulturinselmoabit.org/test/
+
   const NUMBERS = Array.from({length: 9}, (_, i) => i + 1);
+  const slides = [];
+  const dots   = [];
+  let current  = 0;
+
+  function log(){/* bei Bedarf hier console.log aktivieren */ /* console.log.apply(console, ['[slider]'].concat([].slice.call(arguments)));*/}
 
   function loadImage(url) {
     return new Promise(resolve => {
       const img = new Image();
       img.onload  = () => resolve({ ok: true, el: img, url });
       img.onerror = () => resolve({ ok: false, url });
-      img.src = url + '?v=' + Date.now();   // Cache-Buster
       img.loading = 'lazy';
       img.decoding = 'async';
+      img.src = url + '?v=' + Date.now(); // Cache-Buster
     });
   }
 
@@ -239,12 +247,10 @@
     return b;
   }
 
-  let slides = [], dots = [], current = 0;
-
   function show(i) {
     if (!slides.length) return;
     current = (i + slides.length) % slides.length;
-    slides.forEach((el, idx) => {
+    slider.querySelectorAll('.fete-slide').forEach((el, idx) => {
       const active = idx === current;
       el.classList.toggle('active', active);
       el.setAttribute('aria-hidden', active ? 'false' : 'true');
@@ -255,28 +261,24 @@
   (async function init() {
     const found = [];
     for (const n of NUMBERS) {
-      // <-- Kern: absoluter Pfad RELATIV zur aktuellen Seite
-      const url = new URL(`${n}.jpg`, document.baseURI).href;
+      const url = new URL(`${n}.jpg`, dirURL).href; // immer …/test/1.jpg etc.
+      log('try', url);
       const r = await loadImage(url);
-      if (r.ok) {
-        r.el.alt = `Festivalbild ${n}`;
-        found.push(r.el);
-      }
+      if (r.ok) { r.el.alt = `Festivalbild ${n}`; found.push(r.el); }
     }
 
-    // nichts gefunden → Hero entfernen, damit kein leerer Platz bleibt
-    if (!found.length) { hero?.remove(); return; }
+    if (!found.length) { hero && hero.remove(); return; } // kein leerer Platz
 
     found.forEach((node, idx) => {
       slides.push(makeSlide(node, idx));
       dots.push(makeDot(idx));
     });
 
-    prevBtn?.addEventListener('click', () => show(current - 1));
-    nextBtn?.addEventListener('click', () => show(current + 1));
+    prevBtn && prevBtn.addEventListener('click', () => show(current - 1));
+    nextBtn && nextBtn.addEventListener('click', () => show(current + 1));
 
     // Keyboard & Swipe
-    slider.setAttribute('tabindex','0');
+    slider.setAttribute('tabindex', '0');
     slider.addEventListener('keydown', e => {
       if (e.key === 'ArrowLeft')  show(current - 1);
       if (e.key === 'ArrowRight') show(current + 1);
@@ -294,6 +296,7 @@
   })();
 })();
 </script>
+
 
 
 
@@ -325,6 +328,7 @@
   </script>
 </body>
 </html>
+
 
 
 
