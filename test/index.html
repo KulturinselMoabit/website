@@ -307,6 +307,21 @@
   setTimeout(finalize, 2000);
 })();
 </script>
+<script>
+(function () {
+  const slider = document.getElementById('feteSlider');
+  if (!slider) return;
+  let timer, hover = false;
+  const next = () => slider.querySelector('.fete-control.next')?.click();
+  const start = () => { if (!timer) timer = setInterval(() => { if (!hover) next(); }, 5000); };
+  const stop  = () => { clearInterval(timer); timer = null; };
+  slider.addEventListener('mouseenter', () => hover = true);
+  slider.addEventListener('mouseleave', () => hover = false);
+  slider.addEventListener('touchstart', () => hover = true, { passive: true });
+  slider.addEventListener('touchend',   () => hover = false, { passive: true });
+  start();
+})();
+</script>
 
 
 
@@ -336,6 +351,7 @@
   </script>
 </body>
 </html>
+
 
 
 
