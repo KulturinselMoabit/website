@@ -197,129 +197,134 @@
   </script>
 
   <!-- JS: Slideshow – nimmt automatisch 1–9.jpg/.mp4 aus demselben Ordner -->
-  <script>
-    (function() {
-      const slider = document.getElementById('feteSlider');
-      if (!slider) return;
-      const dotsWrap = slider.querySelector('.fete-dots');
+ <script>
+(function () {
+  const slider = document.getElementById('feteSlider');
+  if (!slider) return;
 
-      // Basis-Pfad des aktuellen Verzeichnisses (z. B. /fete/)
-      const base = (location.pathname.endsWith('/')) ? location.pathname : location.pathname.replace(/[^\/]+$/, '/');
+  const dotsWrap = slider.querySelector('.fete-dots');
+  const prevBtn  = slider.querySelector('.fete-control.prev');
+  const nextBtn  = slider.querySelector('.fete-control.next');
 
-      // Prüft, ob Datei existiert (HEAD spart Traffic)
-      async function exists(url) {
-        try {
-          const res = await fetch(url, { method: 'HEAD', cache: 'no-cache' });
-          return res.ok;
-        } catch(e) { return false; }
+  // Basis-Pfad (z. B. /fete/)
+  const base = location.pathname.endsWith('/')
+    ? location.pathname
+    : location.pathname.replace(/[^/]+$/, '/');
+
+  const numbers = Array.from({ length: 9 }, (_, i) => i + 1);
+  const slides = [];
+  let current = 0;
+
+  function createDot(idx) {
+    const b = document.createElement('button');
+    b.className = 'fete-dot';
+    b.type = 'button';
+    b.setAttribute('aria-label', 'Slide ' + (idx + 1));
+    b.addEventListener('click', () => show(idx));
+    return b;
+  }
+
+  function show(i) {
+    if (!slides.length) return;
+    current = (i + slides.length) % slides.length;
+    slides.forEach((el, idx) => {
+      const active = idx === current;
+      el.classList.toggle('active', active);
+      const v = el.querySelector('video');
+      if (v) { active ? v.play().catch(()=>{}) : v.pause(); }
+      el.setAttribute('aria-hidden', active ? 'false' : 'true');
+    });
+    dotsWrap.querySelectorAll('.fete-dot')
+      .forEach((d, idx) => d.classList.toggle('active', idx === current));
+  }
+
+  function testImage(src) {
+    return new Promise(res => {
+      const img = new Image();
+      img.onload  = () => res({ ok: true, el: img });
+      img.onerror = () => res({ ok: false });
+      img.src = src + '?v=' + Date.now(); // Cache-Buster beim Ersetzen
+    });
+  }
+
+  function testVideo(src) {
+    return new Promise(res => {
+      const v = document.createElement('video');
+      v.muted = true; v.playsInline = true;
+      const onOk  = () => { cleanup(); res({ ok: true, el: v }); };
+      const onErr = () => { cleanup(); res({ ok: false }); };
+      function cleanup() {
+        v.removeEventListener('loadedmetadata', onOk);
+        v.removeEventListener('error', onErr);
       }
+      v.addEventListener('loadedmetadata', onOk);
+      v.addEventListener('error', onErr);
+      v.src = src + '?v=' + Date.now(); // Cache-Buster
+      v.preload = 'metadata';
+    });
+  }
 
-      // Liste der möglichen Dateien aufbauen (1–9, .jpg dann .mp4)
-      async function collectSlides() {
-        const found = [];
-        for (let i = 1; i <= 9; i++) {
-          const img = base + i + '.jpg';
-          const vid = base + i + '.mp4';
-          if (await exists(img)) found.push({type:'img', src: img, alt: 'Festivalbild ' + i});
-          else if (await exists(vid)) found.push({type:'video', src: vid});
-        }
-        return found;
-      }
+  (async function init() {
+    for (const n of numbers) {
+      const imgPath = `${base}${n}.jpg`;
+      const vidPath = `${base}${n}.mp4`;
 
-      // DOM erzeugen
-      function createSlide(item, idx) {
+      let r = await testImage(imgPath);
+      if (r.ok) {
         const wrap = document.createElement('div');
         wrap.className = 'fete-slide';
-        wrap.setAttribute('data-index', idx);
+        wrap.setAttribute('data-index', slides.length);
         wrap.setAttribute('aria-hidden', 'true');
-
-        if (item.type === 'img') {
-          const el = document.createElement('img');
-          el.src = item.src;
-          el.alt = item.alt || '';
-          el.loading = 'lazy';
-          wrap.appendChild(el);
-        } else {
-          const v = document.createElement('video');
-          v.src = item.src;
-          v.preload = 'metadata';
-          v.muted = true;
-          v.playsInline = true;
-          v.loop = true;
-          wrap.appendChild(v);
-        }
-        return wrap;
+        r.el.alt = `Festivalbild ${n}`;
+        r.el.loading = 'lazy';
+        wrap.appendChild(r.el);
+        slider.insertBefore(wrap, dotsWrap);
+        dotsWrap.appendChild(createDot(slides.length));
+        slides.push(wrap);
+        continue;
       }
 
-      function createDot(idx) {
-        const b = document.createElement('button');
-        b.className = 'fete-dot';
-        b.type = 'button';
-        b.setAttribute('aria-label', 'Slide ' + (idx+1));
-        b.addEventListener('click', () => show(idx));
-        return b;
+      r = await testVideo(vidPath);
+      if (r.ok) {
+        const wrap = document.createElement('div');
+        wrap.className = 'fete-slide';
+        wrap.setAttribute('data-index', slides.length);
+        wrap.setAttribute('aria-hidden', 'true');
+        const v = r.el;
+        v.loop = true; v.muted = true; v.playsInline = true; v.preload = 'metadata';
+        wrap.appendChild(v);
+        slider.insertBefore(wrap, dotsWrap);
+        dotsWrap.appendChild(createDot(slides.length));
+        slides.push(wrap);
       }
+    }
 
-      let slides = [];
-      let current = 0;
+    if (!slides.length) return;
 
-      function show(i) {
-        if (!slides.length) return;
-        current = (i + slides.length) % slides.length;
-        const slideEls = slider.querySelectorAll('.fete-slide');
-        const dotEls = dotsWrap.querySelectorAll('.fete-dot');
+    // Controls + Keyboard + Swipe
+    prevBtn?.addEventListener('click', () => show(current - 1));
+    nextBtn?.addEventListener('click', () => show(current + 1));
+    slider.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft')  show(current - 1);
+      if (e.key === 'ArrowRight') show(current + 1);
+    });
+    slider.setAttribute('tabindex', '0');
 
-        slideEls.forEach((el, idx) => {
-          const active = idx === current;
-          el.classList.toggle('active', active);
-          el.setAttribute('aria-hidden', active ? 'false' : 'true');
-          // Video Play/Pause
-          const v = el.querySelector('video');
-          if (v) { active ? v.play().catch(()=>{}) : v.pause(); }
-        });
-        dotEls.forEach((d, idx) => d.classList.toggle('active', idx === current));
-      }
+    let sx = null;
+    slider.addEventListener('touchstart', e => { sx = e.touches[0].clientX; }, { passive: true });
+    slider.addEventListener('touchend',   e => {
+      if (sx == null) return;
+      const dx = e.changedTouches[0].clientX - sx;
+      if (Math.abs(dx) > 40) (dx < 0 ? show(current + 1) : show(current - 1));
+      sx = null;
+    });
 
-      function next() { show(current + 1); }
-      function prev() { show(current - 1); }
+    show(0);
+  })();
+})();
+</script>
+<noscript>Bitte JavaScript aktivieren, um die Slideshow zu sehen.</noscript>
 
-      // Init
-      (async () => {
-        const list = await collectSlides();
-        if (!list.length) return; // keine Dateien gefunden
-        // Slides + Dots einbauen
-        list.forEach((item, idx) => {
-          slider.insertBefore(createSlide(item, idx), dotsWrap);
-          dotsWrap.appendChild(createDot(idx));
-        });
-
-        // Controls
-        const prevBtn = slider.querySelector('.fete-control.prev');
-        const nextBtn = slider.querySelector('.fete-control.next');
-        if (prevBtn) prevBtn.addEventListener('click', prev);
-        if (nextBtn) nextBtn.addEventListener('click', next);
-
-        // Keyboard
-        slider.addEventListener('keydown', (e) => {
-          if (e.key === 'ArrowLeft') prev();
-          if (e.key === 'ArrowRight') next();
-        });
-        slider.setAttribute('tabindex', '0');
-
-        // Swipe (basic)
-        let sx = null;
-        slider.addEventListener('touchstart', (e) => { sx = e.touches[0].clientX; }, {passive:true});
-        slider.addEventListener('touchend', (e) => {
-          if (sx == null) return;
-          const dx = e.changedTouches[0].clientX - sx;
-          if (Math.abs(dx) > 40) (dx < 0 ? next() : prev());
-          sx = null;
-        });
-
-        slides = list;
-        show(0);
-      })();
-    })();
-  </script>
 </body>
 </html>
+
