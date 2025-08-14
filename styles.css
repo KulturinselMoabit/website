@@ -389,60 +389,19 @@ body {
     height: auto;
   }
 }
-/* ===== FÊTE: LINE-UP (nur neue Klassen) ===== */
+/* ===== FÊTE: LINE-UP – korrigiert ===== */
 
-/* (Größe bleibt über diese drei Variablen steuerbar) */
+/* Größen-Steuerung */
 :root {
   --lineup-min: 1.8rem;
-  --lineup-vw:  4vw;
-  --lineup-max: 3rem;
+  --lineup-vw:  7.5vw;   /* bei Bedarf größer/kleiner drehen */
+  --lineup-max: 6rem;
+  --lineup-row-gap: .5em; /* deutlicher Abstand zwischen Band-Zeilen */
 }
 
-/* Grundlayout wie gehabt */
 .lineup { margin: 2.2rem 0 2.8rem; }
 .lineup-wrap { text-align: center; }
 
-.acts {
-  list-style: none;
-  margin: 0 0 1.4rem 0;
-  padding: 0;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  text-align: center;           /* mehrzeilige Namen zentriert */
-  row-gap: .2em;                /* kleiner Grundabstand zwischen Flex-Zeilen */
-}
-
-/* Jeder Act */
-.acts li {
-  font-family: "Rubik Dirt", "Montserrat", sans-serif;
-  text-transform: uppercase;
-  letter-spacing: .03em;
-  line-height: .9;              /* enger Zeilenabstand innerhalb eines Namens */
-  color: var(--primary);
-  font-size: clamp(var(--lineup-min), var(--lineup-vw), var(--lineup-max));
-  padding: 0 .12em;
-}
-
-/* Punkt zwischen Acts – in Highlight-Farbe */
-.acts li + li::before {
-  content: "•";
-  display: inline-block;
-  margin: 0 .18em 0 .2em;
-  transform: translateY(-0.03em);
-  opacity: .95;
-  color: var(--highlight);      /* <-- Rot von der Seite */
-}
-
-/* Kein Punkt am Zeilenanfang (per JS .row-start gesetzt) */
-.acts li.row-start::before { content: none; }
-
-/* Extra-Abstand VOR einer neuen Band-Zeile, aber nicht vor der allerersten */
-.acts li.row-start:not(:first-child) {
-  margin-top: .35em;            /* größerer Sprung zwischen Band-Zeilen */
-}
-
-/* Tag & Überschrift wie gehabt */
 .lineup-heading {
   font-weight: 800;
   text-transform: uppercase;
@@ -450,6 +409,7 @@ body {
   margin-bottom: .6rem;
   font-size: clamp(1rem, 2.6vw, 1.35rem);
 }
+
 .lineup-daytag {
   display: inline-block;
   background: var(--primary);
@@ -462,10 +422,53 @@ body {
   margin: .25rem 0 .75rem 0;
 }
 
+/* Container: zentriert, sauberer Zeilenabstand */
+.acts {
+  list-style: none;
+  margin: 0 0 1.4rem 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;          /* gleiche Vertikallage in einer Reihe */
+  row-gap: var(--lineup-row-gap); /* EINHEITLICHER Abstand zwischen Reihen */
+  text-align: center;           /* mehrzeilige Namen zentriert */
+}
+
+/* Einträge: „gestempelte“ Optik, responsive Größe */
+.acts li {
+  font-family: "Rubik Dirt", "Montserrat", sans-serif;
+  text-transform: uppercase;
+  letter-spacing: .03em;
+  line-height: .9;              /* enger Umbruch innerhalb eines Namens */
+  color: var(--primary);
+  font-size: clamp(var(--lineup-min), var(--lineup-vw), var(--lineup-max));
+  padding: 0 .12em;
+}
+
+/* Punkt zwischen Acts – in Seiten-Highlight */
+.acts li + li::before {
+  content: "•";
+  display: inline-block;
+  margin: 0 .18em 0 .2em;
+  vertical-align: middle;
+  color: var(--highlight);
+  opacity: .95;
+}
+
+/* Kein Punkt am Zeilenanfang (per JS gesetzt) */
+.acts li.row-start::before { content: none; }
+
+/* !!! Entferne/überschreibe diese alte Regel, falls vorhanden:
+   .acts li.row-start:not(:first-child) { margin-top: .35em; } */
+.acts li.row-start:not(:first-child) { margin-top: 0; }
+
 @media (max-width: 768px) {
   .lineup { margin: 1.6rem 0 2rem; }
   .lineup-daytag { margin-top: .5rem; }
 }
+
+
 
 
 
