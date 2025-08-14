@@ -197,119 +197,120 @@
   </script>
 
   <!-- JS: Slideshow (1–9.jpg/.mp4, blendet Hero aus wenn nichts gefunden) -->
-  <script>
-  (function () {
-    const slider = document.getElementById('feteSlider');
-    if (!slider) return;
+<script>
+(function () {
+  const slider = document.getElementById('feteSlider');
+  if (!slider) return;
 
-    const dotsWrap = slider.querySelector('.fete-dots');
-    const prevBtn  = slider.querySelector('.fete-control.prev');
-    const nextBtn  = slider.querySelector('.fete-control.next');
-    const hero     = slider.closest('.fete-hero');
+  const dotsWrap = slider.querySelector('.fete-dots');
+  const prevBtn  = slider.querySelector('.fete-control.prev');
+  const nextBtn  = slider.querySelector('.fete-control.next');
+  const hero     = slider.closest('.fete-hero');
 
-    const baseURL = new URL('./', location.href);
+  // *** ROBUSTER BASIS-PFAD (funktioniert bei /test, /test/, /fete, /fete/) ***
+  const basePath = location.pathname.endsWith('/') ? location.pathname : location.pathname + '/';
+  const baseURL  = location.origin + basePath;
 
-    function loadImage(url) {
-      return new Promise(resolve => {
-        const img = new Image();
-        img.onload = () => resolve({ ok: true, el: img });
-        img.onerror = () => resolve({ ok: false });
-        img.src = url + '?v=' + Date.now();
-        img.loading = 'lazy'; img.decoding = 'async';
-      });
+  function loadImage(url) {
+    return new Promise(resolve => {
+      const img = new Image();
+      img.onload = () => resolve({ ok: true, el: img });
+      img.onerror = () => resolve({ ok: false });
+      img.src = url + '?v=' + Date.now();   // Cache-Buster
+      img.loading = 'lazy'; img.decoding = 'async';
+    });
+  }
+  function loadVideo(url) {
+    return new Promise(resolve => {
+      const v = document.createElement('video');
+      v.preload = 'metadata'; v.muted = true; v.playsInline = true; v.loop = true;
+      const ok = () => { cleanup(); resolve({ ok: true, el: v }); };
+      const err = () => { cleanup(); resolve({ ok: false }); };
+      function cleanup(){ v.removeEventListener('loadedmetadata', ok); v.removeEventListener('error', err); }
+      v.addEventListener('loadedmetadata', ok);
+      v.addEventListener('error', err);
+      v.src = url + '?v=' + Date.now();     // Cache-Buster
+    });
+  }
+
+  function makeSlide(node, idx) {
+    const wrap = document.createElement('div');
+    wrap.className = 'fete-slide';
+    wrap.setAttribute('data-index', idx);
+    wrap.setAttribute('aria-hidden', 'true');
+    wrap.appendChild(node);
+    slider.insertBefore(wrap, dotsWrap);
+    return wrap;
+  }
+  function makeDot(idx) {
+    const b = document.createElement('button');
+    b.className = 'fete-dot';
+    b.type = 'button';
+    b.setAttribute('aria-label', 'Slide ' + (idx + 1));
+    b.addEventListener('click', () => show(idx));
+    dotsWrap.appendChild(b);
+    return b;
+  }
+
+  let slides = [], dots = [], current = 0;
+
+  function show(i) {
+    if (!slides.length) return;
+    current = (i + slides.length) % slides.length;
+    slides.forEach((el, idx) => {
+      const active = idx === current;
+      el.classList.toggle('active', active);
+      el.setAttribute('aria-hidden', active ? 'false' : 'true');
+      const v = el.querySelector('video');
+      if (v) { active ? v.play().catch(()=>{}) : v.pause(); }
+    });
+    dots.forEach((d, idx) => d.classList.toggle('active', idx === current));
+  }
+
+  (async function init() {
+    const found = [];
+    for (let n = 1; n <= 9; n++) {
+      const jpg = `${baseURL}${n}.jpg`;
+      const mp4 = `${baseURL}${n}.mp4`;
+
+      let r = await loadImage(jpg);
+      if (r.ok) { r.el.alt = `Festivalbild ${n}`; found.push(r.el); continue; }
+
+      r = await loadVideo(mp4);
+      if (r.ok) { found.push(r.el); }
     }
-    function loadVideo(url) {
-      return new Promise(resolve => {
-        const v = document.createElement('video');
-        v.preload = 'metadata'; v.muted = true; v.playsInline = true; v.loop = true;
-        const ok = () => { cleanup(); resolve({ ok: true, el: v }); };
-        const err = () => { cleanup(); resolve({ ok: false }); };
-        function cleanup(){ v.removeEventListener('loadedmetadata', ok); v.removeEventListener('error', err); }
-        v.addEventListener('loadedmetadata', ok);
-        v.addEventListener('error', err);
-        v.src = url + '?v=' + Date.now();
-      });
-    }
 
-    function makeSlide(node, idx) {
-      const wrap = document.createElement('div');
-      wrap.className = 'fete-slide';
-      wrap.setAttribute('data-index', idx);
-      wrap.setAttribute('aria-hidden', 'true');
-      wrap.appendChild(node);
-      slider.insertBefore(wrap, dotsWrap);
-      return wrap;
-    }
-    function makeDot(idx) {
-      const b = document.createElement('button');
-      b.className = 'fete-dot';
-      b.type = 'button';
-      b.setAttribute('aria-label', 'Slide ' + (idx + 1));
-      b.addEventListener('click', () => show(idx));
-      dotsWrap.appendChild(b);
-      return b;
-    }
+    // Nichts gefunden? Hero raus -> kein leerer Platz
+    if (!found.length) { hero?.remove(); return; }
 
-    let slides = [], dots = [], current = 0;
+    found.forEach((node, idx) => {
+      slides.push(makeSlide(node, idx));
+      dots.push(makeDot(idx));
+    });
 
-    function show(i) {
-      if (!slides.length) return;
-      current = (i + slides.length) % slides.length;
-      slides.forEach((el, idx) => {
-        const active = idx === current;
-        el.classList.toggle('active', active);
-        el.setAttribute('aria-hidden', active ? 'false' : 'true');
-        const v = el.querySelector('video');
-        if (v) { active ? v.play().catch(()=>{}) : v.pause(); }
-      });
-      dots.forEach((d, idx) => d.classList.toggle('active', idx === current));
-    }
+    prevBtn?.addEventListener('click', () => show(current - 1));
+    nextBtn?.addEventListener('click', () => show(current + 1));
 
-    (async function init() {
-      const found = [];
-      for (let n = 1; n <= 9; n++) {
-        const jpg = new URL(`${n}.jpg`, baseURL).href;
-        const mp4 = new URL(`${n}.mp4`, baseURL).href;
+    // Keyboard & Swipe
+    slider.setAttribute('tabindex','0');
+    slider.addEventListener('keydown', e => {
+      if (e.key === 'ArrowLeft')  show(current - 1);
+      if (e.key === 'ArrowRight') show(current + 1);
+    });
+    let sx = null;
+    slider.addEventListener('touchstart', e => { sx = e.touches[0].clientX; }, { passive: true });
+    slider.addEventListener('touchend',   e => {
+      if (sx == null) return;
+      const dx = e.changedTouches[0].clientX - sx;
+      if (Math.abs(dx) > 40) (dx < 0 ? show(current + 1) : show(current - 1));
+      sx = null;
+    });
 
-        let r = await loadImage(jpg);
-        if (r.ok) { r.el.alt = `Festivalbild ${n}`; found.push(r.el); continue; }
-
-        r = await loadVideo(mp4);
-        if (r.ok) { found.push(r.el); }
-      }
-
-      if (!found.length) {
-        if (hero) hero.remove(); // kein leerer Platz, wenn keine Dateien
-        return;
-      }
-
-      found.forEach((node, idx) => {
-        slides.push(makeSlide(node, idx));
-        dots.push(makeDot(idx));
-      });
-
-      prevBtn && prevBtn.addEventListener('click', () => show(current - 1));
-      nextBtn && nextBtn.addEventListener('click', () => show(current + 1));
-
-      // Keyboard & Swipe
-      slider.setAttribute('tabindex', '0');
-      slider.addEventListener('keydown', e => {
-        if (e.key === 'ArrowLeft')  show(current - 1);
-        if (e.key === 'ArrowRight') show(current + 1);
-      });
-      let sx = null;
-      slider.addEventListener('touchstart', e => { sx = e.touches[0].clientX; }, { passive: true });
-      slider.addEventListener('touchend',   e => {
-        if (sx == null) return;
-        const dx = e.changedTouches[0].clientX - sx;
-        if (Math.abs(dx) > 40) (dx < 0 ? show(current + 1) : show(current - 1));
-        sx = null;
-      });
-
-      show(0);
-    })();
+    show(0);
   })();
-  </script>
+})();
+</script>
+
 
   <!-- JS: Line-up – kein Punkt am Zeilenanfang -->
   <script>
@@ -337,3 +338,4 @@
   </script>
 </body>
 </html>
+
