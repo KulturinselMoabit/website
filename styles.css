@@ -547,3 +547,5 @@ body {
   .lineup { margin: 1.6rem 0 2rem; }
   .lineup .lineup-daytag { margin-top: .5rem; }
 }
+.fete-control{ z-index: 2; }
+
