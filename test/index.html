@@ -207,19 +207,15 @@
   const nextBtn  = slider.querySelector('.fete-control.next');
   const hero     = slider.closest('.fete-hero');
 
-  // Sicherer Basis-Pfad: funktioniert bei /test, /test/, /fete, /fete/
-  const basePath = location.pathname.endsWith('/') ? location.pathname : location.pathname + '/';
-  const baseURL  = location.origin + basePath;
+  // Robuste Basis-Pfade:
+  //  - path1: erzwingt immer einen Slash am Ende (z. B. /test/)
+  //  - path2: "Elternverzeichnis"-Ansatz (z. B. /test/ aus /test/index.html)
+  const p = location.pathname;
+  const path1 = p.endsWith('/') ? p : p + '/';
+  const path2 = p.replace(/[^/]*$/, ''); // alles nach letztem "/" abtrennen
+  const BASES = Array.from(new Set([location.origin + path1, location.origin + path2])); // eindeutige Liste
 
-  // Wir probieren mehrere Endungen und Groß-/Kleinschreibung
-  const IMG_EXTS = ['.jpg', '.jpeg', '.png', '.JPG', '.JPEG', '.PNG'];
-  const VID_EXTS = ['.mp4', '.MP4'];
-  const NUMBERS  = Array.from({length: 9}, (_, i) => i + 1);
-
-  // Debug-Flag: auf true stellen, um in der Konsole zu sehen, was geprüft wird
-  const DEBUG = true;
-
-  function log(...args) { if (DEBUG) console.log('[slider]', ...args); }
+  const NUMBERS = Array.from({length: 9}, (_, i) => i + 1);
 
   function loadImage(url) {
     return new Promise(resolve => {
@@ -227,39 +223,17 @@
       img.onload  = () => resolve({ ok: true, el: img, url });
       img.onerror = () => resolve({ ok: false, url });
       img.src = url + '?v=' + Date.now(); // Cache-Buster
-      img.loading = 'lazy'; img.decoding = 'async';
-    });
-  }
-  function loadVideo(url) {
-    return new Promise(resolve => {
-      const v = document.createElement('video');
-      v.preload = 'metadata'; v.muted = true; v.playsInline = true; v.loop = true;
-      const ok  = () => { cleanup(); resolve({ ok: true, el: v, url }); };
-      const err = () => { cleanup(); resolve({ ok: false, url }); };
-      function cleanup(){ v.removeEventListener('loadedmetadata', ok); v.removeEventListener('error', err); }
-      v.addEventListener('loadedmetadata', ok);
-      v.addEventListener('error', err);
-      v.src = url + '?v=' + Date.now();
+      img.loading = 'lazy';
+      img.decoding = 'async';
     });
   }
 
-  async function tryOneNumber(n) {
-    // 1) Bilder versuchen
-    for (const ext of IMG_EXTS) {
-      const url = `${baseURL}${n}${ext}`;
-      log('try image', url);
+  async function findForNumber(n) {
+    // Wir versuchen jede Basis (path1, path2) mit .jpg
+    for (const base of BASES) {
+      const url = `${base}${n}.jpg`;
       const r = await loadImage(url);
-      if (r.ok) {
-        r.el.alt = `Festivalbild ${n}`;
-        return { type: 'img', node: r.el, url: r.url };
-      }
-    }
-    // 2) Videos versuchen
-    for (const ext of VID_EXTS) {
-      const url = `${baseURL}${n}${ext}`;
-      log('try video', url);
-      const r = await loadVideo(url);
-      if (r.ok) return { type: 'video', node: r.el, url: r.url };
+      if (r.ok) { r.el.alt = `Festivalbild ${n}`; return r.el; }
     }
     return null;
   }
@@ -292,28 +266,21 @@
       const active = idx === current;
       el.classList.toggle('active', active);
       el.setAttribute('aria-hidden', active ? 'false' : 'true');
-      const v = el.querySelector('video');
-      if (v) { active ? v.play().catch(()=>{}) : v.pause(); }
     });
     dots.forEach((d, idx) => d.classList.toggle('active', idx === current));
   }
 
   (async function init() {
-    const foundNodes = [];
+    const nodes = [];
     for (const n of NUMBERS) {
-      const r = await tryOneNumber(n);
-      if (r) {
-        log('found', r.url);
-        foundNodes.push(r.node);
-      } else {
-        log('none for number', n);
-      }
+      const el = await findForNumber(n);
+      if (el) nodes.push(el);
     }
 
-    // Nichts gefunden? Hero weg → kein leerer Kasten
-    if (!foundNodes.length) { log('no media found at', baseURL); hero?.remove(); return; }
+    // Nichts gefunden → Hero ausblenden (kein leerer Platz)
+    if (!nodes.length) { hero?.remove(); return; }
 
-    foundNodes.forEach((node, idx) => {
+    nodes.forEach((node, idx) => {
       slides.push(makeSlide(node, idx));
       dots.push(makeDot(idx));
     });
@@ -343,6 +310,7 @@
 
 
 
+
   <!-- JS: Line-up – kein Punkt am Zeilenanfang -->
   <script>
   (function () {
@@ -369,5 +337,6 @@
   </script>
 </body>
 </html>
+
 
 
