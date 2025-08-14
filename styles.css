@@ -407,7 +407,7 @@ body {
   display: inline-block;
   background: var(--primary);
   color: #fff;
-  font-weight: 800;
+  font-weight: 300;
   letter-spacing: .06em;
   border-radius: 6px;
   padding: .35rem .6rem;
@@ -456,4 +456,5 @@ body {
   .lineup { margin: 1.75rem 0 2rem; }
   .lineup-daytag { margin-top: .5rem; }
 }
+
 
