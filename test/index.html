@@ -196,58 +196,27 @@
     }
   </script>
 
-  <!-- JS: Slideshow (1–9.jpg/.mp4, blendet Hero aus wenn nichts gefunden) -->
 <script>
 (function () {
-  // ========== Helpers ==========
-  const $ = (sel, root = document) => root.querySelector(sel);
-  const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
-  const dirURL = new URL('.', document.baseURI); // immer Ordner mit Slash (…/test/)
+  const slider = document.getElementById('feteSlider');
+  if (!slider) return;
 
-  // ========== Layout fixen (Breite) ==========
-  function ensureWideLayout() {
-    const section = $('.page-inner');
-    if (section && !section.classList.contains('page-inner--wide')) {
-      section.classList.add('page-inner--wide');
-    }
-    const leftCol = $('.page-img');
-    if (leftCol) leftCol.style.display = 'none';
-  }
+  const dotsWrap = slider.querySelector('.fete-dots');
+  const prevBtn  = slider.querySelector('.fete-control.prev');
+  const nextBtn  = slider.querySelector('.fete-control.next');
+  const hero     = slider.closest('.fete-hero');
 
-  // ========== Hero-Skeleton einfügen, wenn fehlt ==========
-  function ensureHero() {
-    let slider = $('#feteSlider');
-    if (slider) return slider;
+  // Immer der Ordner der aktuellen Seite, mit Slash (…/test/)
+  const dirURL = new URL('.', document.baseURI);
 
-    const pageText = $('.page-text') || $('main') || document.body;
-    const hero = document.createElement('section');
-    hero.className = 'fete-hero';
-    hero.innerHTML = `
-      <div class="fete-slider" id="feteSlider" aria-label="Festival-Impressionen">
-        <button class="fete-control prev" aria-label="Vorheriges">‹</button>
-        <button class="fete-control next" aria-label="Nächstes">›</button>
-        <div class="fete-dots" role="tablist" aria-label="Slideshow-Navigation"></div>
-      </div>
-    `;
-    pageText.insertBefore(hero, pageText.firstChild);
-    return hero.querySelector('#feteSlider');
-  }
+  const MAX = 9;
+  const slides = [];
+  const dots   = [];
+  let current  = 0;
+  let loadedCount = 0;   // erfolgreich geladene Bilder
+  let totalCandidates = 0;
 
-  // ========== Loader nur für .jpg (deine Dateien 1-5.jpg) ==========
-  function loadImage(url) {
-    return new Promise(resolve => {
-      const img = new Image();
-      img.onload  = () => resolve({ ok: true, el: img, url });
-      img.onerror = () => resolve({ ok: false, url });
-      img.loading = 'lazy';
-      img.decoding = 'async';
-      // Cache-Buster, damit ersetzte Dateien sofort gesehen werden
-      img.src = url + '?v=' + Date.now();
-    });
-  }
-
-  // ========== Slider-Logik ==========
-  function makeSlide(slider, node, dotsWrap, idx) {
+  function makeSlide(node, idx) {
     const wrap = document.createElement('div');
     wrap.className = 'fete-slide';
     wrap.setAttribute('data-index', idx);
@@ -259,86 +228,86 @@
     dot.className = 'fete-dot';
     dot.type = 'button';
     dot.setAttribute('aria-label', 'Slide ' + (idx + 1));
+    dot.addEventListener('click', () => show(idx));
     dotsWrap.appendChild(dot);
-    return { slide: wrap, dot };
+
+    slides.push(wrap);
+    dots.push(dot);
   }
 
-  function wireControls(slider, state) {
-    const prevBtn = $('.fete-control.prev', slider);
-    const nextBtn = $('.fete-control.next', slider);
-    const { slides, dots } = state;
+  function show(i) {
+    if (!slides.length) return;
+    current = (i + slides.length) % slides.length;
+    slides.forEach((el, idx) => {
+      const active = idx === current;
+      el.classList.toggle('active', active);
+      el.setAttribute('aria-hidden', active ? 'false' : 'true');
+    });
+    dots.forEach((d, idx) => d.classList.toggle('active', idx === current));
+  }
 
-    function show(i) {
-      if (!slides.length) return;
-      state.current = (i + slides.length) % slides.length;
-      slides.forEach((el, idx) => {
-        const active = idx === state.current;
-        el.classList.toggle('active', active);
-        el.setAttribute('aria-hidden', active ? 'false' : 'true');
-      });
-      dots.forEach((d, idx) => d.classList.toggle('active', idx === state.current));
-    }
+  function wireControls() {
+    prevBtn && prevBtn.addEventListener('click', () => show(current - 1));
+    nextBtn && nextBtn.addEventListener('click', () => show(current + 1));
 
-    prevBtn && prevBtn.addEventListener('click', () => show(state.current - 1));
-    nextBtn && nextBtn.addEventListener('click', () => show(state.current + 1));
-
-    // Keyboard & Swipe
     slider.setAttribute('tabindex', '0');
     slider.addEventListener('keydown', e => {
-      if (e.key === 'ArrowLeft')  show(state.current - 1);
-      if (e.key === 'ArrowRight') show(state.current + 1);
+      if (e.key === 'ArrowLeft')  show(current - 1);
+      if (e.key === 'ArrowRight') show(current + 1);
     });
 
+    // Touch-Swipe
     let sx = null;
     slider.addEventListener('touchstart', e => { sx = e.touches[0].clientX; }, { passive: true });
     slider.addEventListener('touchend',   e => {
       if (sx == null) return;
       const dx = e.changedTouches[0].clientX - sx;
-      if (Math.abs(dx) > 40) (dx < 0 ? show(state.current + 1) : show(state.current - 1));
+      if (Math.abs(dx) > 40) (dx < 0 ? show(current + 1) : show(current - 1));
       sx = null;
     });
-
-    show(0); // initial anzeigen
   }
 
-  // ========== Init ==========
-  async function initSlideshow() {
-    ensureWideLayout();
-    const slider = ensureHero();
-    const dotsWrap = $('.fete-dots', slider);
-    const hero = slider.closest('.fete-hero');
-
-    // Kandidaten 1..9.jpg aus demselben Ordner wie die HTML
-    const nums = Array.from({ length: 9 }, (_, i) => i + 1);
-    const found = [];
-
-    for (const n of nums) {
-      const url = new URL(`${n}.jpg`, dirURL).href; // z. B. …/test/1.jpg
-      const r = await loadImage(url);
-      if (r.ok) {
-        r.el.alt = `Festivalbild ${n}`;
-        found.push(r.el);
-      }
+  function finalize() {
+    // alle Kandidaten versucht – wenn kein Bild geladen, Hero raus
+    if (totalCandidates > 0 && loadedCount === 0) {
+      hero && hero.remove();
+      return;
     }
-
-    // Nichts gefunden? Hero entfernen -> kein leerer Platz
-    if (!found.length) { hero && hero.remove(); return; }
-
-    const state = { slides: [], dots: [], current: 0 };
-    found.forEach((node, idx) => {
-      const { slide, dot } = makeSlide(slider, node, dotsWrap, idx);
-      state.slides.push(slide);
-      state.dots.push(dot);
-    });
-
-    wireControls(slider, state);
+    if (!slides.length) return;
+    wireControls();
+    show(0);
   }
 
-  // Einmal nach DOM bereit (und nochmal nach vollständigem Load als Sicherheit)
-  document.addEventListener('DOMContentLoaded', initSlideshow);
-  window.addEventListener('load', initSlideshow);
+  // Kandidaten 1..9.jpg erzeugen (ohne Cache-Buster, absoluter Pfad)
+  for (let n = 1; n <= MAX; n++) {
+    const url = new URL(`${n}.jpg`, dirURL).href;
+    totalCandidates++;
+
+    const img = new Image();
+    img.alt = `Festivalbild ${n}`;
+    // Erfolgreich: Slide hinzufügen
+    img.onload = () => {
+      loadedCount++;
+      makeSlide(img, slides.length);
+      // Sobald das erste Bild da ist, können wir anzeigen (falls noch nicht geschehen)
+      if (loadedCount === 1) {
+        wireControls();
+        show(0);
+      }
+    };
+    // Fehler: nichts hinzufügen
+    img.onerror = () => {
+      // Wenn das der letzte Versuch war und noch nichts geladen wurde: finalize entfernt Hero
+      if (--totalCandidates === 0 && loadedCount === 0) finalize();
+    };
+    img.src = url;
+  }
+
+  // Fallback-Sicherung: nach 2s finalisieren (falls onerror/onload nicht gefeuert hat)
+  setTimeout(finalize, 2000);
 })();
 </script>
+
 
 
   <!-- JS: Line-up – kein Punkt am Zeilenanfang -->
@@ -367,6 +336,7 @@
   </script>
 </body>
 </html>
+
 
 
 
