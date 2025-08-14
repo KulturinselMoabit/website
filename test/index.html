@@ -199,21 +199,13 @@
   <!-- JS: Slideshow (1–9.jpg/.mp4, blendet Hero aus wenn nichts gefunden) -->
 <script>
 (function () {
-  const slider = document.getElementById('feteSlider');
+  const slider  = document.getElementById('feteSlider');
   if (!slider) return;
 
   const dotsWrap = slider.querySelector('.fete-dots');
   const prevBtn  = slider.querySelector('.fete-control.prev');
   const nextBtn  = slider.querySelector('.fete-control.next');
   const hero     = slider.closest('.fete-hero');
-
-  // Robuste Basis-Pfade:
-  //  - path1: erzwingt immer einen Slash am Ende (z. B. /test/)
-  //  - path2: "Elternverzeichnis"-Ansatz (z. B. /test/ aus /test/index.html)
-  const p = location.pathname;
-  const path1 = p.endsWith('/') ? p : p + '/';
-  const path2 = p.replace(/[^/]*$/, ''); // alles nach letztem "/" abtrennen
-  const BASES = Array.from(new Set([location.origin + path1, location.origin + path2])); // eindeutige Liste
 
   const NUMBERS = Array.from({length: 9}, (_, i) => i + 1);
 
@@ -222,20 +214,10 @@
       const img = new Image();
       img.onload  = () => resolve({ ok: true, el: img, url });
       img.onerror = () => resolve({ ok: false, url });
-      img.src = url + '?v=' + Date.now(); // Cache-Buster
+      img.src = url + '?v=' + Date.now();   // Cache-Buster
       img.loading = 'lazy';
       img.decoding = 'async';
     });
-  }
-
-  async function findForNumber(n) {
-    // Wir versuchen jede Basis (path1, path2) mit .jpg
-    for (const base of BASES) {
-      const url = `${base}${n}.jpg`;
-      const r = await loadImage(url);
-      if (r.ok) { r.el.alt = `Festivalbild ${n}`; return r.el; }
-    }
-    return null;
   }
 
   function makeSlide(node, idx) {
@@ -271,16 +253,21 @@
   }
 
   (async function init() {
-    const nodes = [];
+    const found = [];
     for (const n of NUMBERS) {
-      const el = await findForNumber(n);
-      if (el) nodes.push(el);
+      // <-- Kern: absoluter Pfad RELATIV zur aktuellen Seite
+      const url = new URL(`${n}.jpg`, document.baseURI).href;
+      const r = await loadImage(url);
+      if (r.ok) {
+        r.el.alt = `Festivalbild ${n}`;
+        found.push(r.el);
+      }
     }
 
-    // Nichts gefunden → Hero ausblenden (kein leerer Platz)
-    if (!nodes.length) { hero?.remove(); return; }
+    // nichts gefunden → Hero entfernen, damit kein leerer Platz bleibt
+    if (!found.length) { hero?.remove(); return; }
 
-    nodes.forEach((node, idx) => {
+    found.forEach((node, idx) => {
       slides.push(makeSlide(node, idx));
       dots.push(makeDot(idx));
     });
@@ -311,6 +298,7 @@
 
 
 
+
   <!-- JS: Line-up – kein Punkt am Zeilenanfang -->
   <script>
   (function () {
@@ -337,6 +325,7 @@
   </script>
 </body>
 </html>
+
 
 
 
