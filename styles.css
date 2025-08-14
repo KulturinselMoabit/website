@@ -391,16 +391,58 @@ body {
 }
 /* ===== FÊTE: LINE-UP (nur neue Klassen) ===== */
 
-/* --> HIER komfortable Stellschrauben für die Textgröße <-- */
+/* (Größe bleibt über diese drei Variablen steuerbar) */
 :root {
-  --lineup-min: 1.8rem;   /* klein auf sehr schmalen Screens */
-  --lineup-vw:  5vw;    /* responsiver Anteil (vorher 13vw -> sehr groß) */
-  --lineup-max: 4rem;     /* Obergrenze Desktop ~96px (vorher 10rem) */
+  --lineup-min: 1.8rem;
+  --lineup-vw:  4vw;
+  --lineup-max: 3rem;
 }
 
+/* Grundlayout wie gehabt */
 .lineup { margin: 2.2rem 0 2.8rem; }
 .lineup-wrap { text-align: center; }
 
+.acts {
+  list-style: none;
+  margin: 0 0 1.4rem 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  text-align: center;           /* mehrzeilige Namen zentriert */
+  row-gap: .2em;                /* kleiner Grundabstand zwischen Flex-Zeilen */
+}
+
+/* Jeder Act */
+.acts li {
+  font-family: "Rubik Dirt", "Montserrat", sans-serif;
+  text-transform: uppercase;
+  letter-spacing: .03em;
+  line-height: .9;              /* enger Zeilenabstand innerhalb eines Namens */
+  color: var(--primary);
+  font-size: clamp(var(--lineup-min), var(--lineup-vw), var(--lineup-max));
+  padding: 0 .12em;
+}
+
+/* Punkt zwischen Acts – in Highlight-Farbe */
+.acts li + li::before {
+  content: "•";
+  display: inline-block;
+  margin: 0 .18em 0 .2em;
+  transform: translateY(-0.03em);
+  opacity: .95;
+  color: var(--highlight);      /* <-- Rot von der Seite */
+}
+
+/* Kein Punkt am Zeilenanfang (per JS .row-start gesetzt) */
+.acts li.row-start::before { content: none; }
+
+/* Extra-Abstand VOR einer neuen Band-Zeile, aber nicht vor der allerersten */
+.acts li.row-start:not(:first-child) {
+  margin-top: .35em;            /* größerer Sprung zwischen Band-Zeilen */
+}
+
+/* Tag & Überschrift wie gehabt */
 .lineup-heading {
   font-weight: 800;
   text-transform: uppercase;
@@ -408,7 +450,6 @@ body {
   margin-bottom: .6rem;
   font-size: clamp(1rem, 2.6vw, 1.35rem);
 }
-
 .lineup-daytag {
   display: inline-block;
   background: var(--primary);
@@ -421,40 +462,12 @@ body {
   margin: .25rem 0 .75rem 0;
 }
 
-.acts {
-  list-style: none;
-  margin: 0 0 1.4rem 0;
-  padding: 0;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;   /* zentriert die Einträge */
-  text-align: center;        /* zentriert Mehrzeiler im li */
-}
-
-.acts li {
-  font-family: "Rubik Dirt", "Montserrat", sans-serif;
-  text-transform: uppercase;
-  letter-spacing: .03em;
-  line-height: .9;
-  color: var(--primary);
-  font-size: clamp(var(--lineup-min), var(--lineup-vw), var(--lineup-max));
-  padding: 0 .12em;
-}
-
-/* Punkt nur zwischen Acts derselben Zeile */
-.acts li + li::before {
-  content: "•";
-  display: inline-block;
-  margin: 0 .18em 0 .2em;
-  transform: translateY(-0.03em);
-  opacity: .9;
-}
-.acts li.row-start::before { content: none; }
-
 @media (max-width: 768px) {
   .lineup { margin: 1.6rem 0 2rem; }
   .lineup-daytag { margin-top: .5rem; }
 }
+
+
 
 
 
