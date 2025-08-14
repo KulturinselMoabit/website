@@ -218,7 +218,6 @@ body {
   display: block;
   box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
 }
-
 .page-text img.float-right-third {
   float: right;
   width: 33.333%;
@@ -227,7 +226,6 @@ body {
   display: block;
   box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
 }
-
 .page-text img.float-half-left {
   float: left;
   width: 50%;
@@ -236,7 +234,6 @@ body {
   display: block;
   box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
 }
-
 .page-text img.float-half-right {
   float: right;
   width: 50%;
@@ -403,7 +400,7 @@ body {
 .fete-slider {
   position: relative;
   width: 100%;
-  aspect-ratio: 16 / 9;           /* bei Bedarf: 3 / 1 */
+  aspect-ratio: 16 / 9;           /* Panorama vermeiden */
   overflow: hidden;
   border: 2px solid var(--primary);
   border-radius: 12px;
@@ -443,6 +440,7 @@ body {
   text-align: center;
   cursor: pointer;
   opacity: .9;
+  z-index: 2; /* über Slides */
 }
 .fete-control:hover { opacity: 1; }
 .fete-control.prev { left: .6rem; }
@@ -455,6 +453,7 @@ body {
   justify-content: center;
   gap: .4rem;
   padding: 0 .5rem;
+  z-index: 2;
 }
 .fete-dot {
   width: .6rem;
@@ -465,10 +464,7 @@ body {
   opacity: .85;
   cursor: pointer;
 }
-.fete-dot.active {
-  background: var(--highlight);
-  opacity: 1;
-}
+.fete-dot.active { background: var(--highlight); opacity: 1; }
 @media (max-width: 768px) {
   .fete-hero { margin: 1.25rem 0 2rem; }
   .fete-control { width: 2rem; height: 2rem; line-height: 1.8rem; }
@@ -478,10 +474,10 @@ body {
 
 /* Stellschrauben für Line-up-Größe (gewünscht: 5vw max 3rem) */
 :root{
-  --lineup-min: 1.8rem;     /* klein auf sehr schmalen Screens */
-  --lineup-vw:  5vw;        /* responsive Anteil (vorher 7.5vw) */
-  --lineup-max: 3rem;       /* Obergrenze Desktop (vorher 5rem) */
-  --lineup-row-gap: .6em;   /* Abstand zwischen Band-Reihen */
+  --lineup-min: 1.8rem;
+  --lineup-vw:  5vw;     /* vorher 7.5vw */
+  --lineup-max: 3rem;    /* vorher 5rem */
+  --lineup-row-gap: .6em;
 }
 
 /* Container + Heading */
@@ -517,7 +513,7 @@ body {
   flex-wrap: wrap;
   justify-content: center;
   align-items: center;             /* gleiche Vertikallage in einer Reihe */
-  row-gap: var(--lineup-row-gap);  /* einheitlicher Reihenabstand */
+  row-gap: var(--lineup-row-gap);  /* Abstand zwischen Band-Reihen */
   text-align: center;              /* Mehrzeiler zentriert */
 }
 
@@ -547,5 +543,3 @@ body {
   .lineup { margin: 1.6rem 0 2rem; }
   .lineup .lineup-daytag { margin-top: .5rem; }
 }
-.fete-control{ z-index: 2; }
-
