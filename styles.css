@@ -391,23 +391,29 @@ body {
 }
 /* ===== FÊTE: LINE-UP (nur neue Klassen) ===== */
 
-.lineup { margin: 2.5rem 0 3rem; }
+/* --> HIER komfortable Stellschrauben für die Textgröße <-- */
+:root {
+  --lineup-min: 1.8rem;   /* klein auf sehr schmalen Screens */
+  --lineup-vw:  7.5vw;    /* responsiver Anteil (vorher 13vw -> sehr groß) */
+  --lineup-max: 6rem;     /* Obergrenze Desktop ~96px (vorher 10rem) */
+}
+
+.lineup { margin: 2.2rem 0 2.8rem; }
 .lineup-wrap { text-align: center; }
 
 .lineup-heading {
-  font-weight: 300;
+  font-weight: 800;
   text-transform: uppercase;
   letter-spacing: .08em;
   margin-bottom: .6rem;
   font-size: clamp(1rem, 2.6vw, 1.35rem);
 }
 
-/* Tag wie im Beispiel */
 .lineup-daytag {
   display: inline-block;
   background: var(--primary);
   color: #fff;
-  font-weight: 300;
+  font-weight: 800;
   letter-spacing: .06em;
   border-radius: 6px;
   padding: .35rem .6rem;
@@ -415,31 +421,27 @@ body {
   margin: .25rem 0 .75rem 0;
 }
 
-/* Die Liste der Acts pro Tag */
 .acts {
   list-style: none;
   margin: 0 0 1.4rem 0;
   padding: 0;
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
+  justify-content: center;   /* zentriert die Einträge */
+  text-align: center;        /* zentriert Mehrzeiler im li */
 }
 
-/* jeder Act: groß, „gestempelt“, mittig */
 .acts li {
   font-family: "Rubik Dirt", "Montserrat", sans-serif;
   text-transform: uppercase;
   letter-spacing: .03em;
   line-height: .9;
   color: var(--primary);
-  /* 2.5x größer als vorher: sehr groß, aber responsive */
-  font-size: clamp(2.4rem, 13vw, 10rem);
-  /* etwas Luft links/rechts, damit die Punkte genug Platz haben */
+  font-size: clamp(var(--lineup-min), var(--lineup-vw), var(--lineup-max));
   padding: 0 .12em;
-  text-align: center;
 }
 
-/* Punkt nur zwischen Geschwistern – standardmäßig vor JEDEM außer dem ersten */
+/* Punkt nur zwischen Acts derselben Zeile */
 .acts li + li::before {
   content: "•";
   display: inline-block;
@@ -447,14 +449,12 @@ body {
   transform: translateY(-0.03em);
   opacity: .9;
 }
-
-/* Wenn ein Eintrag am Zeilenanfang steht (per JS gesetzt), kein Punkt davor */
 .acts li.row-start::before { content: none; }
 
-/* mobile Feintuning */
 @media (max-width: 768px) {
-  .lineup { margin: 1.75rem 0 2rem; }
+  .lineup { margin: 1.6rem 0 2rem; }
   .lineup-daytag { margin-top: .5rem; }
 }
+
 
 
