@@ -15,7 +15,7 @@
 
   <link rel="stylesheet" href="/styles.css" />
 
-  <!-- Event JSON-LD (belassen) -->
+  <!-- Event JSON-LD -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -75,12 +75,20 @@
 
   <!-- MAIN -->
   <main>
-    <section class="container page-inner">
-      <div class="page-img">
-        <img src="/fete-icon.jpg" alt="Fête du Seeee Icon" />
-      </div>
+    <!-- Breiter Content (wie Startseite): linke Bildspalte aus -->
+    <section class="container page-inner page-inner--wide">
 
+      <!-- Hero-Slideshow (Bilder/Videos 1–9 .jpg/.mp4 im selben Ordner) -->
       <div class="page-text">
+        <section class="fete-hero">
+          <div class="fete-slider" id="feteSlider" aria-label="Festival-Impressionen">
+            <!-- Slides werden per JS eingefügt -->
+            <button class="fete-control prev" aria-label="Vorheriges">‹</button>
+            <button class="fete-control next" aria-label="Nächstes">›</button>
+            <div class="fete-dots" role="tablist" aria-label="Slideshow-Navigation"></div>
+          </div>
+        </section>
+
         <h1>Fête du Seeee #3</h1>
 
         <!-- ===== LINE-UP ===== -->
@@ -129,11 +137,6 @@
           etwas dabei!
         </p>
 
-        <h3>Programm</h3>
-        <p>Die einzelnen Programmpunkte und Künstler*innen geben wir in Kürze bekannt.
-          Haltet Ausschau nach Updates auf unserer Website und unseren Social-Media-Kanälen!
-        </p>
-
         <h3>Wo</h3>
         <p>Strandbad Tegelsee</p>
 
@@ -159,21 +162,12 @@
         <h1>Fête du Seeee #2</h1>
         <img src="/fete_2.jpg" alt="Plakat Fête du Seeee #2 im Strandbad Tegelsee" class="float-right-third" />
         <p>Am kommenden Samstag, den 31. August 2024 …</p>
-        <h3>Programm:</h3>
-        <p>Das Programm beginnt ab 15 Uhr, ab 18 Uhr geht es mit der Live-Musik los.</p>
-        <p>Kommt vorbei! Wir freuen uns, euch wiederzusehen und zu feiern!</p>
-        <h3>Adresse:</h3>
-        <p>
-          Strandbad Tegelsee / Zentrum für Kultur und Erholung<br>
-          Schwarzer Weg 95<br>
-          13505 Berlin
-        </p>
 
         <div class="divider_long"></div>
 
         <h1>Fête du Seeee #1</h1>
         <p>Wir feiern ein Fête du Seeee im Strandbad! …</p>
-        <!-- (Rest unverändert) -->
+
       </div>
     </section>
   </main>
@@ -190,38 +184,142 @@
     </div>
   </footer>
 
-  <!-- JS: Burger-Menü + Line-up Wrap-Detection -->
+  <!-- JS: Burger-Menü -->
   <script>
     const btn = document.querySelector('.menu-toggle');
     const nav = document.querySelector('.site-nav ul');
-    btn.addEventListener('click', () => {
-      nav.classList.toggle('open');
-      btn.classList.toggle('open');
-    });
-
-    // ---- Punkte nur zwischen Acts derselben Zeile ----
-    function updateLineupSeparators() {
-      document.querySelectorAll('.acts').forEach(ul => {
-        const items = Array.from(ul.querySelectorAll('li'));
-        let currentTop = null;
-        items.forEach((li, idx) => {
-          li.classList.remove('row-start');
-          const t = li.offsetTop;
-          if (idx === 0 || currentTop === null) {
-            currentTop = t;
-            li.classList.add('row-start'); // erster Eintrag nie Punkt davor
-            return;
-          }
-          // Neue Zeile erkannt?
-          if (Math.abs(t - currentTop) > 1) {
-            li.classList.add('row-start'); // kein Punkt vor Zeilenstart
-            currentTop = t;
-          }
-        });
+    if (btn && nav) {
+      btn.addEventListener('click', () => {
+        nav.classList.toggle('open');
+        btn.classList.toggle('open');
       });
     }
-    window.addEventListener('load', updateLineupSeparators);
-    window.addEventListener('resize', () => { clearTimeout(window._luT); window._luT = setTimeout(updateLineupSeparators, 100); });
+  </script>
+
+  <!-- JS: Slideshow – nimmt automatisch 1–9.jpg/.mp4 aus demselben Ordner -->
+  <script>
+    (function() {
+      const slider = document.getElementById('feteSlider');
+      if (!slider) return;
+      const dotsWrap = slider.querySelector('.fete-dots');
+
+      // Basis-Pfad des aktuellen Verzeichnisses (z. B. /fete/)
+      const base = (location.pathname.endsWith('/')) ? location.pathname : location.pathname.replace(/[^\/]+$/, '/');
+
+      // Prüft, ob Datei existiert (HEAD spart Traffic)
+      async function exists(url) {
+        try {
+          const res = await fetch(url, { method: 'HEAD', cache: 'no-cache' });
+          return res.ok;
+        } catch(e) { return false; }
+      }
+
+      // Liste der möglichen Dateien aufbauen (1–9, .jpg dann .mp4)
+      async function collectSlides() {
+        const found = [];
+        for (let i = 1; i <= 9; i++) {
+          const img = base + i + '.jpg';
+          const vid = base + i + '.mp4';
+          if (await exists(img)) found.push({type:'img', src: img, alt: 'Festivalbild ' + i});
+          else if (await exists(vid)) found.push({type:'video', src: vid});
+        }
+        return found;
+      }
+
+      // DOM erzeugen
+      function createSlide(item, idx) {
+        const wrap = document.createElement('div');
+        wrap.className = 'fete-slide';
+        wrap.setAttribute('data-index', idx);
+        wrap.setAttribute('aria-hidden', 'true');
+
+        if (item.type === 'img') {
+          const el = document.createElement('img');
+          el.src = item.src;
+          el.alt = item.alt || '';
+          el.loading = 'lazy';
+          wrap.appendChild(el);
+        } else {
+          const v = document.createElement('video');
+          v.src = item.src;
+          v.preload = 'metadata';
+          v.muted = true;
+          v.playsInline = true;
+          v.loop = true;
+          wrap.appendChild(v);
+        }
+        return wrap;
+      }
+
+      function createDot(idx) {
+        const b = document.createElement('button');
+        b.className = 'fete-dot';
+        b.type = 'button';
+        b.setAttribute('aria-label', 'Slide ' + (idx+1));
+        b.addEventListener('click', () => show(idx));
+        return b;
+      }
+
+      let slides = [];
+      let current = 0;
+
+      function show(i) {
+        if (!slides.length) return;
+        current = (i + slides.length) % slides.length;
+        const slideEls = slider.querySelectorAll('.fete-slide');
+        const dotEls = dotsWrap.querySelectorAll('.fete-dot');
+
+        slideEls.forEach((el, idx) => {
+          const active = idx === current;
+          el.classList.toggle('active', active);
+          el.setAttribute('aria-hidden', active ? 'false' : 'true');
+          // Video Play/Pause
+          const v = el.querySelector('video');
+          if (v) { active ? v.play().catch(()=>{}) : v.pause(); }
+        });
+        dotEls.forEach((d, idx) => d.classList.toggle('active', idx === current));
+      }
+
+      function next() { show(current + 1); }
+      function prev() { show(current - 1); }
+
+      // Init
+      (async () => {
+        const list = await collectSlides();
+        if (!list.length) return; // keine Dateien gefunden
+        // Slides + Dots einbauen
+        list.forEach((item, idx) => {
+          slider.insertBefore(createSlide(item, idx), dotsWrap);
+          dotsWrap.appendChild(createDot(idx));
+        });
+
+        // Controls
+        const prevBtn = slider.querySelector('.fete-control.prev');
+        const nextBtn = slider.querySelector('.fete-control.next');
+        if (prevBtn) prevBtn.addEventListener('click', prev);
+        if (nextBtn) nextBtn.addEventListener('click', next);
+
+        // Keyboard
+        slider.addEventListener('keydown', (e) => {
+          if (e.key === 'ArrowLeft') prev();
+          if (e.key === 'ArrowRight') next();
+        });
+        slider.setAttribute('tabindex', '0');
+
+        // Swipe (basic)
+        let sx = null;
+        slider.addEventListener('touchstart', (e) => { sx = e.touches[0].clientX; }, {passive:true});
+        slider.addEventListener('touchend', (e) => {
+          if (sx == null) return;
+          const dx = e.changedTouches[0].clientX - sx;
+          if (Math.abs(dx) > 40) (dx < 0 ? next() : prev());
+          sx = null;
+        });
+
+        slides = list;
+        show(0);
+      })();
+    })();
   </script>
 </body>
 </html>
