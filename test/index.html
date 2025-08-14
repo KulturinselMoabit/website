@@ -207,16 +207,26 @@
   const nextBtn  = slider.querySelector('.fete-control.next');
   const hero     = slider.closest('.fete-hero');
 
-  // *** ROBUSTER BASIS-PFAD (funktioniert bei /test, /test/, /fete, /fete/) ***
+  // Sicherer Basis-Pfad: funktioniert bei /test, /test/, /fete, /fete/
   const basePath = location.pathname.endsWith('/') ? location.pathname : location.pathname + '/';
   const baseURL  = location.origin + basePath;
+
+  // Wir probieren mehrere Endungen und Groß-/Kleinschreibung
+  const IMG_EXTS = ['.jpg', '.jpeg', '.png', '.JPG', '.JPEG', '.PNG'];
+  const VID_EXTS = ['.mp4', '.MP4'];
+  const NUMBERS  = Array.from({length: 9}, (_, i) => i + 1);
+
+  // Debug-Flag: auf true stellen, um in der Konsole zu sehen, was geprüft wird
+  const DEBUG = true;
+
+  function log(...args) { if (DEBUG) console.log('[slider]', ...args); }
 
   function loadImage(url) {
     return new Promise(resolve => {
       const img = new Image();
-      img.onload = () => resolve({ ok: true, el: img });
-      img.onerror = () => resolve({ ok: false });
-      img.src = url + '?v=' + Date.now();   // Cache-Buster
+      img.onload  = () => resolve({ ok: true, el: img, url });
+      img.onerror = () => resolve({ ok: false, url });
+      img.src = url + '?v=' + Date.now(); // Cache-Buster
       img.loading = 'lazy'; img.decoding = 'async';
     });
   }
@@ -224,13 +234,34 @@
     return new Promise(resolve => {
       const v = document.createElement('video');
       v.preload = 'metadata'; v.muted = true; v.playsInline = true; v.loop = true;
-      const ok = () => { cleanup(); resolve({ ok: true, el: v }); };
-      const err = () => { cleanup(); resolve({ ok: false }); };
+      const ok  = () => { cleanup(); resolve({ ok: true, el: v, url }); };
+      const err = () => { cleanup(); resolve({ ok: false, url }); };
       function cleanup(){ v.removeEventListener('loadedmetadata', ok); v.removeEventListener('error', err); }
       v.addEventListener('loadedmetadata', ok);
       v.addEventListener('error', err);
-      v.src = url + '?v=' + Date.now();     // Cache-Buster
+      v.src = url + '?v=' + Date.now();
     });
+  }
+
+  async function tryOneNumber(n) {
+    // 1) Bilder versuchen
+    for (const ext of IMG_EXTS) {
+      const url = `${baseURL}${n}${ext}`;
+      log('try image', url);
+      const r = await loadImage(url);
+      if (r.ok) {
+        r.el.alt = `Festivalbild ${n}`;
+        return { type: 'img', node: r.el, url: r.url };
+      }
+    }
+    // 2) Videos versuchen
+    for (const ext of VID_EXTS) {
+      const url = `${baseURL}${n}${ext}`;
+      log('try video', url);
+      const r = await loadVideo(url);
+      if (r.ok) return { type: 'video', node: r.el, url: r.url };
+    }
+    return null;
   }
 
   function makeSlide(node, idx) {
@@ -268,22 +299,21 @@
   }
 
   (async function init() {
-    const found = [];
-    for (let n = 1; n <= 9; n++) {
-      const jpg = `${baseURL}${n}.jpg`;
-      const mp4 = `${baseURL}${n}.mp4`;
-
-      let r = await loadImage(jpg);
-      if (r.ok) { r.el.alt = `Festivalbild ${n}`; found.push(r.el); continue; }
-
-      r = await loadVideo(mp4);
-      if (r.ok) { found.push(r.el); }
+    const foundNodes = [];
+    for (const n of NUMBERS) {
+      const r = await tryOneNumber(n);
+      if (r) {
+        log('found', r.url);
+        foundNodes.push(r.node);
+      } else {
+        log('none for number', n);
+      }
     }
 
-    // Nichts gefunden? Hero raus -> kein leerer Platz
-    if (!found.length) { hero?.remove(); return; }
+    // Nichts gefunden? Hero weg → kein leerer Kasten
+    if (!foundNodes.length) { log('no media found at', baseURL); hero?.remove(); return; }
 
-    found.forEach((node, idx) => {
+    foundNodes.forEach((node, idx) => {
       slides.push(makeSlide(node, idx));
       dots.push(makeDot(idx));
     });
@@ -312,6 +342,7 @@
 </script>
 
 
+
   <!-- JS: Line-up – kein Punkt am Zeilenanfang -->
   <script>
   (function () {
@@ -338,4 +369,5 @@
   </script>
 </body>
 </html>
+
 
