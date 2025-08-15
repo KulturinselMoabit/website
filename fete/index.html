@@ -13,7 +13,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Rubik+Dirt&display=swap" rel="stylesheet" />
 
   <!-- CSS -->
-  <link rel="stylesheet" href="/styles.css?v=31" />
+  <link rel="stylesheet" href="/styles.css?v=32" />
 
   <!-- Event JSON-LD -->
   <script type="application/ld+json">
@@ -58,7 +58,7 @@
     <section class="container page-inner page-inner--wide">
       <div class="page-text">
 
-        <!-- Banner-SVG (ein Bild) -->
+        <!-- Banner-SVG -->
         <figure class="fete-banner">
           <img class="fete-banner-img" src="fete-banner.svg" alt="Fête du Seeee – Sommerfest • Konzerte • Theater • Kinderprogramm" />
         </figure>
@@ -80,7 +80,7 @@
           </div>
         </section>
 
-        <!-- Info-Block -->
+        <!-- Info-Text (ohne Box/Hintergrund) -->
         <div class="info-block">
           <p>
             Dieses Jahr wird unsere Fête du Seeee noch bunter und größer: Wir feiern
@@ -182,7 +182,7 @@
     }
   </script>
 
-  <!-- JS: Slideshow -->
+  <!-- JS: Slideshow + Autoplay + Layout-Separatoren (unverändert) -->
   <script>
   (function(){
     const slider = document.getElementById('feteSlider');
@@ -253,10 +253,8 @@
       show(0); start();
     })();
   })();
-  </script>
 
-  <!-- JS: Line-up – kein Punkt am Zeilenanfang -->
-  <script>
+  /* Punkte im Line-up nur zwischen Acts derselben Zeile */
   (function () {
     function updateLineupSeparators() {
       document.querySelectorAll('.lineup .acts').forEach(ul => {
