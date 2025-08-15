@@ -12,8 +12,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&display=swap" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css2?family=Rubik+Dirt&display=swap" rel="stylesheet" />
 
-  <!-- Dein CSS (Cache-Buster gern anpassen) -->
-  <link rel="stylesheet" href="/styles.css?v=17" />
+  <!-- Dein bestehendes CSS (Cache-Buster bei Bedarf anpassen) -->
+  <link rel="stylesheet" href="/styles.css?v=19" />
 
   <!-- Event JSON-LD -->
   <script type="application/ld+json">
@@ -75,39 +75,18 @@
 
   <!-- MAIN -->
   <main>
-    <!-- Vollbreit wie Startseite -->
     <section class="container page-inner page-inner--wide">
       <div class="page-text">
 
-        <!-- HERO: Brand-Banner + Slideshow -->
+        <!-- HERO: Inline-SVG-Banner + Slideshow -->
         <section class="fete-hero">
 
-          <!-- ► BRAND-BANNER (Icon + echter Text) -->
-          <div class="fete-brand" aria-label="Fête du Seeee – Banner">
-            <!-- Inline-SVG Icon (Farben kommen aus deinen CSS-Variablen) -->
-            <svg class="fete-brand__icon" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-              <!-- Schirm -->
-              <path d="M12 52a48 38 0 0 1 96 0H12z" fill="var(--primary)"/>
-              <path d="M12 52h96a48 38 0 0 0-16-28C80 12 67 8 60 8S40 12 28 24a48 38 0 0 0-16 28z" fill="var(--highlight)"/>
-              <rect x="56" y="52" width="8" height="45" rx="3" fill="var(--primary)"/>
-              <!-- Wellen -->
-              <path d="M10 100c8 0 8-6 16-6s8 6 16 6 8-6 16-6 8 6 16 6 8-6 16-6 8 6 16 6" stroke="var(--highlight)" stroke-width="6" fill="none" stroke-linecap="round"/>
-              <!-- „Noten/Gitarre“ Punkt -->
-              <circle cx="28" cy="78" r="6" fill="var(--primary)"/>
-            </svg>
-
-            <div class="fete-brand__text">
-              <h1 class="brand-title">
-                <span class="brand-title__main">Fête du Seeee</span>
-                <span class="brand-title__num">#3</span>
-              </h1>
-              <p class="brand-sub">SOMMERFEST • KONZERTE • THEATER • KINDERPROGRAMM</p>
-            </div>
-          </div>
+          <!-- ► Platzhalter für INLINE-SVG -->
+          <div id="feteBannerInline" class="fete-banner-inline"
+               aria-label="Fête du Seeee – Banner"></div>
 
           <!-- ► Slideshow -->
           <div class="fete-slider" id="feteSlider" aria-label="Festival-Impressionen">
-            <!-- Sofort sichtbarer Fallback, wird entfernt sobald Slides da sind -->
             <img class="fete-static" src="1.jpg" alt="Festivalbild 1" />
             <button class="fete-control prev" aria-label="Vorheriges">‹</button>
             <button class="fete-control next" aria-label="Nächstes">›</button>
@@ -145,7 +124,6 @@
             </div>
           </div>
         </section>
-        <!-- ===== /LINE-UP ===== -->
 
         <!-- ===== INFO-GRID (inkl. Plakat) ===== -->
         <section class="fete-info">
@@ -155,11 +133,7 @@
 
           <div class="fete-card">
             <h4>Wo</h4>
-            <p>
-              Strandbad Tegelsee<br>
-              Schwarzer Weg 95<br>
-              13505 Berlin
-            </p>
+            <p>Strandbad Tegelsee<br>Schwarzer Weg 95<br>13505 Berlin</p>
           </div>
 
           <div class="fete-card">
@@ -188,7 +162,7 @@
 
         <!-- Vorjahre (optional) -->
         <h2>Fête du Seeee #2</h2>
-        <img src="/fete_2.jpg" alt="Plakat Fête du Seeee #2 im Strandbad Tegelsee" class="float-right-third" />
+        <img src="/fete_2.jpg" alt="Plakat Fête du Seeee #2" class="float-right-third" />
         <p>Am kommenden Samstag, den 31. August 2024 …</p>
 
         <div class="divider_long"></div>
@@ -224,7 +198,37 @@
     }
   </script>
 
-  <!-- JS: Slideshow-Loader + Autoplay (unverändert) -->
+  <!-- JS: Inline-SVG laden und in den DOM einsetzen -->
+  <script>
+  (function(){
+    const host = document.getElementById('feteBannerInline');
+    if (!host) return;
+    const url = new URL('Fete_Artwork.svg', location.href).href;
+
+    fetch(url, { cache: 'no-store' })
+      .then(r => r.ok ? r.text() : Promise.reject())
+      .then(txt => {
+        // Nur den <svg>…</svg>-Teil einsetzen
+        const m = txt.match(/<svg[\s\S]*<\/svg>/i);
+        host.innerHTML = m ? m[0] : txt;
+        const svg = host.querySelector('svg');
+        if (svg){
+          svg.setAttribute('focusable','false');
+          svg.removeAttribute('width');
+          svg.removeAttribute('height');
+          svg.style.width = '100%';
+          svg.style.height = 'auto';
+          svg.setAttribute('aria-hidden', 'true');
+        }
+      })
+      .catch(() => {
+        // Fallback: normale Einbindung
+        host.innerHTML = '<img src="'+url+'" alt="Fête du Seeee – Banner" />';
+      });
+  })();
+  </script>
+
+  <!-- JS: Slideshow-Loader + Autoplay (wie zuletzt funktionierend) -->
   <script>
   (function(){
     const slider = document.getElementById('feteSlider');
@@ -387,7 +391,7 @@
           li.classList.remove('row-start');
           const t = li.offsetTop;
           if (idx === 0 || lastTop === null || Math.abs(t - lastTop) > 1) {
-            li.classList.add('row-start'); // neuer Zeilenanfang -> kein Punkt davor
+            li.classList.add('row-start');
             lastTop = t;
           }
         });
