@@ -12,8 +12,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&display=swap" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css2?family=Rubik+Dirt&display=swap" rel="stylesheet" />
 
-  <!-- Dein CSS (Cache-Buster bei Bedarf anpassen) -->
-  <link rel="stylesheet" href="/styles.css?v=20" />
+  <!-- CSS (Cache-Buster bei Bedarf anpassen) -->
+  <link rel="stylesheet" href="/styles.css?v=21" />
 
   <!-- Event JSON-LD -->
   <script type="application/ld+json">
@@ -58,18 +58,22 @@
     <section class="container page-inner page-inner--wide">
       <div class="page-text">
 
-        <!-- HERO: Banner-Zeile mit inline SVG + Textblock, danach Slideshow -->
+        <!-- HERO: Banner-Zeile (SVG + Text) + Slideshow -->
         <section class="fete-hero">
 
           <!-- Banner-Zeile -->
           <div class="fete-banner-row">
-            <!-- ► Inline-SVG wird hier reingerendert -->
+            <!-- Inline-SVG (aus selbem Ordner geladen) -->
             <div id="feteBannerInline" class="fete-banner-inline" aria-hidden="true"></div>
 
-            <!-- ► Textblock (echter Text, Block-Optik/Justify) -->
+            <!-- Textblock (echter Text, automatische gleiche Breite) -->
             <div class="fete-banner-text">
-              <h1 class="fete-title">FÊTE DU SEEEE</h1>
-              <p class="fete-subtitle">Festival am Strandbad Tegelsee · Konzerte, Theater &amp; Kinderprogramm</p>
+              <h1 class="fete-title">
+                FÊTE DU SEEEE<span class="fete-ordinal">#3</span>
+              </h1>
+              <p class="fete-subtitle">
+                SOMMERFEST · KONZERTE · THEATER · KINDERPROGRAMM
+              </p>
             </div>
           </div>
 
@@ -189,7 +193,6 @@
     const host = document.getElementById('feteBannerInline');
     if (!host) return;
 
-    // robusten Ordnerpfad bestimmen (/test/, /fete/, …)
     function folderPath(){
       const p = location.pathname;
       if (p.endsWith('/')) return p;
@@ -220,7 +223,7 @@
   })();
   </script>
 
-  <!-- JS: Slideshow-Loader + Autoplay (wie zuletzt funktionierend) -->
+  <!-- JS: Slideshow-Loader + Autoplay (wie zuvor funktionierend) -->
   <script>
   (function(){
     const slider = document.getElementById('feteSlider');
@@ -329,7 +332,7 @@
           el.classList.toggle('active', active);
           el.setAttribute('aria-hidden', active ? 'false' : 'true');
           const v = el.querySelector('video');
-        if (v){ active ? v.play().catch(()=>{}) : v.pause(); }
+          if (v){ active ? v.play().catch(()=>{}) : v.pause(); }
         });
         dots.forEach((d, idx)=>d.classList.toggle('active', idx === current));
       }
@@ -394,6 +397,43 @@
     window.addEventListener('resize', debounce);
     window.addEventListener('orientationchange', debounce);
     if (document.fonts && document.fonts.ready) { document.fonts.ready.then(updateLineupSeparators); }
+  })();
+  </script>
+
+  <!-- JS: Titel/Subline automatisch auf gleiche Breite skalieren -->
+  <script>
+  (function(){
+    const box = document.querySelector('.fete-banner-text');
+    const title = document.querySelector('.fete-title');
+    const sub = document.querySelector('.fete-subtitle');
+    if (!box || !title || !sub) return;
+
+    function basePx(el){
+      if(!el.dataset.basePx){
+        const cs = getComputedStyle(el);
+        el.dataset.basePx = parseFloat(cs.fontSize) || 16;
+      }
+      return parseFloat(el.dataset.basePx);
+    }
+    function fit(el, target){
+      const base = basePx(el);
+      el.style.fontSize = base + 'px';          // reset
+      const w = el.scrollWidth || 1;
+      const scale = Math.min(1.8, Math.max(0.6, target / w));
+      el.style.fontSize = (base * scale) + 'px';
+    }
+    function fitBoth(){
+      const target = box.clientWidth - 2;
+      if (target > 0){
+        fit(title, target);
+        fit(sub, target);
+      }
+    }
+    const deb = (fn,ms)=>{ let t; return ()=>{ clearTimeout(t); t=setTimeout(fn,ms); }; };
+
+    window.addEventListener('load', fitBoth);
+    window.addEventListener('resize', deb(fitBoth, 120));
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitBoth);
   })();
   </script>
 </body>
