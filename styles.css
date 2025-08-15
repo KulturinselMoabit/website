@@ -145,6 +145,12 @@ body {
 }
 .fete-meta .sep { color: var(--highlight); }
 
+/* Meta-Zeile mobil: untereinander */
+@media (max-width: 560px){
+  .fete-meta { flex-direction: column; gap: .25rem; }
+  .fete-meta .sep { display: none; }
+}
+
 /* Info-Text (ohne Box/Hintergrund) */
 .info-block { margin: 1rem 0 2rem; padding: 0; border: 0; background: transparent; }
 
@@ -155,7 +161,6 @@ body {
   width: 100%;
   aspect-ratio: 16 / 9;
   overflow: hidden;
-  /* clean: kein Rahmen, keine Rundung, kein Hintergrund */
   border: none;
   border-radius: 0;
   background: transparent;
@@ -165,33 +170,32 @@ body {
 .fete-slide.active { opacity:1; pointer-events:auto; }
 .fete-slide img, .fete-slide video { width:100%; height:100%; object-fit:cover; display:block; }
 
-/* Pfeile: nur Chevrons, sehr clean */
+/* Pfeile: nur Chevrons, clean */
 .fete-control {
   position: absolute; top: 50%; transform: translateY(-50%);
   background: transparent; border: none;
-  color: #fff; opacity: .8;
+  color: #fff; opacity: .85;
   font-weight: 800;
   font-size: clamp(1.4rem, 3.2vw, 2rem);
   line-height: 1; padding: .25rem .35rem;
-  cursor: pointer; z-index: 2;
+  cursor: pointer; z-index: 5; /* höher als Slides */
   text-shadow: 0 0 10px rgba(0,0,0,.55);
 }
 .fete-control:hover { opacity: 1; }
 .fete-control.prev { left: .5rem; }
 .fete-control.next { right: .5rem; }
 
-/* Dots: kleine, schlichte Punkte */
+/* Dots: klein & schlicht */
 .fete-dots {
   position: absolute; left: 0; right: 0; bottom: .5rem;
-  display: flex; justify-content: center; gap: .35rem; padding: 0 .5rem; z-index: 2;
+  display: flex; justify-content: center; gap: .35rem; padding: 0 .5rem; z-index: 5;
 }
 .fete-dot {
   width: .5rem; height: .5rem; border-radius: 50%;
   border: none;
-  background: rgba(255,255,255,.85);
+  background: rgba(255,255,255,.9);
   box-shadow: 0 0 6px rgba(0,0,0,.25);
-  cursor: pointer; opacity: .9;
-  transform: translateZ(0);
+  cursor: pointer; opacity: .95;
 }
 .fete-dot.active {
   background: var(--highlight);
