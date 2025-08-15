@@ -95,7 +95,7 @@
         <!-- ===== LINE-UP ===== -->
         <section class="lineup">
           <div class="lineup-wrap">
-            <div class="lineup-heading">Line-Up:</div>
+            <div class="lineup-heading">Line-Up</div>
 
             <div class="line">
               <div class="lineup-daytag">FR. 29. AUGUST</div>
@@ -121,45 +121,47 @@
         </section>
         <!-- ===== /LINE-UP ===== -->
 
-        <img src="/fete.png" alt="Plakat Fête du Seeee Festival #3 – Sommerfest mit Konzerten, Theater & Kinderprogramm im Strandbad Tegelsee am 29. & 30. August" class="float-half-left" />
+        <!-- ===== EINHEITLICHE INFOS ALS GRID ===== -->
+        <section class="fete-info">
+          <div class="fete-card fete-card--poster">
+            <img src="/fete.png" alt="Plakat Fête du Seeee #3" />
+          </div>
 
-        <p>
-          Liebe Nachbar*innen und Freund*innen,
-          dieses Jahr wird unsere Fête du Seeee noch bunter und größer: Wir feiern
-          an zwei Tagen auf gleich <strong>zwei Bühnen</strong> im wunderschönen
-          Strandbad Tegelsee! Freut euch auf ein vielseitiges Programm aus
-          Musik, Theater und Kunst, das von ehrenamtlichen Künstler*innen für euch
-          gestaltet wird.
-        </p>
-        <p>
-          Genießt tagsüber Kultur-Highlights und bunte Aktionen für Groß und Klein
-          direkt am Wasser, und lasst euch abends von mitreißenden Konzerten und
-          Performances auf beiden Bühnen mitreißen. Bei den unterschiedlichsten Genres ist für jeden Geschmack
-          etwas dabei!
-        </p>
+          <div class="fete-card">
+            <h4>Wo</h4>
+            <p>
+              Strandbad Tegelsee<br>
+              Schwarzer Weg 95<br>
+              13505 Berlin
+            </p>
+          </div>
 
-        <h3>Wo</h3>
-        <p>Strandbad Tegelsee</p>
+          <div class="fete-card">
+            <h4>Wann</h4>
+            <p>Fr 29. &amp; Sa 30. August 2025</p>
+          </div>
 
-        <h3>Wann</h3>
-        <p>29. &amp; 30. August</p>
+          <div class="fete-card">
+            <h4>Eintritt</h4>
+            <ul>
+              <li>Erwachsene: 6 €</li>
+              <li>Ermäßigt: 4 €</li>
+              <li>Ab 18 Uhr: 2,50 €</li>
+            </ul>
+          </div>
 
-        <h3>Eintritt</h3>
-        <p>Strandbadeintritt</p>
-        <ul>
-          <li>Erwachsene: 6 €</li>
-          <li>Ermäßigt: 4 €</li>
-          <li>Ab 18 Uhr: 2,50 €</li>
-        </ul>
-
-        <p class="note">
-          Kommt vorbei, bringt eure Freund*innen mit und lasst uns gemeinsam am
-          Tegeler See feiern – wir freuen uns auf euch!
-        </p>
+          <div class="fete-card fete-card--note">
+            <p>
+              Kommt vorbei, bringt eure Freund*innen mit und lasst uns gemeinsam am
+              Tegeler See feiern – wir freuen uns auf euch!
+            </p>
+          </div>
+        </section>
+        <!-- ===== /INFOS ===== -->
 
         <div class="divider_long"></div>
 
-        <!-- Vorjahre (optional kürzen/lassen) -->
+        <!-- Vorjahre (optional) -->
         <h1>Fête du Seeee #2</h1>
         <img src="/fete_2.jpg" alt="Plakat Fête du Seeee #2 im Strandbad Tegelsee" class="float-right-third" />
         <p>Am kommenden Samstag, den 31. August 2024 …</p>
@@ -203,7 +205,7 @@
     const slider = document.getElementById('feteSlider');
     if (!slider) return;
 
-    const staticImg = slider.querySelector('.fete-static'); // Fallback
+    const staticImg = slider.querySelector('.fete-static');
     let prevBtn = slider.querySelector('.fete-control.prev');
     let nextBtn = slider.querySelector('.fete-control.next');
     let dotsWrap = slider.querySelector('.fete-dots');
@@ -272,14 +274,11 @@
       }
 
       if (!found.length){
-        // Nichts gefunden: Fallback-Bild bleibt einfach stehen.
-        return;
+        return; // Fallback-Bild bleibt
       }
 
-      // Fallback entfernen
       staticImg && staticImg.remove();
 
-      // Slides bauen
       const slides = [], dots = [];
       function addSlide(item, i){
         const wrap = mk('div','fete-slide'); wrap.dataset.index=i; wrap.setAttribute('aria-hidden','true');
@@ -299,12 +298,10 @@
       }
       found.sort((a,b)=>a.idx-b.idx).forEach((it,i)=>addSlide(it,i));
 
-      // Controls & Dots nach vorne holen
       slider.appendChild(prevBtn);
       slider.appendChild(nextBtn);
       slider.appendChild(dotsWrap);
 
-      // Navigation + Anzeige + Autoplay
       let current = 0, timer = null, hover = false;
       function show(i){
         current = (i + slides.length) % slides.length;
@@ -334,7 +331,6 @@
         if (e.key === 'ArrowRight') show(current + 1);
       });
 
-      // Touch/Hover
       let sx=null;
       slider.addEventListener('touchstart', e=>{ hover=true; sx=e.touches[0].clientX; }, {passive:true});
       slider.addEventListener('touchend',   e=>{
@@ -352,7 +348,7 @@
       }
 
       show(0);
-      start(); // Autoplay starten
+      start();
     })();
   })();
   </script>
