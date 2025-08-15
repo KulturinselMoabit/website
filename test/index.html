@@ -13,8 +13,8 @@
   <!-- „gestempelte“ Schrift nur fürs Line-up -->
   <link href="https://fonts.googleapis.com/css2?family=Rubik+Dirt&display=swap" rel="stylesheet">
 
-  <!-- CSS mit Cache-Buster -->
-  <link rel="stylesheet" href="/styles.css?v=9" />
+  <!-- Deine bestehende CSS (Cache-Buster hochgezählt) -->
+  <link rel="stylesheet" href="/styles.css?v=10" />
 
   <!-- Event JSON-LD -->
   <script type="application/ld+json">
@@ -199,31 +199,30 @@
     }
   </script>
 
-  <!-- JS: Slideshow-Loader (robuster Ordnerpfad, JPG/MP4, richtige Reihenfolge, Pfeile/Dots, Fallback-Handling) -->
+  <!-- JS: Slideshow-Loader mit Diagnose-Ausgabe -->
   <script>
   (function(){
     const slider = document.getElementById('feteSlider');
     if (!slider) return;
 
     const staticImg = slider.querySelector('.fete-static'); // Fallback-Bild
-
-    // Controls/Dots sicherstellen
     let prevBtn = slider.querySelector('.fete-control.prev');
     let nextBtn = slider.querySelector('.fete-control.next');
     let dotsWrap = slider.querySelector('.fete-dots');
     const hero = slider.closest ? slider.closest('.fete-hero') : null;
 
-    function mk(tag, cls, txt){
-      const el = document.createElement(tag);
-      if (cls) el.className = cls;
-      if (txt != null) el.textContent = txt;
-      return el;
-    }
+    // kleine Debug-Anzeige unten im Slider
+    const dbg = document.createElement('div');
+    dbg.style.cssText = 'position:absolute;left:.5rem;bottom:.5rem;right:.5rem;padding:.35rem .5rem;border-radius:6px;background:rgba(255,255,255,.9);border:1px solid #016DAF;font:12px/1.3 monospace;color:#016DAF;z-index:3';
+    dbg.textContent = 'Lade…';
+    slider.appendChild(dbg);
+
+    function mk(tag, cls, txt){ const el = document.createElement(tag); if (cls) el.className = cls; if (txt!=null) el.textContent = txt; return el; }
     if (!prevBtn){ prevBtn = mk('button','fete-control prev','‹'); prevBtn.setAttribute('aria-label','Vorheriges'); slider.appendChild(prevBtn); }
     if (!nextBtn){ nextBtn = mk('button','fete-control next','›'); nextBtn.setAttribute('aria-label','Nächstes'); slider.appendChild(nextBtn); }
     if (!dotsWrap){ dotsWrap = mk('div','fete-dots'); dotsWrap.setAttribute('role','tablist'); dotsWrap.setAttribute('aria-label','Slideshow-Navigation'); slider.appendChild(dotsWrap); }
 
-    // Robuster Ordnerpfad für /test, /test/, /test/index.html, …
+    // Ordnerpfad robust ableiten (/test, /test/, /test/index.html, …)
     function folderPath(){
       const p = location.pathname;
       if (p.endsWith('/')) return p;
@@ -236,18 +235,17 @@
     function loadImage(url){
       return new Promise(resolve=>{
         const img = new Image();
-        img.onload  = ()=>resolve({ok:true, node:img});
-        img.onerror = ()=>resolve({ok:false});
-        img.loading='lazy'; img.decoding='async';
-        img.src = url;
+        img.onload  = ()=>resolve({ok:true, type:'jpg', url, node:img});
+        img.onerror = ()=>resolve({ok:false, type:'jpg', url});
+        img.loading='lazy'; img.decoding='async'; img.src = url;
       });
     }
     function loadVideo(url){
       return new Promise(resolve=>{
         const v = document.createElement('video');
         v.preload='metadata'; v.muted=true; v.playsInline=true; v.loop=true;
-        const ok = ()=>{ cleanup(); resolve({ok:true, node:v}); };
-        const err= ()=>{ cleanup(); resolve({ok:false}); };
+        const ok = ()=>{ cleanup(); resolve({ok:true, type:'mp4', url, node:v}); };
+        const err= ()=>{ cleanup(); resolve({ok:false, type:'mp4', url}); };
         function cleanup(){ v.removeEventListener('loadedmetadata', ok); v.removeEventListener('error', err); }
         v.addEventListener('loadedmetadata', ok);
         v.addEventListener('error', err);
@@ -257,31 +255,36 @@
     async function probe(n){
       const jpg = base + `${n}.jpg`;
       let r = await loadImage(jpg);
-      if (r.ok){ r.node.alt = `Festivalbild ${n}`; return {idx:n, node:r.node}; }
+      if (r.ok){ r.idx = n; return r; }
       const mp4 = base + `${n}.mp4`;
       r = await loadVideo(mp4);
-      if (r.ok){ return {idx:n, node:r.node}; }
-      return null;
+      if (r.ok){ r.idx = n; return r; }
+      return { ok:false, idx:n, type:'none', url:jpg+'|'+mp4 };
     }
 
     (async function init(){
       const want = 9;
       const results = await Promise.all(Array.from({length: want}, (_,i)=>probe(i+1)));
-      const items = results.filter(Boolean).sort((a,b)=>a.idx - b.idx);
+      const items = results.filter(r=>r.ok).sort((a,b)=>a.idx - b.idx);
+
+      // Debugliste anzeigen
+      const lines = results.map(r=>{
+        if (r.ok) return `✅ ${r.idx}.${r.type}`;
+        return `❌ ${r.idx}.jpg/.mp4`;
+      });
+      dbg.textContent = `Pfad: ${base}\n` + lines.join('  |  ');
 
       if (!items.length){
-        // Nichts gefunden -> Fallback-Bild bleibt + Hinweis
-        if (hero){
-          const msg = document.createElement('div');
-          msg.textContent = 'Keine Medien gefunden (erwartet: 1.jpg … 9.jpg / .mp4 im gleichen Ordner).';
-          msg.style.cssText = 'margin-top:.5rem;padding:1rem;border:2px solid #016DAF;border-radius:8px;background:#fff;text-align:center;';
-          hero.appendChild(msg);
-        }
+        // nichts gefunden -> Fallback bleibt + Hinweis
+        const msg = document.createElement('div');
+        msg.textContent = 'Keine Medien gefunden. Erwartet: 1.jpg … 9.jpg oder .mp4 im selben Ordner wie diese HTML.';
+        msg.style.cssText = 'margin-top:.5rem;padding:1rem;border:2px solid #016DAF;border-radius:8px;background:#fff;text-align:center;';
+        hero && hero.appendChild(msg);
         return;
       }
 
-      // Slides vorhanden -> Fallback entfernen
-      if (staticImg) staticImg.remove();
+      // Fallback entfernen, wenn irgendwas gefunden wurde
+      staticImg && staticImg.remove();
 
       const slides = [], dots = [];
       function addSlide(node, i){
@@ -300,7 +303,7 @@
       }
       items.forEach((it,i)=>addSlide(it.node, i));
 
-      // Pfeile & Dots ans Ende -> über Slides
+      // Pfeile & Dots ans Ende
       slider.appendChild(prevBtn);
       slider.appendChild(nextBtn);
       slider.appendChild(dotsWrap);
@@ -327,6 +330,7 @@
         if (e.key === 'ArrowRight') show(current + 1);
       });
 
+      // Touch-Swipe
       let sx=null;
       slider.addEventListener('touchstart', e=>{ sx = e.touches[0].clientX; }, {passive:true});
       slider.addEventListener('touchend',   e=>{
@@ -335,6 +339,12 @@
         if (Math.abs(dx) > 40) (dx < 0 ? show(current + 1) : show(current - 1));
         sx = null;
       });
+
+      // Bei nur 1 Slide: Pfeile/Dots ausblenden (optional)
+      if (slides.length === 1){
+        prevBtn.style.display = nextBtn.style.display = 'none';
+        dotsWrap.style.display = 'none';
+      }
 
       show(0);
     })();
