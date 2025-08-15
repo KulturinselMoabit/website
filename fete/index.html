@@ -10,10 +10,11 @@
 
   <!-- Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&display=swap" rel="stylesheet" />
-  <link href="https://fonts.googleapis.com/css2?family=Rubik+Dirt&display=swap" rel="stylesheet" />
+  <!-- „gestempelte“ Schrift nur fürs Line-up -->
+  <link href="https://fonts.googleapis.com/css2?family=Rubik+Dirt&display=swap" rel="stylesheet">
 
   <!-- CSS -->
-  <link rel="stylesheet" href="/styles.css?v=50" />
+  <link rel="stylesheet" href="/styles.css?v=60" />
 </head>
 <body>
 
@@ -43,7 +44,7 @@
     <section class="container page-inner page-inner--wide">
       <div class="page-text">
 
-        <!-- Banner-SVG -->
+        <!-- Banner-SVG (dein Artwork inkl. Text) -->
         <figure class="fete-banner">
           <img class="fete-banner-img" src="fete-banner.svg" alt="Fête du Seeee – Sommerfest • Konzerte • Theater • Kinderprogramm" />
         </figure>
@@ -55,10 +56,10 @@
           <span>29. &amp; 30. August 2025</span>
         </div>
 
-        <!-- Slideshow -->
+        <!-- Slideshow (funktionierende Variante mit Rahmen + runden Ecken) -->
         <section class="fete-hero">
           <div class="fete-slider" id="feteSlider" aria-label="Festival-Impressionen">
-            <!-- Statisches Bild als Fallback (bleibt sichtbar, bis JS Slides ersetzt) -->
+            <!-- Fallback-Bild, wird von JS ersetzt, sobald Slides gefunden -->
             <img class="fete-static" src="1.jpg" alt="Festivalbild 1" />
             <button class="fete-control prev" aria-label="Vorheriges">‹</button>
             <button class="fete-control next" aria-label="Nächstes">›</button>
@@ -151,7 +152,212 @@
     </div>
   </footer>
 
-  <!-- Externes JS (verhindert CSP-Probleme mit Inline-Scripts) -->
-  <script defer src="fete.js?v=1"></script>
+  <!-- JS: Burger-Menü -->
+  <script>
+    const btn = document.querySelector('.menu-toggle');
+    const nav = document.querySelector('.site-nav ul');
+    if (btn && nav) {
+      btn.addEventListener('click', () => {
+        nav.classList.toggle('open');
+        btn.classList.toggle('open');
+      });
+    }
+  </script>
+
+  <!-- JS: Slideshow (Loader) – Version, die bei dir zuverlässig lief -->
+  <script>
+  (function(){
+    const slider = document.getElementById('feteSlider');
+    if (!slider) return;
+
+    // Controls/Dots sicherstellen
+    let prevBtn = slider.querySelector('.fete-control.prev');
+    let nextBtn = slider.querySelector('.fete-control.next');
+    let dotsWrap = slider.querySelector('.fete-dots');
+    const hero = slider.closest('.fete-hero');
+
+    if (!prevBtn) {
+      prevBtn = document.createElement('button');
+      prevBtn.className = 'fete-control prev';
+      prevBtn.setAttribute('aria-label','Vorheriges');
+      prevBtn.textContent = '‹';
+      slider.appendChild(prevBtn);
+    }
+    if (!nextBtn) {
+      nextBtn = document.createElement('button');
+      nextBtn.className = 'fete-control next';
+      nextBtn.setAttribute('aria-label','Nächstes');
+      nextBtn.textContent = '›';
+      slider.appendChild(nextBtn);
+    }
+    if (!dotsWrap) {
+      dotsWrap = document.createElement('div');
+      dotsWrap.className = 'fete-dots';
+      dotsWrap.setAttribute('role','tablist');
+      dotsWrap.setAttribute('aria-label','Slideshow-Navigation');
+      slider.appendChild(dotsWrap);
+    }
+
+    // Ordner-URL robust (…/fete/ oder …/test/)
+    const dirURL = new URL('.', document.baseURI);
+    const NUMS = Array.from({length: 9}, (_, i) => i + 1);
+
+    function loadImage(url){
+      return new Promise(res=>{
+        const img = new Image();
+        img.onload  = ()=>res({ok:true, node:img});
+        img.onerror = ()=>res({ok:false});
+        img.loading='lazy'; img.decoding='async';
+        img.src = url; // kein Cache-Buster -> Reihenfolge bleibt 1..9
+      });
+    }
+    function loadVideo(url){
+      return new Promise(res=>{
+        const v = document.createElement('video');
+        v.preload='metadata'; v.muted=true; v.playsInline=true; v.loop=true;
+        const ok=()=>{cleanup(); res({ok:true, node:v});};
+        const err=()=>{cleanup(); res({ok:false});};
+        function cleanup(){ v.removeEventListener('loadedmetadata', ok); v.removeEventListener('error', err); }
+        v.addEventListener('loadedmetadata', ok);
+        v.addEventListener('error', err);
+        v.src = url;
+      });
+    }
+    async function probe(n){
+      // 1) .jpg, 2) .mp4
+      const jpg = new URL(`${n}.jpg`, dirURL).href;
+      let r = await loadImage(jpg);
+      if (r.ok){ r.node.alt = `Festivalbild ${n}`; return {idx:n, node:r.node}; }
+      const mp4 = new URL(`${n}.mp4`, dirURL).href;
+      r = await loadVideo(mp4);
+      if (r.ok){ return {idx:n, node:r.node}; }
+      return null;
+    }
+
+    (async function init(){
+      // alles prüfen und dann sortiert einbauen → korrekte Reihenfolge
+      const results = await Promise.all(NUMS.map(probe));
+      const items = results.filter(Boolean).sort((a,b)=>a.idx - b.idx);
+      if (!items.length){
+        hero?.appendChild(Object.assign(document.createElement('div'), {
+          textContent: 'Keine Medien gefunden (erwartet: 1.jpg … 9.jpg / .mp4 im gleichen Ordner).',
+          style: 'padding:1rem;border:2px solid #016DAF;border-radius:8px;background:#fff;text-align:center;'
+        }));
+        return;
+      }
+
+      const slides = [], dots = [];
+      function addSlide(node, i){
+        const wrap = document.createElement('div');
+        wrap.className='fete-slide';
+        wrap.setAttribute('data-index', i);
+        wrap.setAttribute('aria-hidden','true');
+        wrap.appendChild(node);
+        slider.insertBefore(wrap, dotsWrap);
+
+        const dot = document.createElement('button');
+        dot.className='fete-dot'; dot.type='button';
+        dot.setAttribute('aria-label','Slide '+(i+1));
+        dotsWrap.appendChild(dot);
+
+        slides.push(wrap); dots.push(dot);
+      }
+      items.forEach((it,i)=>addSlide(it.node, i));
+
+      // Controls & Dots ans Ende setzen (über Slides)
+      slider.appendChild(prevBtn);
+      slider.appendChild(nextBtn);
+      slider.appendChild(dotsWrap);
+
+      let current = 0;
+      function show(i){
+        current = (i + slides.length) % slides.length;
+        slides.forEach((el, idx)=>{
+          const active = idx === current;
+          el.classList.toggle('active', active);
+          el.setAttribute('aria-hidden', active ? 'false' : 'true');
+          const v = el.querySelector('video');
+          if (v){ active ? v.play().catch(()=>{}) : v.pause(); }
+        });
+        dots.forEach((d, idx)=>d.classList.toggle('active', idx === current));
+      }
+
+      prevBtn.addEventListener('click', ()=>show(current - 1));
+      nextBtn.addEventListener('click', ()=>show(current + 1));
+
+      slider.setAttribute('tabindex','0');
+      slider.addEventListener('keydown', e=>{
+        if (e.key === 'ArrowLeft')  show(current - 1);
+        if (e.key === 'ArrowRight') show(current + 1);
+      });
+
+      let sx=null;
+      slider.addEventListener('touchstart', e=>{ sx = e.touches[0].clientX; }, {passive:true});
+      slider.addEventListener('touchend',   e=>{
+        if (sx==null) return;
+        const dx = e.changedTouches[0].clientX - sx;
+        if (Math.abs(dx) > 40) (dx < 0 ? show(current + 1) : show(current - 1));
+        sx = null;
+      });
+
+      show(0);
+    })();
+  })();
+  </script>
+
+  <!-- JS: Autoplay (alle 5s; pausiert bei Hover/Touch/Tab-unsichtbar) -->
+  <script>
+  (function () {
+    const slider = document.getElementById('feteSlider');
+    if (!slider) return;
+
+    function slides(){ return slider.querySelectorAll('.fete-slide'); }
+    function next(){ slider.querySelector('.fete-control.next')?.click(); }
+
+    let timer = null, hover = false;
+
+    function start(){
+      if (timer || slides().length < 2) return;
+      timer = setInterval(() => { if (!hover && !document.hidden) next(); }, 5000);
+    }
+    function stop(){ clearInterval(timer); timer = null; }
+
+    slider.addEventListener('mouseenter', () => hover = true);
+    slider.addEventListener('mouseleave', () => hover = false);
+    slider.addEventListener('touchstart', () => hover = true, { passive: true });
+    slider.addEventListener('touchend',   () => hover = false, { passive: true });
+    document.addEventListener('visibilitychange', () => { document.hidden ? stop() : start(); });
+
+    const mo = new MutationObserver(() => { if (slides().length >= 2) { start(); mo.disconnect(); } });
+    mo.observe(slider, { childList: true, subtree: true });
+
+    setTimeout(start, 2000);
+  })();
+  </script>
+
+  <!-- JS: Line-up – kein Punkt am Zeilenanfang -->
+  <script>
+  (function () {
+    function updateLineupSeparators() {
+      document.querySelectorAll('.lineup .acts').forEach(ul => {
+        const items = Array.from(ul.children);
+        let lastTop = null;
+        items.forEach((li, idx) => {
+          li.classList.remove('row-start');
+          const t = li.offsetTop;
+          if (idx === 0 || lastTop === null || Math.abs(t - lastTop) > 1) {
+            li.classList.add('row-start'); // neuer Zeilenanfang -> kein Punkt davor
+            lastTop = t;
+          }
+        });
+      });
+    }
+    const debounce = (() => { let id; return () => { clearTimeout(id); id = setTimeout(updateLineupSeparators, 100); }; })();
+    window.addEventListener('load', updateLineupSeparators);
+    window.addEventListener('resize', debounce);
+    window.addEventListener('orientationchange', debounce);
+    if (document.fonts && document.fonts.ready) { document.fonts.ready.then(updateLineupSeparators); }
+  })();
+  </script>
 </body>
 </html>
