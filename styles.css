@@ -83,9 +83,7 @@ body {
   align-items: start;
   padding: 6rem 0;
 }
-.page-img img {
-  width: var(--col1); height: var(--col1); object-fit: cover; border-radius: 50%; display: block;
-}
+.page-img img { width: var(--col1); height: var(--col1); object-fit: cover; border-radius: 50%; display: block; }
 
 /* Textbereich */
 .page-text { grid-column: 2 / -1; }
@@ -155,7 +153,7 @@ body {
 .fete-slider {
   position: relative;
   width: 100%;
-  aspect-ratio: 16 / 9;           /* Panorama vermeiden */
+  aspect-ratio: 16 / 9;
   overflow: hidden;
   border: 2px solid var(--primary);
   border-radius: 12px;
@@ -167,26 +165,16 @@ body {
 }
 .fete-slide.active { opacity: 1; pointer-events: auto; }
 .fete-slide img, .fete-slide video { width: 100%; height: 100%; object-fit: cover; display: block; }
-
-/* Fallback-Bild (wird per JS entfernt, sobald Slides da sind) */
-.fete-slider .fete-static {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
-
 /* Controls */
 .fete-control {
   position: absolute; top: 50%; transform: translateY(-50%);
   border: 2px solid var(--primary); background: var(--bg); color: var(--primary);
   font-weight: 800; width: 2.2rem; height: 2.2rem; line-height: 2rem; border-radius: 999px;
-  text-align: center; cursor: pointer; opacity: .9; z-index: 2; /* über Slides */
+  text-align: center; cursor: pointer; opacity: .9; z-index: 2;
 }
 .fete-control:hover { opacity: 1; }
 .fete-control.prev { left: .6rem; }
 .fete-control.next { right: .6rem; }
-
 /* Dots */
 .fete-dots {
   position: absolute; left: 0; right: 0; bottom: .5rem;
@@ -197,14 +185,13 @@ body {
   border: 2px solid var(--primary); background: var(--bg); opacity: .85; cursor: pointer;
 }
 .fete-dot.active { background: var(--highlight); opacity: 1; }
-
 @media (max-width: 768px) {
   .fete-hero { margin: 1.25rem 0 2rem; }
   .fete-control { width: 2rem; height: 2rem; line-height: 1.8rem; }
 }
 
 /* ===== FÊTE: LINE-UP ===== */
-/* Stellschrauben für Line-up-Größe (gewünscht: 5vw max 3rem) */
+/* Stellschrauben für Line-up-Größe (gewünscht: 5vw, max 3rem) */
 :root{
   --lineup-min: 1.8rem;
   --lineup-vw:  5vw;     /* vorher 7.5vw */
@@ -213,16 +200,29 @@ body {
 }
 .lineup { margin: 2.2rem 0 2.2rem; }
 .lineup-wrap { text-align: center; }
+
+/* Prominenter Line-Up-Titel */
 .lineup .lineup-heading{
-  font-weight: 800; text-transform: uppercase; letter-spacing: .08em;
-  margin-bottom: .6rem; font-size: clamp(1rem, 2.6vw, 1.35rem);
+  display: inline-block;
+  background: var(--primary);
+  color: #fff;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  padding: .55rem .95rem;
+  border-radius: 10px;
+  font-size: clamp(1.25rem, 3.5vw, 2rem);
+  margin-bottom: 1rem;
+  box-shadow: 0 2px 0 0 var(--highlight);
 }
+
 /* Day-Tag/Badge (blauer Hintergrund) */
 .lineup .lineup-daytag{
   display: inline-block; background: var(--primary); color: #fff;
   font-weight: 800; letter-spacing: .06em; border-radius: 6px;
   padding: .35rem .6rem; font-size: .95rem; margin: .25rem 0 .75rem 0;
 }
+
 /* Acts-Liste */
 .lineup .acts{
   list-style: none; margin: 0 0 1.4rem 0; padding: 0;
@@ -243,10 +243,62 @@ body {
   color: var(--highlight); opacity: .95;
 }
 .lineup .acts li.row-start::before{ content: none; } /* kein Punkt am Zeilenanfang */
-
 @media (max-width: 768px) {
   .lineup { margin: 1.6rem 0 2rem; }
   .lineup .lineup-daytag { margin-top: .5rem; }
+}
+
+/* ===== Info-Grid / Karten ===== */
+.fete-info{
+  margin: 2.5rem 0;
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: var(--gutter);
+  align-items: stretch;
+}
+.fete-card{
+  grid-column: span 4;
+  background: var(--bg);
+  border: 2px solid var(--primary);
+  border-radius: 12px;
+  padding: 1rem;
+}
+.fete-card h4{
+  font-size: 1rem;
+  font-weight: 800;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  margin-bottom: .5rem;
+}
+.fete-card p,
+.fete-card ul{ margin: 0; }
+.fete-card ul { padding-left: 1.2rem; }
+
+/* Plakat in normaler Größe (wie vorher) */
+.fete-card--poster{
+  grid-column: span 4;
+  overflow: hidden;
+  aspect-ratio: 3 / 4;
+  display: flex; align-items: center; justify-content: center;
+  padding: 0;
+}
+.fete-card--poster img{
+  width: 100%; height: 100%;
+  object-fit: cover; display: block; border-radius: 10px;
+}
+
+.fete-card--note{
+  grid-column: 1 / -1;
+  border-style: dashed;
+}
+
+/* responsive Spaltenaufteilung */
+@media (max-width: 900px){
+  .fete-card{ grid-column: span 6; }
+  .fete-card--poster{ grid-column: span 12; order: -1; } /* Poster oben */
+}
+@media (max-width: 600px){
+  .fete-card{ grid-column: span 12; }
 }
 
 /* ===== Fallbacks (Sichtbarkeit/Höhe auch ohne JS) ===== */
