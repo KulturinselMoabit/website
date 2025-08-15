@@ -305,56 +305,50 @@ body {
 #feteSlider .fete-slide:first-of-type { opacity: 1; }
 #feteSlider { min-height: 240px; }
 
-/* ---------- Grafik + Headline-Block über der Slideshow ---------- */
-.fete-graphic{
-  margin: 0 0 .8rem;
+/* ---------- BRAND-BANNER (Icon + Text) ---------- */
+.fete-brand{
   display: flex;
+  align-items: flex-end;
   justify-content: center;
+  gap: clamp(.6rem, 1.4vw, 1rem);
+  margin: .25rem 0 1rem;
 }
-.fete-graphic img{
-  width: 100%;      /* gleiche Breite wie Slideshow */
+.fete-brand__icon{
+  width: clamp(48px, 8vw, 84px);
   height: auto;
-  display: block;
+  flex: 0 0 auto;
 }
-
-/* Headline-Block als „blauer Klotz“ */
-.hero-headline{
-  display: grid;
-  place-items: center;
-  text-align: center;
-  padding: .9rem 1.2rem;
-  margin: 0 0 1rem 0;
-  background: var(--primary);
-  color: #fff;
-  border-radius: 14px;
-  border: 2px solid var(--primary);
-  position: relative;
+.fete-brand__text{
+  line-height: 1;
+  text-align: left;
 }
-.hero-headline::after{
-  content: "";
-  position: absolute;
-  left: 10%;
-  right: 10%;
-  bottom: -6px;
-  height: 6px;
-  background: var(--highlight);   /* orange Akzentkante */
-  border-radius: 4px;
+.brand-title{
+  margin: 0;
+  display: flex;
+  align-items: baseline;
+  gap: .25em;
+  font-family: "Montserrat", sans-serif;
+  font-weight: 800;
+  letter-spacing: .02em;
+  color: var(--primary);
+  font-size: clamp(1.6rem, 6vw, 2.8rem);
 }
-
-.hero-title{
-  font: 800 clamp(1.6rem, 4.6vw, 2.8rem)/1.1 "Montserrat", sans-serif;
+.brand-title__num{
+  color: var(--highlight);
+}
+.brand-sub{
+  margin: .15rem 0 0;
+  font-family: "Montserrat", sans-serif;
+  font-weight: 700;
+  font-size: clamp(.78rem, 2.2vw, 1rem);
   letter-spacing: .06em;
   text-transform: uppercase;
-  margin: 0;
-}
-.hero-subtitle{
-  font: 700 clamp(.9rem, 2.2vw, 1.2rem)/1.2 "Montserrat", sans-serif;
-  letter-spacing: .04em;
-  margin-top: .25rem;
-  opacity: .98;
+  color: var(--primary);
 }
 
-/* (Rest deiner Fête-Styles bleibt unverändert) */
+/* Die Slideshow bleibt wie gehabt (deine bestehenden Klassen) */
+
+
 
 
 
