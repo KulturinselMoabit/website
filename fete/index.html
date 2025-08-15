@@ -12,8 +12,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&display=swap" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css2?family=Rubik+Dirt&display=swap" rel="stylesheet" />
 
-  <!-- Deine CSS (Cache-Buster ggf. anpassen) -->
-  <link rel="stylesheet" href="/styles.css?v=13" />
+  <!-- Deine CSS (Cache-Buster gern anpassen) -->
+  <link rel="stylesheet" href="/styles.css?v=14" />
 
   <!-- Event JSON-LD -->
   <script type="application/ld+json">
@@ -79,8 +79,13 @@
     <section class="container page-inner page-inner--wide">
       <div class="page-text">
 
-        <!-- HERO-SLIDESHOW -->
+        <!-- HERO: Titel (SVG) + Slideshow -->
         <section class="fete-hero">
+          <!-- ► Neue Überschrift als SVG-Bild (Datei muss im gleichen Ordner liegen) -->
+          <figure class="fete-title" aria-label="Festivalüberschrift">
+            <img src="Fete_Artwork.svg" alt="Fête du Seeee – Festivalüberschrift" />
+          </figure>
+
           <div class="fete-slider" id="feteSlider" aria-label="Festival-Impressionen">
             <!-- Sichtbarer Fallback (wird per JS entfernt, sobald Slides da sind) -->
             <img class="fete-static" src="1.jpg" alt="Festivalbild 1" />
@@ -199,7 +204,7 @@
     }
   </script>
 
-  <!-- JS: Slideshow-Loader (ohne Debug, mit integriertem Autoplay) -->
+  <!-- JS: Slideshow-Loader (mit Autoplay) -->
   <script>
   (function(){
     const slider = document.getElementById('feteSlider');
