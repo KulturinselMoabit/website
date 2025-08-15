@@ -13,7 +13,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Rubik+Dirt&display=swap" rel="stylesheet" />
 
   <!-- CSS -->
-  <link rel="stylesheet" href="/styles.css?v=40" />
+  <link rel="stylesheet" href="/styles.css?v=50" />
 </head>
 <body>
 
@@ -58,7 +58,7 @@
         <!-- Slideshow -->
         <section class="fete-hero">
           <div class="fete-slider" id="feteSlider" aria-label="Festival-Impressionen">
-            <!-- Statisches Bild als Fallback (wird von JS entfernt, wenn Slides gefunden werden) -->
+            <!-- Statisches Bild als Fallback (bleibt sichtbar, bis JS Slides ersetzt) -->
             <img class="fete-static" src="1.jpg" alt="Festivalbild 1" />
             <button class="fete-control prev" aria-label="Vorheriges">‹</button>
             <button class="fete-control next" aria-label="Nächstes">›</button>
@@ -151,153 +151,7 @@
     </div>
   </footer>
 
-  <!-- JS: Burger-Menü -->
-  <script>
-    const btn = document.querySelector('.menu-toggle');
-    const nav = document.querySelector('.site-nav ul');
-    if (btn && nav) {
-      btn.addEventListener('click', () => {
-        nav.classList.toggle('open');
-        btn.classList.toggle('open');
-      });
-    }
-  </script>
-
-  <!-- JS: Slideshow (robust) + Autoplay + Line-up-Separators -->
-  <script>
-  (function(){
-    try {
-      const slider = document.getElementById('feteSlider');
-      if (!slider) return;
-
-      const staticImg = slider.querySelector('.fete-static');
-      let prevBtn  = slider.querySelector('.fete-control.prev');
-      let nextBtn  = slider.querySelector('.fete-control.next');
-      let dotsWrap = slider.querySelector('.fete-dots');
-
-      function mk(tag, cls, txt){
-        const el = document.createElement(tag);
-        if (cls) el.className = cls;
-        if (txt != null) el.textContent = txt;
-        return el;
-      }
-
-      if (!prevBtn) { prevBtn = mk('button','fete-control prev','‹'); prevBtn.setAttribute('aria-label','Vorheriges'); slider.appendChild(prevBtn); }
-      if (!nextBtn) { nextBtn = mk('button','fete-control next','›'); nextBtn.setAttribute('aria-label','Nächstes'); slider.appendChild(nextBtn); }
-      if (!dotsWrap){ dotsWrap= mk('div','fete-dots'); dotsWrap.setAttribute('role','tablist'); dotsWrap.setAttribute('aria-label','Slideshow-Navigation'); slider.appendChild(dotsWrap); }
-
-      const BASE = new URL('.', document.baseURI);  // stabil auf GitHub Pages
-      const ORDER = Array.from({length:9}, (_,i)=>i+1);
-
-      function loadImg(url){ return new Promise(res=>{ const im=new Image(); im.onload=()=>res({ok:true,node:im}); im.onerror=()=>res({ok:false}); im.loading='lazy'; im.decoding='async'; im.src=url; }); }
-      function loadVid(url){ return new Promise(res=>{ const v=document.createElement('video'); v.preload='metadata'; v.muted=true; v.loop=true; v.playsInline=true;
-        const ok=()=>{cleanup(); res({ok:true,node:v});}; const err=()=>{cleanup(); res({ok:false});};
-        function cleanup(){ v.removeEventListener('loadedmetadata',ok); v.removeEventListener('error',err); }
-        v.addEventListener('loadedmetadata',ok); v.addEventListener('error',err); v.src=url; }); }
-
-      async function probe(n){
-        const jpg = new URL(n + '.jpg', BASE).href;
-        const r1  = await loadImg(jpg);
-        if (r1.ok){ r1.node.alt = 'Festivalbild ' + n; return {idx:n, node:r1.node}; }
-        const mp4 = new URL(n + '.mp4', BASE).href;
-        const r2  = await loadVid(mp4);
-        if (r2.ok){ return {idx:n, node:r2.node}; }
-        return null;
-      }
-
-      (async function init(){
-        const found = [];
-        for (const n of ORDER){
-          const r = await probe(n);
-          if (r) found.push(r);
-        }
-
-        if (!found.length){
-          // Keine Medien gefunden -> 1 Dot anzeigen, damit UI konsistent bleibt
-          if (dotsWrap) { dotsWrap.innerHTML = ''; const d = mk('button','fete-dot',''); d.classList.add('active'); dotsWrap.appendChild(d); }
-          return;
-        }
-
-        // Fallback entfernen und Slides erzeugen
-        staticImg && staticImg.remove();
-        found.sort((a,b)=>a.idx - b.idx);
-
-        const slides = [], dots = [];
-        function addSlide(obj, i){
-          const wrap = mk('div','fete-slide'); wrap.dataset.index = i; wrap.setAttribute('aria-hidden','true');
-          wrap.appendChild(obj.node);
-          slider.insertBefore(wrap, dotsWrap);
-          const dot = mk('button','fete-dot'); dot.type='button'; dot.setAttribute('aria-label',`Slide ${i+1}`);
-          dotsWrap.appendChild(dot);
-          slides.push(wrap); dots.push(dot);
-        }
-        found.forEach(addSlide);
-
-        // Controls & Dots nach vorn (höchster z-index)
-        slider.appendChild(prevBtn);
-        slider.appendChild(nextBtn);
-        slider.appendChild(dotsWrap);
-
-        let cur = 0, timer = null, hover = false;
-        function show(i){
-          cur = (i + slides.length) % slides.length;
-          slides.forEach((el,idx)=>{
-            const on = idx === cur;
-            el.classList.toggle('active', on);
-            el.setAttribute('aria-hidden', on ? 'false' : 'true');
-            const v = el.querySelector('video'); if (v){ on ? v.play().catch(()=>{}) : v.pause(); }
-          });
-          dots.forEach((d,idx)=>d.classList.toggle('active', idx===cur));
-        }
-        function next(){ show(cur+1); }
-        function start(){ if (timer || slides.length < 2) return; timer = setInterval(()=>{ if(!hover && !document.hidden) next(); }, 5000); }
-        function stop(){ clearInterval(timer); timer = null; }
-
-        prevBtn.addEventListener('click', ()=>show(cur-1));
-        nextBtn.addEventListener('click', ()=>show(cur+1));
-        dots.forEach((d,i)=>d.addEventListener('click', ()=>show(i)));
-
-        slider.addEventListener('mouseenter', ()=>hover=true);
-        slider.addEventListener('mouseleave', ()=>hover=false);
-        let sx=null;
-        slider.addEventListener('touchstart', e=>{ hover=true; sx=e.touches[0].clientX; }, {passive:true});
-        slider.addEventListener('touchend',   e=>{
-          const dx = sx==null ? 0 : e.changedTouches[0].clientX - sx;
-          if (Math.abs(dx) > 40) (dx < 0 ? next() : show(cur-1));
-          sx=null; hover=false;
-        }, {passive:true});
-        document.addEventListener('visibilitychange', ()=>{ document.hidden ? stop() : start(); });
-
-        show(0); start();
-      })();
-    } catch (e) {
-      /* Wenn doch irgendwas schiefgeht, bricht nichts visuell – nur Fallback bleibt. */
-      console.error('Slideshow init error', e);
-    }
-  })();
-
-  /* Punkte im Line-up nur zwischen Acts derselben Zeile */
-  (function () {
-    function updateLineupSeparators() {
-      document.querySelectorAll('.lineup .acts').forEach(ul => {
-        const items = Array.from(ul.children);
-        let lastTop = null;
-        items.forEach((li, idx) => {
-          li.classList.remove('row-start');
-          const t = li.offsetTop;
-          if (idx === 0 || lastTop === null || Math.abs(t - lastTop) > 1) {
-            li.classList.add('row-start');
-            lastTop = t;
-          }
-        });
-      });
-    }
-    const debounce = (() => { let id; return () => { clearTimeout(id); id = setTimeout(updateLineupSeparators, 100); }; })();
-    window.addEventListener('load', updateLineupSeparators);
-    window.addEventListener('resize', debounce);
-    window.addEventListener('orientationchange', debounce);
-    if (document.fonts && document.fonts.ready) { document.fonts.ready.then(updateLineupSeparators); }
-  })();
-  </script>
+  <!-- Externes JS (verhindert CSP-Probleme mit Inline-Scripts) -->
+  <script defer src="fete.js?v=1"></script>
 </body>
 </html>
