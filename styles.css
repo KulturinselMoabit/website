@@ -304,3 +304,19 @@ body {
 /* ===== Fallbacks (Sichtbarkeit/Höhe auch ohne JS) ===== */
 #feteSlider .fete-slide:first-of-type { opacity: 1; }
 #feteSlider { min-height: 240px; }
+
+/* ---------- SVG-Titel über der Slideshow ---------- */
+.fete-title{
+  margin: 0 0 .8rem;
+  display: flex;
+  justify-content: center;
+}
+.fete-title img,
+.fete-title svg{
+  display: block;
+  width: 100%;      /* exakt so breit wie die Slideshow */
+  height: auto;     /* korrekte Proportionen */
+}
+
+/* (Der Rest deiner Fête-Styles bleibt unverändert) */
+
