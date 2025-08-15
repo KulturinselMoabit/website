@@ -13,7 +13,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Rubik+Dirt&display=swap" rel="stylesheet" />
 
   <!-- CSS -->
-  <link rel="stylesheet" href="/styles.css?v=27" />
+  <link rel="stylesheet" href="/styles.css?v=30" />
 
   <!-- Event JSON-LD -->
   <script type="application/ld+json">
@@ -58,36 +58,12 @@
     <section class="container page-inner page-inner--wide">
       <div class="page-text">
 
-        <!-- ================= HERO: Banner (voll als Inline-SVG) ================= -->
-        <figure class="fete-banner-full" role="img" aria-label="Fête du Seeee – Sommerfest · Konzerte · Theater · Kinderprogramm">
-          <!--
-            Das komplette Banner ist ein skalierendes SVG mit fester viewBox.
-            Links wird dein Icon aus Fete_Artwork.svg eingebettet.
-            Text nutzt Montserrat (geladen im <head>).
-          -->
-          <svg class="fete-banner-svg" viewBox="0 0 1600 260" xmlns="http://www.w3.org/2000/svg">
-            <!-- Icon links -->
-            <image href="Fete_Artwork.svg" x="0" y="20" width="220" height="220" />
-
-            <!-- Headline -->
-            <g fill="#016DAF" font-family="Montserrat, sans-serif" font-weight="800">
-              <text x="260" y="160" font-size="140" style="letter-spacing:.5px">Fête du Seeee</text>
-              <!-- #3 in Orange, bündig direkt hinter Headline -->
-              <text x="1205" y="160" font-size="160" fill="#FC411F">#3</text>
-            </g>
-
-            <!-- Subline -->
-            <g fill="#016DAF" font-family="Montserrat, sans-serif" font-weight="700" font-size="46" letter-spacing="2">
-              <text x="260" y="222">SOMMERFEST</text>
-              <text x="540" y="222">• KONZERTE</text>
-              <text x="880" y="222">• THEATER</text>
-              <text x="1150" y="222">• KINDERPROGRAMM</text>
-            </g>
-          </svg>
+        <!-- ===== Einfaches Banner als EIN SVG (keine Text-Überlappungen mehr) ===== -->
+        <figure class="fete-banner">
+          <img class="fete-banner-img" src="fete-banner.svg" alt="Fête du Seeee – Sommerfest • Konzerte • Theater • Kinderprogramm" />
         </figure>
-        <!-- ================= /HERO: Banner ================= -->
 
-        <!-- ================= Slideshow ================= -->
+        <!-- ===== Slideshow (lädt 1–9.jpg/.mp4 aus Ordner) ===== -->
         <section class="fete-hero">
           <div class="fete-slider" id="feteSlider" aria-label="Festival-Impressionen">
             <img class="fete-static" src="1.jpg" alt="Festivalbild 1" />
@@ -97,7 +73,7 @@
           </div>
         </section>
 
-        <!-- ================= LINE-UP ================= -->
+        <!-- ===== LINE-UP ===== -->
         <section class="lineup">
           <div class="lineup-wrap">
             <div class="lineup-heading">Line-Up</div>
@@ -127,47 +103,15 @@
             </div>
           </div>
         </section>
-        <!-- ================= /LINE-UP ================= -->
+        <!-- ===== /LINE-UP ===== -->
 
-        <!-- ================= INFO-GRID (inkl. Plakat) ================= -->
-        <section class="fete-info">
-          <div class="fete-card fete-card--poster">
-            <img src="/fete.png" alt="Plakat Fête du Seeee #3" />
-          </div>
-
-          <div class="fete-card">
-            <h4>Wo</h4>
-            <p>Strandbad Tegelsee<br>Schwarzer Weg 95<br>13505 Berlin</p>
-          </div>
-
-          <div class="fete-card">
-            <h4>Wann</h4>
-            <p>Fr 29. &amp; Sa 30. August 2025</p>
-          </div>
-
-          <div class="fete-card">
-            <h4>Eintritt</h4>
-            <ul>
-              <li>Erwachsene: 6 €</li>
-              <li>Ermäßigt: 4 €</li>
-              <li>Ab 18 Uhr: 2,50 €</li>
-            </ul>
-          </div>
-
-          <div class="fete-card fete-card--note">
-            <p>Kommt vorbei, bringt eure Freund*innen mit und lasst uns gemeinsam am Tegeler See feiern – wir freuen uns auf euch!</p>
-          </div>
-        </section>
-
+        <!-- Rest wie gehabt (optional) -->
         <div class="divider_long"></div>
-
-        <!-- Vorjahre (optional) -->
         <h2>Fête du Seeee #2</h2>
         <img src="/fete_2.jpg" alt="Plakat Fête du Seeee #2" class="float-right-third" />
         <p>Am kommenden Samstag, den 31. August 2024 …</p>
 
         <div class="divider_long"></div>
-
         <h2>Fête du Seeee #1</h2>
         <p>Wir feiern ein Fête du Seeee im Strandbad! …</p>
 
@@ -199,7 +143,7 @@
     }
   </script>
 
-  <!-- JS: Slideshow (lädt 1–9.jpg/.mp4 aus Ordner + Autoplay) -->
+  <!-- JS: Slideshow (robust, ohne Debug-Ausgabe) -->
   <script>
   (function(){
     const slider = document.getElementById('feteSlider');
@@ -210,142 +154,64 @@
     let nextBtn = slider.querySelector('.fete-control.next');
     let dotsWrap = slider.querySelector('.fete-dots');
 
-    function mk(tag, cls, txt){ const el=document.createElement(tag); if(cls)el.className=cls; if(txt!=null)el.textContent=txt; return el; }
-    if (!prevBtn){ prevBtn = mk('button','fete-control prev','‹'); prevBtn.setAttribute('aria-label','Vorheriges'); slider.appendChild(prevBtn); }
-    if (!nextBtn){ nextBtn = mk('button','fete-control next','›'); nextBtn.setAttribute('aria-label','Nächstes'); slider.appendChild(nextBtn); }
-    if (!dotsWrap){ dotsWrap = mk('div','fete-dots'); dotsWrap.setAttribute('role','tablist'); dotsWrap.setAttribute('aria-label','Slideshow-Navigation'); slider.appendChild(dotsWrap); }
+    function mk(t,c,x){const e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e;}
+    if (!prevBtn){ prevBtn=mk('button','fete-control prev','‹'); prevBtn.setAttribute('aria-label','Vorheriges'); slider.appendChild(prevBtn); }
+    if (!nextBtn){ nextBtn=mk('button','fete-control next','›'); nextBtn.setAttribute('aria-label','Nächstes'); slider.appendChild(nextBtn); }
+    if (!dotsWrap){ dotsWrap=mk('div','fete-dots'); dotsWrap.setAttribute('role','tablist'); dotsWrap.setAttribute('aria-label','Slideshow-Navigation'); slider.appendChild(dotsWrap); }
 
     const base = new URL('.', location.href).href;
-    const CAND = Array.from({length:9}, (_,i)=>i+1);
+    const CAND = Array.from({length:9},(_,i)=>i+1);
 
-    async function head(url, ms=6000){
-      if (!('fetch' in window)) return null;
-      try{
-        const ctrl=new AbortController();
-        const t=setTimeout(()=>ctrl.abort(), ms);
-        const r=await fetch(url,{method:'HEAD',cache:'no-store',signal:ctrl.signal});
-        clearTimeout(t);
-        return r.ok ? true : (r.status===405||r.status===501 ? null : false);
-      }catch(_){ return null; }
-    }
-    function probeImg(url){
-      return new Promise(res=>{
-        const im=new Image();
-        im.onload = ()=>res({ok:true,node:im});
-        im.onerror= ()=>res({ok:false});
-        im.loading='lazy'; im.decoding='async'; im.src=url;
-      });
-    }
-    function probeVid(url){
-      return new Promise(res=>{
-        const v=document.createElement('video');
-        v.preload='metadata'; v.muted=true; v.loop=true; v.playsInline=true;
-        const ok=()=>{ done(); res({ok:true,node:v}); };
-        const err=()=>{ done(); res({ok:false}); };
-        function done(){ v.removeEventListener('loadedmetadata', ok); v.removeEventListener('error', err); }
-        v.addEventListener('loadedmetadata', ok);
-        v.addEventListener('error', err);
-        v.src=url;
-      });
-    }
-    async function checkOne(n){
-      const jpg = base + `${n}.jpg`;
-      const h = await head(jpg);
-      if (h === true)  return {idx:n, type:'jpg', url:jpg};
-      if (h !== false){
-        const r = await probeImg(jpg);
-        if (r.ok) return {idx:n, type:'jpg', url:jpg};
-      }
-      const mp4 = base + `${n}.mp4`;
-      const h2 = await head(mp4);
-      if (h2 === true) return {idx:n, type:'mp4', url:mp4};
-      if (h2 !== false){
-        const r2 = await probeVid(mp4);
-        if (r2.ok) return {idx:n, type:'mp4', url:mp4};
-      }
+    function probeImg(url){return new Promise(r=>{const im=new Image();im.onload=()=>r({ok:true,node:im});im.onerror=()=>r({ok:false});im.loading='lazy';im.decoding='async';im.src=url;});}
+    function probeVid(url){return new Promise(r=>{const v=document.createElement('video');v.preload='metadata';v.muted=true;v.loop=true;v.playsInline=true;
+      const ok=()=>{v.removeEventListener('loadedmetadata',ok);v.removeEventListener('error',err);r({ok:true,node:v});};
+      const err=()=>{v.removeEventListener('loadedmetadata',ok);v.removeEventListener('error',err);r({ok:false});};
+      v.addEventListener('loadedmetadata',ok);v.addEventListener('error',err);v.src=url;});}
+
+    async function check(n){
+      const jpg = base+`${n}.jpg`; const r1 = await probeImg(jpg); if (r1.ok) return {idx:n,type:'jpg',node:r1.node};
+      const mp4 = base+`${n}.mp4`; const r2 = await probeVid(mp4); if (r2.ok) return {idx:n,type:'mp4',node:r2.node};
       return null;
     }
 
     (async function init(){
-      const found = [];
-      for (const n of CAND){
-        const r = await checkOne(n);
-        if (r) found.push(r);
-      }
-      if (!found.length){ return; }
+      const found=[]; for(const n of CAND){ const r=await check(n); if(r) found.push(r); }
+      if(!found.length) return;
 
       staticImg && staticImg.remove();
 
-      const slides = [], dots = [];
-      function addSlide(item, i){
-        const wrap = mk('div','fete-slide'); wrap.dataset.index=i; wrap.setAttribute('aria-hidden','true');
-        let node;
-        if (item.type === 'jpg'){
-          node = new Image(); node.src=item.url; node.alt=`Festivalbild ${item.idx}`; node.loading='lazy'; node.decoding='async';
-        } else {
-          node = document.createElement('video'); node.src=item.url; node.preload='metadata'; node.muted=true; node.loop=true; node.playsInline=true;
-        }
-        wrap.appendChild(node);
+      const slides=[], dots=[];
+      function add(item,i){
+        const wrap=mk('div','fete-slide'); wrap.dataset.index=i; wrap.setAttribute('aria-hidden','true'); wrap.appendChild(item.node);
         slider.insertBefore(wrap, dotsWrap);
-
-        const dot = mk('button','fete-dot'); dot.type='button'; dot.setAttribute('aria-label',`Slide ${i+1}`);
-        dotsWrap.appendChild(dot);
-
+        const dot=mk('button','fete-dot'); dot.type='button'; dot.setAttribute('aria-label',`Slide ${i+1}`); dotsWrap.appendChild(dot);
         slides.push(wrap); dots.push(dot);
       }
-      found.sort((a,b)=>a.idx-b.idx).forEach((it,i)=>addSlide(it,i));
+      found.sort((a,b)=>a.idx-b.idx).forEach((it,i)=>add(it,i));
 
-      slider.appendChild(prevBtn);
-      slider.appendChild(nextBtn);
-      slider.appendChild(dotsWrap);
+      slider.appendChild(prevBtn); slider.appendChild(nextBtn); slider.appendChild(dotsWrap);
 
-      let current = 0, timer = null, hover = false;
+      let cur=0, timer=null, hover=false;
       function show(i){
-        current = (i + slides.length) % slides.length;
-        slides.forEach((el, idx)=>{
-          const active = idx === current;
-          el.classList.toggle('active', active);
-          el.setAttribute('aria-hidden', active ? 'false' : 'true');
-          const v = el.querySelector('video');
-          if (v){ active ? v.play().catch(()=>{}) : v.pause(); }
-        });
-        dots.forEach((d, idx)=>d.classList.toggle('active', idx === current));
+        cur=(i+slides.length)%slides.length;
+        slides.forEach((el,idx)=>{const on=idx===cur; el.classList.toggle('active',on); el.setAttribute('aria-hidden',on?'false':'true');
+          const v=el.querySelector('video'); if(v){ on ? v.play().catch(()=>{}) : v.pause(); }});
+        dots.forEach((d,idx)=>d.classList.toggle('active',idx===cur));
       }
-      function next(){ show(current + 1); }
-      function start(){
-        if (timer || slides.length < 2) return;
-        timer = setInterval(()=>{ if(!hover && !document.hidden) next(); }, 5000);
-      }
+      function next(){ show(cur+1); }
+      function start(){ if(timer||slides.length<2) return; timer=setInterval(()=>{ if(!hover&&!document.hidden) next(); },5000); }
       function stop(){ clearInterval(timer); timer=null; }
 
-      prevBtn.addEventListener('click', ()=>show(current - 1));
-      nextBtn.addEventListener('click', ()=>show(current + 1));
-      dots.forEach((d,i)=>d.addEventListener('click', ()=>show(i)));
+      prevBtn.addEventListener('click',()=>show(cur-1));
+      nextBtn.addEventListener('click',()=>show(cur+1));
+      dots.forEach((d,i)=>d.addEventListener('click',()=>show(i)));
+      slider.addEventListener('mouseenter',()=>hover=true);
+      slider.addEventListener('mouseleave',()=>hover=false);
+      let sx=null; slider.addEventListener('touchstart',e=>{hover=true; sx=e.touches[0].clientX;},{passive:true});
+      slider.addEventListener('touchend',e=>{const dx=sx==null?0:e.changedTouches[0].clientX-sx; if(Math.abs(dx)>40)(dx<0?next():show(cur-1)); sx=null; hover=false;},{passive:true});
+      document.addEventListener('visibilitychange',()=>{document.hidden?stop():start();});
 
-      slider.setAttribute('tabindex','0');
-      slider.addEventListener('keydown', e=>{
-        if (e.key === 'ArrowLeft')  show(current - 1);
-        if (e.key === 'ArrowRight') show(current + 1);
-      });
-
-      let sx=null;
-      slider.addEventListener('touchstart', e=>{ hover=true; sx=e.touches[0].clientX; }, {passive:true});
-      slider.addEventListener('touchend',   e=>{
-        const dx = sx==null ? 0 : (e.changedTouches[0].clientX - sx);
-        if (Math.abs(dx)>40) (dx<0 ? next() : show(current-1));
-        sx=null; hover=false;
-      });
-      slider.addEventListener('mouseenter', ()=> hover=true);
-      slider.addEventListener('mouseleave', ()=> hover=false);
-      document.addEventListener('visibilitychange', ()=>{ document.hidden ? stop() : start(); });
-
-      if (slides.length === 1){
-        prevBtn.style.display = nextBtn.style.display = 'none';
-        dotsWrap.style.display = 'none';
-      }
-
-      show(0);
-      start();
+      show(0); start();
     })();
   })();
   </script>
@@ -353,7 +219,7 @@
   <!-- JS: Line-up – kein Punkt am Zeilenanfang -->
   <script>
   (function () {
-    function updateLineupSeparators() {
+    function updateDots() {
       document.querySelectorAll('.lineup .acts').forEach(ul => {
         const items = Array.from(ul.children);
         let lastTop = null;
@@ -361,17 +227,17 @@
           li.classList.remove('row-start');
           const t = li.offsetTop;
           if (idx === 0 || lastTop === null || Math.abs(t - lastTop) > 1) {
-            li.classList.add('row-start');
+            li.classList.add('row-start'); // Zeilenanfang -> kein Punkt davor
             lastTop = t;
           }
         });
       });
     }
-    const debounce = (() => { let id; return () => { clearTimeout(id); id = setTimeout(updateLineupSeparators, 100); }; })();
-    window.addEventListener('load', updateLineupSeparators);
-    window.addEventListener('resize', debounce);
-    window.addEventListener('orientationchange', debounce);
-    if (document.fonts && document.fonts.ready) { document.fonts.ready.then(updateLineupSeparators); }
+    const deb = (() => { let id; return () => { clearTimeout(id); id = setTimeout(updateDots, 100); }; })();
+    window.addEventListener('load', updateDots);
+    window.addEventListener('resize', deb);
+    window.addEventListener('orientationchange', deb);
+    if (document.fonts && document.fonts.ready) { document.fonts.ready.then(updateDots); }
   })();
   </script>
 </body>
