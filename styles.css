@@ -305,18 +305,56 @@ body {
 #feteSlider .fete-slide:first-of-type { opacity: 1; }
 #feteSlider { min-height: 240px; }
 
-/* ---------- SVG-Titel über der Slideshow ---------- */
-.fete-title{
+/* ---------- Grafik + Headline-Block über der Slideshow ---------- */
+.fete-graphic{
   margin: 0 0 .8rem;
   display: flex;
   justify-content: center;
 }
-.fete-title img,
-.fete-title svg{
+.fete-graphic img{
+  width: 100%;      /* gleiche Breite wie Slideshow */
+  height: auto;
   display: block;
-  width: 100%;      /* exakt so breit wie die Slideshow */
-  height: auto;     /* korrekte Proportionen */
 }
 
-/* (Der Rest deiner Fête-Styles bleibt unverändert) */
+/* Headline-Block als „blauer Klotz“ */
+.hero-headline{
+  display: grid;
+  place-items: center;
+  text-align: center;
+  padding: .9rem 1.2rem;
+  margin: 0 0 1rem 0;
+  background: var(--primary);
+  color: #fff;
+  border-radius: 14px;
+  border: 2px solid var(--primary);
+  position: relative;
+}
+.hero-headline::after{
+  content: "";
+  position: absolute;
+  left: 10%;
+  right: 10%;
+  bottom: -6px;
+  height: 6px;
+  background: var(--highlight);   /* orange Akzentkante */
+  border-radius: 4px;
+}
+
+.hero-title{
+  font: 800 clamp(1.6rem, 4.6vw, 2.8rem)/1.1 "Montserrat", sans-serif;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  margin: 0;
+}
+.hero-subtitle{
+  font: 700 clamp(.9rem, 2.2vw, 1.2rem)/1.2 "Montserrat", sans-serif;
+  letter-spacing: .04em;
+  margin-top: .25rem;
+  opacity: .98;
+}
+
+/* (Rest deiner Fête-Styles bleibt unverändert) */
+
+
 
