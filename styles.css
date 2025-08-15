@@ -83,7 +83,9 @@ body {
   align-items: start;
   padding: 6rem 0;
 }
-.page-img img { width: var(--col1); height: var(--col1); object-fit: cover; border-radius: 50%; display: block; }
+.page-img img {
+  width: var(--col1); height: var(--col1); object-fit: cover; border-radius: 50%; display: block;
+}
 
 /* Textbereich */
 .page-text { grid-column: 2 / -1; }
@@ -95,16 +97,27 @@ body {
 .page-text p { margin-bottom: 1.5rem; font-size: 1rem; line-height: 1.2; text-align: justify; }
 .page-text img.fullwidth { width: 100%; height: auto; display: block; float: none; margin: 0; }
 
+/* ----------Bilder im Text-------------- */
 .page-text img.float-left-third   { float: left;  width: 33.333%; height: auto; margin: 0 1em 1em 0; display: block; box-shadow: 0 0 8px rgba(0,0,0,.1); }
 .page-text img.float-right-third  { float: right; width: 33.333%; height: auto; margin: 0 0 1em 1em; display: block; box-shadow: 0 0 8px rgba(0,0,0,.1); }
-.page-text img.float-half-left    { float: left;  width: 50%; height: auto; margin: 0 1em 1em 0; display: block; box-shadow: 0 0 8px rgba(0,0,0,.1); }
-.page-text img.float-half-right   { float: right; width: 50%; height: auto; margin: 0 0 1em 1em; display: block; box-shadow: 0 0 8px rgba(0,0,0,.1); }
+.page-text img.float-half-left    { float: left;  width: 50%;    height: auto; margin: 0 1em 1em 0; display: block; box-shadow: 0 0 8px rgba(0,0,0,.1); }
+.page-text img.float-half-right   { float: right; width: 50%;    height: auto; margin: 0 0 1em 1em; display: block; box-shadow: 0 0 8px rgba(0,0,0,.1); }
+
+/* Aufräum-Clearfix nach schwimmenden Elementen */
 .page-text::after { content: ""; display: block; clear: both; }
 .page-text ul { margin-left: 1.5rem; padding-left: .5rem; list-style-position: outside; }
 .page-text a { color: var(--primary); text-decoration: underline; }
 .page-text a:hover { color: var(--highlight); }
 .page-text .btn-primary { display: inline-block; margin-top: 2rem; background: var(--highlight); color: #fff; padding: 1rem 2.5rem; border-radius: 4px; font-weight: 700; text-decoration: none; transition: transform .15s ease; }
 .page-text .btn-primary:hover { transform: translateY(-2px); }
+
+/* Index-Galerie */
+.index-gallery { display: flex; flex-direction: column; gap: var(--gutter); padding: 6rem 0; }
+.index-gallery__wide { width: 100%; aspect-ratio: 3 / 1; overflow: hidden; }
+.index-gallery__wide-img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.index-gallery__quads { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--gutter); }
+.index-gallery__quad { width: 100%; aspect-ratio: 1 / 1; overflow: hidden; }
+.index-gallery__quad-img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
 /* FOOTER */
 #site-footer { background: var(--bg); border-top: 2px solid var(--primary); }
@@ -125,17 +138,19 @@ body {
   .page-text h1, .page-text h2, .page-text h3 { text-align: center; }
 }
 
-/* ====== Erweiterungen für die Fête-Seite ====== */
+/* ===================================================================== */
+/* ===================  ERGÄNZUNGEN FÜR FÊTE-SEITE  ==================== */
+/* ===================================================================== */
 
 /* Vollbreit wie Startseite */
 .page-inner--wide .page-img { display: none; }
 .page-inner--wide .page-text { grid-column: 1 / -1; }
 
-/* Banner */
+/* Banner (SVG) – Abstände */
 .fete-banner { margin: .15rem 0 1rem; }
 .fete-banner-img { display:block; width:100%; height:auto; }
 
-/* Meta-Zeile */
+/* Meta-Zeile (Stack mobil) */
 .fete-meta {
   width: 100%;
   display: flex; justify-content: center; align-items: center; gap: .6rem;
@@ -149,59 +164,64 @@ body {
   .fete-meta .sep { display: none; }
 }
 
-/* Info-Text */
+/* Info-Text (clean) */
 .info-block { margin: 1rem 0 2rem; }
 
-/* Slideshow – clean */
+/* ===== Hero-Slideshow (die funktionierende Version mit Rahmen+Rundungen) ===== */
 .fete-hero { margin: 1rem 0 2rem; }
 .fete-slider {
   position: relative;
   width: 100%;
   aspect-ratio: 16 / 9;
   overflow: hidden;
-  border: none;
-  border-radius: 0;
-  background: transparent;
+  border: 2px solid var(--primary);
+  border-radius: 12px;
+  background: #ddd;
 }
-.fete-static { width:100%; height:100%; object-fit:cover; display:block; }
-.fete-slide { position:absolute; inset:0; opacity:0; transition:opacity .35s ease; pointer-events:none; }
-.fete-slide.active { opacity:1; pointer-events:auto; }
-.fete-slide img, .fete-slide video { width:100%; height:100%; object-fit:cover; display:block; }
+.fete-slide {
+  position: absolute; inset: 0;
+  opacity: 0; transition: opacity .35s ease; pointer-events: none;
+}
+.fete-slide.active { opacity: 1; pointer-events: auto; }
+.fete-slide img, .fete-slide video { width: 100%; height: 100%; object-fit: cover; display: block; }
 
-/* Pfeile & Dots */
+/* Controls (runde Buttons) */
 .fete-control {
   position: absolute; top: 50%; transform: translateY(-50%);
-  background: transparent; border: none;
-  color: #fff; opacity: .85;
-  font-weight: 800;
-  font-size: clamp(1.4rem, 3.2vw, 2rem);
-  line-height: 1; padding: .25rem .35rem;
-  cursor: pointer; z-index: 5;
-  text-shadow: 0 0 10px rgba(0,0,0,.55);
+  border: 2px solid var(--primary); background: var(--bg); color: var(--primary);
+  font-weight: 800; width: 2.2rem; height: 2.2rem; line-height: 2rem; border-radius: 999px;
+  text-align: center; cursor: pointer; opacity: .9; z-index: 2;
 }
 .fete-control:hover { opacity: 1; }
-.fete-control.prev { left: .5rem; }
-.fete-control.next { right: .5rem; }
+.fete-control.prev { left: .6rem; }
+.fete-control.next { right: .6rem; }
 
+/* Dots */
 .fete-dots {
   position: absolute; left: 0; right: 0; bottom: .5rem;
-  display: flex; justify-content: center; gap: .35rem; padding: 0 .5rem; z-index: 5;
+  display: flex; justify-content: center; gap: .4rem; padding: 0 .5rem; z-index: 2;
 }
 .fete-dot {
-  width: .5rem; height: .5rem; border-radius: 50%;
-  border: none;
-  background: rgba(255,255,255,.9);
-  box-shadow: 0 0 6px rgba(0,0,0,.25);
-  cursor: pointer; opacity: .95;
+  width: .6rem; height: .6rem; border-radius: 999px;
+  border: 2px solid var(--primary); background: var(--bg); opacity: .85; cursor: pointer;
 }
-.fete-dot.active { background: var(--highlight); box-shadow: 0 0 6px rgba(0,0,0,.25); opacity: 1; }
+.fete-dot.active { background: var(--highlight); opacity: 1; }
+@media (max-width: 768px) {
+  .fete-hero { margin: 1.25rem 0 2rem; }
+  .fete-control { width: 2rem; height: 2rem; line-height: 1.8rem; }
+}
 
-/* Line-up */
-:root{ --lineup-min:1.8rem; --lineup-vw:5vw; --lineup-max:3rem; --lineup-row-gap:.6em; }
+/* ===== FÊTE: LINE-UP ===== */
+:root{
+  --lineup-min: 1.8rem;
+  --lineup-vw:  5vw;     /* bewusst 5vw (vorher 7.5) */
+  --lineup-max: 3rem;    /* bewusst 3rem (vorher 5) */
+  --lineup-row-gap: .6em;
+}
 .lineup { margin: 2.2rem 0 2rem; }
 .lineup-wrap { text-align: center; }
 
-/* Überschriften (Line-Up & Eintritt) */
+/* Überschriften (Line-Up & Eintritt) clean mit Unterstrich */
 .lineup .lineup-heading,
 .section-title{
   display:inline-block;
@@ -225,32 +245,34 @@ body {
 
 /* Day-Tag */
 .lineup .lineup-daytag{
-  display:inline-block; background:var(--primary); color:#fff;
-  font-weight:800; letter-spacing:.06em; border-radius:6px;
-  padding:.35rem .6rem; font-size:.95rem; margin:.25rem 0 .75rem 0;
+  display: inline-block; background: var(--primary); color: #fff;
+  font-weight: 800; letter-spacing: .06em; border-radius: 6px;
+  padding: .35rem .6rem; font-size: .95rem; margin: .25rem 0 .75rem 0;
 }
 
 /* Acts-Liste */
 .lineup .acts{
-  list-style:none; margin:0 0 1.4rem 0; padding:0;
-  display:flex; flex-wrap:wrap; justify-content:center; align-items:center;
-  row-gap:var(--lineup-row-gap); text-align:center;
+  list-style: none; margin: 0 0 1.4rem 0; padding: 0;
+  display: flex; flex-wrap: wrap; justify-content: center; align-items: center;
+  row-gap: var(--lineup-row-gap); text-align: center;
 }
 .lineup .acts li{
-  font-family:"Rubik Dirt","Montserrat",sans-serif;
-  text-transform:uppercase; letter-spacing:.03em; line-height:.9; color:var(--primary);
-  font-size:clamp(var(--lineup-min),var(--lineup-vw),var(--lineup-max));
-  padding:0 .12em;
+  font-family: "Rubik Dirt", "Montserrat", sans-serif;
+  text-transform: uppercase; letter-spacing: .03em; line-height: .9;
+  color: var(--primary);
+  font-size: clamp(var(--lineup-min), var(--lineup-vw), var(--lineup-max));
+  padding: 0 .12em;
 }
+/* Punkte in Rot – nur zwischen Acts derselben Zeile (JS setzt .row-start) */
 .lineup .acts li + li::before{
-  content:"•"; display:inline-block; margin:0 .18em 0 .2em; vertical-align:middle;
+  content: "•";
+  display: inline-block; margin: 0 .18em 0 .2em; vertical-align: middle;
   color: var(--highlight); opacity: .95;
 }
-.lineup .acts li.row-start::before{ content:none; }
-
-@media (max-width: 768px){
+.lineup .acts li.row-start::before{ content: none; }
+@media (max-width: 768px) {
   .lineup { margin: 1.6rem 0 2rem; }
-  .lineup .lineup-daytag{ margin-top:.5rem; }
+  .lineup .lineup-daytag { margin-top: .5rem; }
 }
 
 /* Eintritt-Block */
@@ -259,6 +281,6 @@ body {
 .entry ul { list-style: none; margin: 0 0 1rem 0; padding: 0; }
 .entry li { margin: .25rem 0; }
 
-/* Fallbacks */
+/* Fallbacks (Sichtbarkeit/Höhe auch ohne JS) */
 #feteSlider .fete-slide:first-of-type { opacity: 1; }
 #feteSlider { min-height: 240px; }
