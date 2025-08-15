@@ -12,8 +12,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&display=swap" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css2?family=Rubik+Dirt&display=swap" rel="stylesheet" />
 
-  <!-- CSS (Cache-Buster anpassen bei Bedarf) -->
-  <link rel="stylesheet" href="/styles.css?v=24" />
+  <!-- CSS -->
+  <link rel="stylesheet" href="/styles.css?v=27" />
 
   <!-- Event JSON-LD -->
   <script type="application/ld+json">
@@ -58,26 +58,37 @@
     <section class="container page-inner page-inner--wide">
       <div class="page-text">
 
-        <!-- HERO: Banner-Zeile (SVG + Text) + Slideshow -->
+        <!-- ================= HERO: Banner (voll als Inline-SVG) ================= -->
+        <figure class="fete-banner-full" role="img" aria-label="Fête du Seeee – Sommerfest · Konzerte · Theater · Kinderprogramm">
+          <!--
+            Das komplette Banner ist ein skalierendes SVG mit fester viewBox.
+            Links wird dein Icon aus Fete_Artwork.svg eingebettet.
+            Text nutzt Montserrat (geladen im <head>).
+          -->
+          <svg class="fete-banner-svg" viewBox="0 0 1600 260" xmlns="http://www.w3.org/2000/svg">
+            <!-- Icon links -->
+            <image href="Fete_Artwork.svg" x="0" y="20" width="220" height="220" />
+
+            <!-- Headline -->
+            <g fill="#016DAF" font-family="Montserrat, sans-serif" font-weight="800">
+              <text x="260" y="160" font-size="140" style="letter-spacing:.5px">Fête du Seeee</text>
+              <!-- #3 in Orange, bündig direkt hinter Headline -->
+              <text x="1205" y="160" font-size="160" fill="#FC411F">#3</text>
+            </g>
+
+            <!-- Subline -->
+            <g fill="#016DAF" font-family="Montserrat, sans-serif" font-weight="700" font-size="46" letter-spacing="2">
+              <text x="260" y="222">SOMMERFEST</text>
+              <text x="540" y="222">• KONZERTE</text>
+              <text x="880" y="222">• THEATER</text>
+              <text x="1150" y="222">• KINDERPROGRAMM</text>
+            </g>
+          </svg>
+        </figure>
+        <!-- ================= /HERO: Banner ================= -->
+
+        <!-- ================= Slideshow ================= -->
         <section class="fete-hero">
-
-          <!-- Banner-Zeile -->
-          <div class="fete-banner-row">
-            <!-- Inline-SVG aus demselben Ordner laden -->
-            <div id="feteBannerInline" class="fete-banner-inline" aria-hidden="true"></div>
-
-            <!-- Textblock (echter Text, automatisch gleiche Breite) -->
-            <div class="fete-banner-text">
-              <h1 class="fete-title">
-                FÊTE DU SEEEE<span class="fete-ordinal">#3</span>
-              </h1>
-              <p class="fete-subtitle">
-                SOMMERFEST · KONZERTE · THEATER · KINDERPROGRAMM
-              </p>
-            </div>
-          </div>
-
-          <!-- Slideshow -->
           <div class="fete-slider" id="feteSlider" aria-label="Festival-Impressionen">
             <img class="fete-static" src="1.jpg" alt="Festivalbild 1" />
             <button class="fete-control prev" aria-label="Vorheriges">‹</button>
@@ -86,7 +97,7 @@
           </div>
         </section>
 
-        <!-- ===== LINE-UP ===== -->
+        <!-- ================= LINE-UP ================= -->
         <section class="lineup">
           <div class="lineup-wrap">
             <div class="lineup-heading">Line-Up</div>
@@ -116,8 +127,9 @@
             </div>
           </div>
         </section>
+        <!-- ================= /LINE-UP ================= -->
 
-        <!-- ===== INFO-GRID (inkl. Plakat) ===== -->
+        <!-- ================= INFO-GRID (inkl. Plakat) ================= -->
         <section class="fete-info">
           <div class="fete-card fete-card--poster">
             <img src="/fete.png" alt="Plakat Fête du Seeee #3" />
@@ -187,43 +199,7 @@
     }
   </script>
 
-  <!-- JS: Inline-SVG in den DOM ziehen (aus Fete_Artwork.svg im selben Ordner) -->
-  <script>
-  (function(){
-    const host = document.getElementById('feteBannerInline');
-    if (!host) return;
-
-    function folderPath(){
-      const p = location.pathname;
-      if (p.endsWith('/')) return p;
-      if (/\/index\.html?$/i.test(p)) return p.replace(/index\.html?$/i,'');
-      if (p.includes('.')) return p.replace(/[^/]+$/, '');
-      return p + '/';
-    }
-    const url = location.origin + folderPath() + 'Fete_Artwork.svg';
-
-    fetch(url, { cache: 'no-store' })
-      .then(r => r.ok ? r.text() : Promise.reject())
-      .then(txt => {
-        const m = txt.match(/<svg[\s\S]*<\/svg>/i);
-        host.innerHTML = m ? m[0] : txt;
-        const svg = host.querySelector('svg');
-        if (svg){
-          svg.setAttribute('focusable','false');
-          svg.removeAttribute('width');
-          svg.removeAttribute('height');
-          svg.style.width = '100%';
-          svg.style.height = 'auto';
-          svg.setAttribute('aria-hidden', 'true');
-        }
-      })
-      .catch(() => {
-        host.innerHTML = '<img src="'+url+'" alt="Fête du Seeee – Banner" />';
-      });
-  })();
-  </script>
-
-  <!-- JS: Slideshow-Loader + Autoplay -->
+  <!-- JS: Slideshow (lädt 1–9.jpg/.mp4 aus Ordner + Autoplay) -->
   <script>
   (function(){
     const slider = document.getElementById('feteSlider');
@@ -296,7 +272,6 @@
         const r = await checkOne(n);
         if (r) found.push(r);
       }
-
       if (!found.length){ return; }
 
       staticImg && staticImg.remove();
@@ -375,7 +350,7 @@
   })();
   </script>
 
-  <!-- JS: Line-up – kein Punkt am Zeilenanfang (nur innerhalb derselben Zeile) -->
+  <!-- JS: Line-up – kein Punkt am Zeilenanfang -->
   <script>
   (function () {
     function updateLineupSeparators() {
@@ -397,43 +372,6 @@
     window.addEventListener('resize', debounce);
     window.addEventListener('orientationchange', debounce);
     if (document.fonts && document.fonts.ready) { document.fonts.ready.then(updateLineupSeparators); }
-  })();
-  </script>
-
-  <!-- JS: Titel & Subline auf gleiche Breite skalieren -->
-  <script>
-  (function(){
-    const box = document.querySelector('.fete-banner-text');
-    const title = document.querySelector('.fete-title');
-    const sub = document.querySelector('.fete-subtitle');
-    if (!box || !title || !sub) return;
-
-    function basePx(el){
-      if(!el.dataset.basePx){
-        const cs = getComputedStyle(el);
-        el.dataset.basePx = parseFloat(cs.fontSize) || 16;
-      }
-      return parseFloat(el.dataset.basePx);
-    }
-    function fit(el, target){
-      const base = basePx(el);
-      el.style.fontSize = base + 'px';          // reset
-      const w = el.scrollWidth || 1;
-      const scale = Math.min(1.8, Math.max(0.6, target / w));
-      el.style.fontSize = (base * scale) + 'px';
-    }
-    function fitBoth(){
-      const target = box.clientWidth - 2;
-      if (target > 0){
-        fit(title, target);
-        fit(sub, target);
-      }
-    }
-    const deb = (fn,ms)=>{ let t; return ()=>{ clearTimeout(t); t=setTimeout(fn,ms); }; };
-
-    window.addEventListener('load', fitBoth);
-    window.addEventListener('resize', deb(fitBoth, 120));
-    if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitBoth);
   })();
   </script>
 </body>
