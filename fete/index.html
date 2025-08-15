@@ -12,8 +12,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&display=swap" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css2?family=Rubik+Dirt&display=swap" rel="stylesheet" />
 
-  <!-- Dein CSS (Cache-Buster ggf. anpassen) -->
-  <link rel="stylesheet" href="/styles.css?v=19" />
+  <!-- Dein CSS (Cache-Buster bei Bedarf anpassen) -->
+  <link rel="stylesheet" href="/styles.css?v=20" />
 
   <!-- Event JSON-LD -->
   <script type="application/ld+json">
@@ -58,14 +58,22 @@
     <section class="container page-inner page-inner--wide">
       <div class="page-text">
 
-        <!-- HERO: Inline-SVG-Banner + Slideshow -->
+        <!-- HERO: Banner-Zeile mit inline SVG + Textblock, danach Slideshow -->
         <section class="fete-hero">
 
-          <!-- ► Inline-SVG wird hier reingerendert -->
-          <div id="feteBannerInline" class="fete-banner-inline"
-               aria-label="Fête du Seeee – Banner"></div>
+          <!-- Banner-Zeile -->
+          <div class="fete-banner-row">
+            <!-- ► Inline-SVG wird hier reingerendert -->
+            <div id="feteBannerInline" class="fete-banner-inline" aria-hidden="true"></div>
 
-          <!-- ► Slideshow -->
+            <!-- ► Textblock (echter Text, Block-Optik/Justify) -->
+            <div class="fete-banner-text">
+              <h1 class="fete-title">FÊTE DU SEEEE</h1>
+              <p class="fete-subtitle">Festival am Strandbad Tegelsee · Konzerte, Theater &amp; Kinderprogramm</p>
+            </div>
+          </div>
+
+          <!-- Slideshow -->
           <div class="fete-slider" id="feteSlider" aria-label="Festival-Impressionen">
             <img class="fete-static" src="1.jpg" alt="Festivalbild 1" />
             <button class="fete-control prev" aria-label="Vorheriges">‹</button>
@@ -321,7 +329,7 @@
           el.classList.toggle('active', active);
           el.setAttribute('aria-hidden', active ? 'false' : 'true');
           const v = el.querySelector('video');
-          if (v){ active ? v.play().catch(()=>{}) : v.pause(); }
+        if (v){ active ? v.play().catch(()=>{}) : v.pause(); }
         });
         dots.forEach((d, idx)=>d.classList.toggle('active', idx === current));
       }
