@@ -13,7 +13,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Rubik+Dirt&display=swap" rel="stylesheet" />
 
   <!-- CSS -->
-  <link rel="stylesheet" href="/styles.css?v=30" />
+  <link rel="stylesheet" href="/styles.css?v=31" />
 
   <!-- Event JSON-LD -->
   <script type="application/ld+json">
@@ -58,12 +58,19 @@
     <section class="container page-inner page-inner--wide">
       <div class="page-text">
 
-        <!-- ===== Einfaches Banner als EIN SVG (keine Text-Überlappungen mehr) ===== -->
+        <!-- Banner-SVG (ein Bild) -->
         <figure class="fete-banner">
           <img class="fete-banner-img" src="fete-banner.svg" alt="Fête du Seeee – Sommerfest • Konzerte • Theater • Kinderprogramm" />
         </figure>
 
-        <!-- ===== Slideshow (lädt 1–9.jpg/.mp4 aus Ordner) ===== -->
+        <!-- Meta-Zeile -->
+        <div class="fete-meta">
+          <span>Strandbad Tegelsee</span>
+          <span class="sep">•</span>
+          <span>29. &amp; 30. August 2025</span>
+        </div>
+
+        <!-- Slideshow -->
         <section class="fete-hero">
           <div class="fete-slider" id="feteSlider" aria-label="Festival-Impressionen">
             <img class="fete-static" src="1.jpg" alt="Festivalbild 1" />
@@ -72,6 +79,23 @@
             <div class="fete-dots" role="tablist" aria-label="Slideshow-Navigation"></div>
           </div>
         </section>
+
+        <!-- Info-Block -->
+        <div class="info-block">
+          <p>
+            Dieses Jahr wird unsere Fête du Seeee noch bunter und größer: Wir feiern
+            an zwei Tagen auf gleich <strong>zwei Bühnen</strong> im wunderschönen
+            Strandbad Tegelsee! Freut euch auf ein vielseitiges Programm aus
+            Musik, Theater und Kunst, das von ehrenamtlichen Künstler*innen für euch
+            gestaltet wird.
+          </p>
+          <p>
+            Genießt tagsüber Kultur-Highlights und bunte Aktionen für Groß und Klein
+            direkt am Wasser, und lasst euch abends von mitreißenden Konzerten und
+            Performances auf beiden Bühnen mitreißen. Bei den unterschiedlichsten Genres ist für jeden Geschmack
+            etwas dabei!
+          </p>
+        </div>
 
         <!-- ===== LINE-UP ===== -->
         <section class="lineup">
@@ -105,10 +129,25 @@
         </section>
         <!-- ===== /LINE-UP ===== -->
 
-        <!-- Rest wie gehabt (optional) -->
+        <!-- Eintritt -->
+        <h3 class="section-title">Eintritt</h3>
+        <div class="entry">
+          <p><strong>nur Strandbadeintritt:</strong></p>
+          <ul>
+            <li>Erwachsene: 6 €</li>
+            <li>Ermäßigt: 4 €</li>
+            <li>Ab 18 Uhr: 2,50 €</li>
+          </ul>
+          <p>
+            Kommt vorbei, bringt eure Freund*innen mit und lasst uns gemeinsam am
+            Tegeler See feiern – wir freuen uns auf euch!
+          </p>
+        </div>
+
+        <!-- Optional: Vorjahre -->
         <div class="divider_long"></div>
         <h2>Fête du Seeee #2</h2>
-        <img src="/fete_2.jpg" alt="Plakat Fête du Seeee #2" class="float-right-third" />
+        <img src="/fete_2.jpg" alt="Plakat Fête du Seeee #2 im Strandbad Tegelsee" class="float-right-third" />
         <p>Am kommenden Samstag, den 31. August 2024 …</p>
 
         <div class="divider_long"></div>
@@ -143,7 +182,7 @@
     }
   </script>
 
-  <!-- JS: Slideshow (robust, ohne Debug-Ausgabe) -->
+  <!-- JS: Slideshow -->
   <script>
   (function(){
     const slider = document.getElementById('feteSlider');
@@ -169,8 +208,8 @@
       v.addEventListener('loadedmetadata',ok);v.addEventListener('error',err);v.src=url;});}
 
     async function check(n){
-      const jpg = base+`${n}.jpg`; const r1 = await probeImg(jpg); if (r1.ok) return {idx:n,type:'jpg',node:r1.node};
-      const mp4 = base+`${n}.mp4`; const r2 = await probeVid(mp4); if (r2.ok) return {idx:n,type:'mp4',node:r2.node};
+      const jpg = base+`${n}.jpg`; const r1 = await probeImg(jpg); if (r1.ok) return {idx:n,node:r1.node};
+      const mp4 = base+`${n}.mp4`; const r2 = await probeVid(mp4); if (r2.ok) return {idx:n,node:r2.node};
       return null;
     }
 
@@ -219,7 +258,7 @@
   <!-- JS: Line-up – kein Punkt am Zeilenanfang -->
   <script>
   (function () {
-    function updateDots() {
+    function updateLineupSeparators() {
       document.querySelectorAll('.lineup .acts').forEach(ul => {
         const items = Array.from(ul.children);
         let lastTop = null;
@@ -227,17 +266,17 @@
           li.classList.remove('row-start');
           const t = li.offsetTop;
           if (idx === 0 || lastTop === null || Math.abs(t - lastTop) > 1) {
-            li.classList.add('row-start'); // Zeilenanfang -> kein Punkt davor
+            li.classList.add('row-start');
             lastTop = t;
           }
         });
       });
     }
-    const deb = (() => { let id; return () => { clearTimeout(id); id = setTimeout(updateDots, 100); }; })();
-    window.addEventListener('load', updateDots);
-    window.addEventListener('resize', deb);
-    window.addEventListener('orientationchange', deb);
-    if (document.fonts && document.fonts.ready) { document.fonts.ready.then(updateDots); }
+    const debounce = (() => { let id; return () => { clearTimeout(id); id = setTimeout(updateLineupSeparators, 100); }; })();
+    window.addEventListener('load', updateLineupSeparators);
+    window.addEventListener('resize', debounce);
+    window.addEventListener('orientationchange', debounce);
+    if (document.fonts && document.fonts.ready) { document.fonts.ready.then(updateLineupSeparators); }
   })();
   </script>
 </body>
