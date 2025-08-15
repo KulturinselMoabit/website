@@ -563,3 +563,54 @@ body {
 @media (max-width: 640px){
   .fete-card { grid-column: span 12; }
 }
+
+/* Banner-Zeile: SVG links, Textblock rechts */
+.fete-banner-row{
+  display:flex;
+  align-items:center;
+  gap: clamp(12px, 2vw, 24px);
+  margin: 0 0 .8rem;
+}
+
+/* Inline-SVG-Größe (reine Grafik; skaliert mit) */
+.fete-banner-inline{
+  flex: 0 0 clamp(72px, 12vw, 120px);
+}
+.fete-banner-inline svg,
+.fete-banner-inline img{
+  display:block;
+  width:100%;
+  height:auto;
+}
+
+/* Textblock: „Block“-Wirkung durch Justify-Trick */
+.fete-banner-text{ flex: 1 1 auto; }
+.fete-title{
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .02em;
+  font-size: clamp(1.6rem, 4.5vw, 3rem);
+  line-height: 1.05;
+  text-align: justify;
+}
+.fete-title::after{ content:""; display:inline-block; width:100%; } /* volljustieren */
+
+.fete-subtitle{
+  margin-top: .25rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  font-size: clamp(.9rem, 2.2vw, 1.15rem);
+  line-height: 1.1;
+  text-align: justify;
+}
+.fete-subtitle::after{ content:""; display:inline-block; width:100%; }
+
+@media (max-width: 640px){
+  .fete-banner-row{ flex-direction: column; align-items: center; text-align: center; }
+  .fete-title,
+  .fete-subtitle{ text-align: center; }
+  .fete-title::after,
+  .fete-subtitle::after{ display: none; } /* auf Mobile keine erzwungene Block-Justify */
+}
