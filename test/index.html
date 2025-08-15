@@ -10,11 +10,10 @@
 
   <!-- Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&display=swap" rel="stylesheet" />
-  <!-- „gestempelte“ Schrift nur fürs Line-up -->
-  <link href="https://fonts.googleapis.com/css2?family=Rubik+Dirt&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Rubik+Dirt&display=swap" rel="stylesheet" />
 
-  <!-- Deine bestehende CSS (Cache-Buster hochgezählt) -->
-  <link rel="stylesheet" href="/styles.css?v=10" />
+  <!-- CSS (Cache-Buster hochzählen, falls nötig) -->
+  <link rel="stylesheet" href="/styles.css?v=11" />
 
   <!-- Event JSON-LD -->
   <script type="application/ld+json">
@@ -85,7 +84,6 @@
           <div class="fete-slider" id="feteSlider" aria-label="Festival-Impressionen">
             <!-- Sichtbarer Fallback (wird per JS entfernt, sobald Slides da sind) -->
             <img class="fete-static" src="1.jpg" alt="Festivalbild 1" />
-
             <button class="fete-control prev" aria-label="Vorheriges">‹</button>
             <button class="fete-control next" aria-label="Nächstes">›</button>
             <div class="fete-dots" role="tablist" aria-label="Slideshow-Navigation"></div>
@@ -199,21 +197,20 @@
     }
   </script>
 
-  <!-- JS: Slideshow-Loader mit Diagnose-Ausgabe -->
+  <!-- JS: Slideshow-Loader mit Diagnose, robust (HEAD + Fallback) -->
   <script>
   (function(){
     const slider = document.getElementById('feteSlider');
     if (!slider) return;
 
-    const staticImg = slider.querySelector('.fete-static'); // Fallback-Bild
+    const staticImg = slider.querySelector('.fete-static'); // Fallback
     let prevBtn = slider.querySelector('.fete-control.prev');
     let nextBtn = slider.querySelector('.fete-control.next');
     let dotsWrap = slider.querySelector('.fete-dots');
-    const hero = slider.closest ? slider.closest('.fete-hero') : null;
 
-    // kleine Debug-Anzeige unten im Slider
+    // Debug-Anzeige
     const dbg = document.createElement('div');
-    dbg.style.cssText = 'position:absolute;left:.5rem;bottom:.5rem;right:.5rem;padding:.35rem .5rem;border-radius:6px;background:rgba(255,255,255,.9);border:1px solid #016DAF;font:12px/1.3 monospace;color:#016DAF;z-index:3';
+    dbg.style.cssText = 'position:absolute;left:.5rem;bottom:.5rem;right:.5rem;padding:.35rem .5rem;border-radius:6px;background:rgba(255,255,255,.92);border:1px solid #016DAF;font:12px/1.3 monospace;color:#016DAF;z-index:3';
     dbg.textContent = 'Lade…';
     slider.appendChild(dbg);
 
@@ -222,88 +219,97 @@
     if (!nextBtn){ nextBtn = mk('button','fete-control next','›'); nextBtn.setAttribute('aria-label','Nächstes'); slider.appendChild(nextBtn); }
     if (!dotsWrap){ dotsWrap = mk('div','fete-dots'); dotsWrap.setAttribute('role','tablist'); dotsWrap.setAttribute('aria-label','Slideshow-Navigation'); slider.appendChild(dotsWrap); }
 
-    // Ordnerpfad robust ableiten (/test, /test/, /test/index.html, …)
-    function folderPath(){
-      const p = location.pathname;
-      if (p.endsWith('/')) return p;
-      if (/\/index\.html?$/i.test(p)) return p.replace(/index\.html?$/i,'');
-      if (p.includes('.')) return p.replace(/[^/]+$/, '');
-      return p + '/';
-    }
-    const base = location.origin + folderPath();
+    // Immer Ordner-URL (…/test/ oder …/fete/)
+    const base = new URL('.', location.href).href;
+    const CAND = Array.from({length:9}, (_,i)=>i+1);
 
-    function loadImage(url){
-      return new Promise(resolve=>{
-        const img = new Image();
-        img.onload  = ()=>resolve({ok:true, type:'jpg', url, node:img});
-        img.onerror = ()=>resolve({ok:false, type:'jpg', url});
-        img.loading='lazy'; img.decoding='async'; img.src = url;
+    async function head(url, ms=6000){
+      if (!('fetch' in window)) return null; // kein fetch -> kein HEAD
+      try{
+        const ctrl = new AbortController();
+        const t = setTimeout(()=>ctrl.abort(), ms);
+        const r = await fetch(url, { method:'HEAD', cache:'no-store', signal: ctrl.signal });
+        clearTimeout(t);
+        return r.ok ? true : (r.status===405 || r.status===501 ? null : false);
+      }catch(_){ return null; } // null -> unzuverlässig -> Fallback probieren
+    }
+    function probeImg(url){
+      return new Promise(res=>{
+        const im = new Image();
+        im.onload = ()=>res({ok:true, node:im});
+        im.onerror= ()=>res({ok:false});
+        im.loading='lazy'; im.decoding='async'; im.src=url;
       });
     }
-    function loadVideo(url){
-      return new Promise(resolve=>{
+    function probeVid(url){
+      return new Promise(res=>{
         const v = document.createElement('video');
-        v.preload='metadata'; v.muted=true; v.playsInline=true; v.loop=true;
-        const ok = ()=>{ cleanup(); resolve({ok:true, type:'mp4', url, node:v}); };
-        const err= ()=>{ cleanup(); resolve({ok:false, type:'mp4', url}); };
-        function cleanup(){ v.removeEventListener('loadedmetadata', ok); v.removeEventListener('error', err); }
+        v.preload='metadata'; v.muted=true; v.loop=true; v.playsInline=true;
+        const ok=()=>{ done(); res({ok:true, node:v}); };
+        const err=()=>{ done(); res({ok:false}); };
+        function done(){ v.removeEventListener('loadedmetadata', ok); v.removeEventListener('error', err); }
         v.addEventListener('loadedmetadata', ok);
         v.addEventListener('error', err);
         v.src = url;
       });
     }
-    async function probe(n){
+
+    async function checkOne(n){
       const jpg = base + `${n}.jpg`;
-      let r = await loadImage(jpg);
-      if (r.ok){ r.idx = n; return r; }
+      const h = await head(jpg);
+      if (h === true)  return {idx:n, type:'jpg', url:jpg};
+      if (h === false) {
+        // HEAD sagt sicher "nein" -> mp4 testen
+      } else {
+        // HEAD unsicher -> Ladeprobe
+        const r = await probeImg(jpg);
+        if (r.ok) return {idx:n, type:'jpg', url:jpg};
+      }
       const mp4 = base + `${n}.mp4`;
-      r = await loadVideo(mp4);
-      if (r.ok){ r.idx = n; return r; }
-      return { ok:false, idx:n, type:'none', url:jpg+'|'+mp4 };
+      const h2 = await head(mp4);
+      if (h2 === true) return {idx:n, type:'mp4', url:mp4};
+      if (h2 !== false){
+        const r2 = await probeVid(mp4);
+        if (r2.ok) return {idx:n, type:'mp4', url:mp4};
+      }
+      return null;
     }
 
     (async function init(){
-      const want = 9;
-      const results = await Promise.all(Array.from({length: want}, (_,i)=>probe(i+1)));
-      const items = results.filter(r=>r.ok).sort((a,b)=>a.idx - b.idx);
+      const found = [];
+      for (const n of CAND){
+        const r = await checkOne(n);
+        if (r) found.push(r);
+        dbg.textContent = `Pfad: ${base}\n` + (found.length ? found.map(x=>`✅ ${x.idx}.${x.type}`).join(' | ') : '—');
+      }
 
-      // Debugliste anzeigen
-      const lines = results.map(r=>{
-        if (r.ok) return `✅ ${r.idx}.${r.type}`;
-        return `❌ ${r.idx}.jpg/.mp4`;
-      });
-      dbg.textContent = `Pfad: ${base}\n` + lines.join('  |  ');
-
-      if (!items.length){
-        // nichts gefunden -> Fallback bleibt + Hinweis
-        const msg = document.createElement('div');
-        msg.textContent = 'Keine Medien gefunden. Erwartet: 1.jpg … 9.jpg oder .mp4 im selben Ordner wie diese HTML.';
-        msg.style.cssText = 'margin-top:.5rem;padding:1rem;border:2px solid #016DAF;border-radius:8px;background:#fff;text-align:center;';
-        hero && hero.appendChild(msg);
+      if (!found.length){
+        dbg.textContent = `Pfad: ${base}\nKeine Medien gefunden (1–9 .jpg/.mp4 im selben Ordner).`;
         return;
       }
 
-      // Fallback entfernen, wenn irgendwas gefunden wurde
+      // Fallback entfernen
       staticImg && staticImg.remove();
 
+      // Slides bauen
       const slides = [], dots = [];
-      function addSlide(node, i){
-        const wrap = mk('div','fete-slide');
-        wrap.setAttribute('data-index', i);
-        wrap.setAttribute('aria-hidden','true');
+      function addSlide(item, i){
+        const wrap = mk('div','fete-slide'); wrap.dataset.index = i; wrap.setAttribute('aria-hidden','true');
+        let node;
+        if (item.type === 'jpg'){
+          node = new Image(); node.src = item.url; node.alt = `Festivalbild ${item.idx}`; node.loading='lazy'; node.decoding='async';
+        } else {
+          node = document.createElement('video'); node.src = item.url; node.preload='metadata'; node.muted=true; node.loop=true; node.playsInline=true;
+        }
         wrap.appendChild(node);
         slider.insertBefore(wrap, dotsWrap);
 
-        const dot = mk('button','fete-dot');
-        dot.type='button';
-        dot.setAttribute('aria-label','Slide '+(i+1));
-        dotsWrap.appendChild(dot);
-
+        const dot = mk('button','fete-dot'); dot.type='button'; dot.setAttribute('aria-label', `Slide ${i+1}`); dotsWrap.appendChild(dot);
         slides.push(wrap); dots.push(dot);
       }
-      items.forEach((it,i)=>addSlide(it.node, i));
+      found.sort((a,b)=>a.idx-b.idx).forEach((it,i)=>addSlide(it,i));
 
-      // Pfeile & Dots ans Ende
+      // Controls & Dots nach vorne holen
       slider.appendChild(prevBtn);
       slider.appendChild(nextBtn);
       slider.appendChild(dotsWrap);
@@ -340,7 +346,6 @@
         sx = null;
       });
 
-      // Bei nur 1 Slide: Pfeile/Dots ausblenden (optional)
       if (slides.length === 1){
         prevBtn.style.display = nextBtn.style.display = 'none';
         dotsWrap.style.display = 'none';
@@ -348,16 +353,6 @@
 
       show(0);
     })();
-
-    // Sichtbarer Fehler-Hinweis, falls JS hart crasht
-    window.addEventListener('error', (e)=>{
-      const hero = document.querySelector('.fete-hero');
-      if (!hero) return;
-      const note = document.createElement('pre');
-      note.textContent = 'Script-Fehler: ' + (e.message || e.type);
-      note.style.cssText = 'margin-top:.5rem;padding:1rem;border:2px dashed #FC411F;border-radius:8px;background:#fff;color:#FC411F;white-space:pre-wrap;';
-      hero.appendChild(note);
-    });
   })();
   </script>
 
