@@ -12,8 +12,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&display=swap" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css2?family=Rubik+Dirt&display=swap" rel="stylesheet" />
 
-  <!-- Deine CSS (Cache-Buster gern anpassen) -->
-  <link rel="stylesheet" href="/styles.css?v=15" />
+  <!-- Dein CSS (Cache-Buster gern anpassen) -->
+  <link rel="stylesheet" href="/styles.css?v=16" />
 
   <!-- Event JSON-LD -->
   <script type="application/ld+json">
@@ -79,43 +79,21 @@
     <section class="container page-inner page-inner--wide">
       <div class="page-text">
 
-        <!-- HERO: Inline-SVG-Titel + Slideshow -->
+        <!-- HERO: Grafik (SVG) + Headline-Block (normaler Text) + Slideshow -->
         <section class="fete-hero">
-          <!-- ► Inline-SVG: editierbarer Text, Block-Optik -->
-          <figure class="fete-title" aria-label="Festivalüberschrift">
-            <svg class="fete-svg-title" viewBox="0 0 1200 320" role="img" aria-labelledby="feteTitleLabel" xmlns="http://www.w3.org/2000/svg">
-              <title id="feteTitleLabel">Fête du Seeee – 29–30 Aug 2025 · Strandbad Tegelsee</title>
 
-              <!-- farbiger Block (blau) -->
-              <rect x="24" y="24" width="1152" height="220" rx="28" fill="var(--primary)"/>
-              <!-- „Schlagschatten“-Kante in Highlight unten -->
-              <rect x="24" y="238" width="1152" height="8" rx="4" fill="var(--highlight)"/>
-
-              <!-- Haupttitel (Montserrat 800) -->
-              <text x="50%" y="120" text-anchor="middle"
-                    font-family="Montserrat, Arial, sans-serif"
-                    font-weight="800"
-                    font-size="96"
-                    letter-spacing="2"
-                    fill="#fff">
-                FÊTE DU SEEEE
-              </text>
-
-              <!-- Subzeile -->
-              <text x="50%" y="190" text-anchor="middle"
-                    font-family="Montserrat, Arial, sans-serif"
-                    font-weight="700"
-                    font-size="40"
-                    letter-spacing="1.5"
-                    fill="#fff">
-                29–30 AUG 2025 · STRANDBAD TEGELSEE
-              </text>
-
-              <!-- orangener Unterstrich als Akzent -->
-              <rect x="180" y="208" width="840" height="10" rx="5" fill="var(--highlight)"/>
-            </svg>
+          <!-- ► Grafik als SVG-Datei -->
+          <figure class="fete-graphic" aria-label="Festivalgrafik">
+            <img src="Fete_Artwork.svg" alt="Fête du Seeee – Grafik" />
           </figure>
 
+          <!-- ► Headline-Block als echter Text -->
+          <div class="hero-headline" role="group" aria-label="Festivalüberschrift">
+            <h1 class="hero-title">FÊTE DU SEEEE</h1>
+            <p class="hero-subtitle">29–30 AUG 2025 · STRANDBAD TEGELSEE – Musik, Theater &amp; Kinderprogramm</p>
+          </div>
+
+          <!-- ► Slideshow -->
           <div class="fete-slider" id="feteSlider" aria-label="Festival-Impressionen">
             <!-- Sichtbarer Fallback (erscheint sofort, wird entfernt wenn Slides da sind) -->
             <img class="fete-static" src="1.jpg" alt="Festivalbild 1" />
@@ -124,8 +102,6 @@
             <div class="fete-dots" role="tablist" aria-label="Slideshow-Navigation"></div>
           </div>
         </section>
-
-        <h1>Fête du Seeee #3</h1>
 
         <!-- ===== LINE-UP ===== -->
         <section class="lineup">
@@ -138,6 +114,7 @@
                 <li>Circus Rhapsody</li>
                 <li>Blue Saloon</li>
                 <li>The Brehmes’</li>
+                <li>Futari</li>
                 <li>Theater &amp; Chor für und von Kindern</li>
               </ul>
             </div>
@@ -149,6 +126,8 @@
                 <li>Crescendo Planet</li>
                 <li>XIX</li>
                 <li>Noah &amp; Safa</li>
+                <li>Kvytlyst</li>
+                <li>Julius Kayser</li>
                 <li>Theater &amp; Chor für und von Kindern</li>
               </ul>
             </div>
@@ -197,13 +176,13 @@
         <div class="divider_long"></div>
 
         <!-- Vorjahre (optional) -->
-        <h1>Fête du Seeee #2</h1>
+        <h2>Fête du Seeee #2</h2>
         <img src="/fete_2.jpg" alt="Plakat Fête du Seeee #2 im Strandbad Tegelsee" class="float-right-third" />
         <p>Am kommenden Samstag, den 31. August 2024 …</p>
 
         <div class="divider_long"></div>
 
-        <h1>Fête du Seeee #1</h1>
+        <h2>Fête du Seeee #1</h2>
         <p>Wir feiern ein Fête du Seeee im Strandbad! …</p>
 
       </div>
