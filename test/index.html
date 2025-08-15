@@ -12,8 +12,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&display=swap" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css2?family=Rubik+Dirt&display=swap" rel="stylesheet" />
 
-  <!-- CSS (Cache-Buster hochzählen, falls nötig) -->
-  <link rel="stylesheet" href="/styles.css?v=11" />
+  <!-- Deine bestehende CSS -->
+  <link rel="stylesheet" href="/styles.css?v=12" />
 
   <!-- Event JSON-LD -->
   <script type="application/ld+json">
@@ -197,7 +197,7 @@
     }
   </script>
 
-  <!-- JS: Slideshow-Loader mit Diagnose, robust (HEAD + Fallback) -->
+  <!-- JS: Slideshow-Loader (ohne Debug, mit integriertem Autoplay) -->
   <script>
   (function(){
     const slider = document.getElementById('feteSlider');
@@ -208,60 +208,49 @@
     let nextBtn = slider.querySelector('.fete-control.next');
     let dotsWrap = slider.querySelector('.fete-dots');
 
-    // Debug-Anzeige
-    const dbg = document.createElement('div');
-    dbg.style.cssText = 'position:absolute;left:.5rem;bottom:.5rem;right:.5rem;padding:.35rem .5rem;border-radius:6px;background:rgba(255,255,255,.92);border:1px solid #016DAF;font:12px/1.3 monospace;color:#016DAF;z-index:3';
-    dbg.textContent = 'Lade…';
-    slider.appendChild(dbg);
-
-    function mk(tag, cls, txt){ const el = document.createElement(tag); if (cls) el.className = cls; if (txt!=null) el.textContent = txt; return el; }
+    function mk(tag, cls, txt){ const el=document.createElement(tag); if(cls)el.className=cls; if(txt!=null)el.textContent=txt; return el; }
     if (!prevBtn){ prevBtn = mk('button','fete-control prev','‹'); prevBtn.setAttribute('aria-label','Vorheriges'); slider.appendChild(prevBtn); }
     if (!nextBtn){ nextBtn = mk('button','fete-control next','›'); nextBtn.setAttribute('aria-label','Nächstes'); slider.appendChild(nextBtn); }
     if (!dotsWrap){ dotsWrap = mk('div','fete-dots'); dotsWrap.setAttribute('role','tablist'); dotsWrap.setAttribute('aria-label','Slideshow-Navigation'); slider.appendChild(dotsWrap); }
 
-    // Immer Ordner-URL (…/test/ oder …/fete/)
     const base = new URL('.', location.href).href;
     const CAND = Array.from({length:9}, (_,i)=>i+1);
 
     async function head(url, ms=6000){
-      if (!('fetch' in window)) return null; // kein fetch -> kein HEAD
+      if (!('fetch' in window)) return null;
       try{
-        const ctrl = new AbortController();
-        const t = setTimeout(()=>ctrl.abort(), ms);
-        const r = await fetch(url, { method:'HEAD', cache:'no-store', signal: ctrl.signal });
+        const ctrl=new AbortController();
+        const t=setTimeout(()=>ctrl.abort(), ms);
+        const r=await fetch(url,{method:'HEAD',cache:'no-store',signal:ctrl.signal});
         clearTimeout(t);
-        return r.ok ? true : (r.status===405 || r.status===501 ? null : false);
-      }catch(_){ return null; } // null -> unzuverlässig -> Fallback probieren
+        return r.ok ? true : (r.status===405||r.status===501 ? null : false);
+      }catch(_){ return null; }
     }
     function probeImg(url){
       return new Promise(res=>{
-        const im = new Image();
-        im.onload = ()=>res({ok:true, node:im});
+        const im=new Image();
+        im.onload = ()=>res({ok:true,node:im});
         im.onerror= ()=>res({ok:false});
         im.loading='lazy'; im.decoding='async'; im.src=url;
       });
     }
     function probeVid(url){
       return new Promise(res=>{
-        const v = document.createElement('video');
+        const v=document.createElement('video');
         v.preload='metadata'; v.muted=true; v.loop=true; v.playsInline=true;
-        const ok=()=>{ done(); res({ok:true, node:v}); };
+        const ok=()=>{ done(); res({ok:true,node:v}); };
         const err=()=>{ done(); res({ok:false}); };
         function done(){ v.removeEventListener('loadedmetadata', ok); v.removeEventListener('error', err); }
         v.addEventListener('loadedmetadata', ok);
         v.addEventListener('error', err);
-        v.src = url;
+        v.src=url;
       });
     }
-
     async function checkOne(n){
       const jpg = base + `${n}.jpg`;
       const h = await head(jpg);
       if (h === true)  return {idx:n, type:'jpg', url:jpg};
-      if (h === false) {
-        // HEAD sagt sicher "nein" -> mp4 testen
-      } else {
-        // HEAD unsicher -> Ladeprobe
+      if (h !== false){
         const r = await probeImg(jpg);
         if (r.ok) return {idx:n, type:'jpg', url:jpg};
       }
@@ -280,11 +269,10 @@
       for (const n of CAND){
         const r = await checkOne(n);
         if (r) found.push(r);
-        dbg.textContent = `Pfad: ${base}\n` + (found.length ? found.map(x=>`✅ ${x.idx}.${x.type}`).join(' | ') : '—');
       }
 
       if (!found.length){
-        dbg.textContent = `Pfad: ${base}\nKeine Medien gefunden (1–9 .jpg/.mp4 im selben Ordner).`;
+        // Nichts gefunden: Fallback-Bild bleibt einfach stehen.
         return;
       }
 
@@ -294,17 +282,19 @@
       // Slides bauen
       const slides = [], dots = [];
       function addSlide(item, i){
-        const wrap = mk('div','fete-slide'); wrap.dataset.index = i; wrap.setAttribute('aria-hidden','true');
+        const wrap = mk('div','fete-slide'); wrap.dataset.index=i; wrap.setAttribute('aria-hidden','true');
         let node;
         if (item.type === 'jpg'){
-          node = new Image(); node.src = item.url; node.alt = `Festivalbild ${item.idx}`; node.loading='lazy'; node.decoding='async';
+          node = new Image(); node.src=item.url; node.alt=`Festivalbild ${item.idx}`; node.loading='lazy'; node.decoding='async';
         } else {
-          node = document.createElement('video'); node.src = item.url; node.preload='metadata'; node.muted=true; node.loop=true; node.playsInline=true;
+          node = document.createElement('video'); node.src=item.url; node.preload='metadata'; node.muted=true; node.loop=true; node.playsInline=true;
         }
         wrap.appendChild(node);
         slider.insertBefore(wrap, dotsWrap);
 
-        const dot = mk('button','fete-dot'); dot.type='button'; dot.setAttribute('aria-label', `Slide ${i+1}`); dotsWrap.appendChild(dot);
+        const dot = mk('button','fete-dot'); dot.type='button'; dot.setAttribute('aria-label',`Slide ${i+1}`);
+        dotsWrap.appendChild(dot);
+
         slides.push(wrap); dots.push(dot);
       }
       found.sort((a,b)=>a.idx-b.idx).forEach((it,i)=>addSlide(it,i));
@@ -314,7 +304,8 @@
       slider.appendChild(nextBtn);
       slider.appendChild(dotsWrap);
 
-      let current = 0;
+      // Navigation + Anzeige + Autoplay
+      let current = 0, timer = null, hover = false;
       function show(i){
         current = (i + slides.length) % slides.length;
         slides.forEach((el, idx)=>{
@@ -326,9 +317,16 @@
         });
         dots.forEach((d, idx)=>d.classList.toggle('active', idx === current));
       }
+      function next(){ show(current + 1); }
+      function start(){
+        if (timer || slides.length < 2) return;
+        timer = setInterval(()=>{ if(!hover && !document.hidden) next(); }, 5000);
+      }
+      function stop(){ clearInterval(timer); timer=null; }
 
       prevBtn.addEventListener('click', ()=>show(current - 1));
       nextBtn.addEventListener('click', ()=>show(current + 1));
+      dots.forEach((d,i)=>d.addEventListener('click', ()=>show(i)));
 
       slider.setAttribute('tabindex','0');
       slider.addEventListener('keydown', e=>{
@@ -336,15 +334,17 @@
         if (e.key === 'ArrowRight') show(current + 1);
       });
 
-      // Touch-Swipe
+      // Touch/Hover
       let sx=null;
-      slider.addEventListener('touchstart', e=>{ sx = e.touches[0].clientX; }, {passive:true});
+      slider.addEventListener('touchstart', e=>{ hover=true; sx=e.touches[0].clientX; }, {passive:true});
       slider.addEventListener('touchend',   e=>{
-        if (sx==null) return;
-        const dx = e.changedTouches[0].clientX - sx;
-        if (Math.abs(dx) > 40) (dx < 0 ? show(current + 1) : show(current - 1));
-        sx = null;
+        const dx = sx==null ? 0 : (e.changedTouches[0].clientX - sx);
+        if (Math.abs(dx)>40) (dx<0 ? next() : show(current-1));
+        sx=null; hover=false;
       });
+      slider.addEventListener('mouseenter', ()=> hover=true);
+      slider.addEventListener('mouseleave', ()=> hover=false);
+      document.addEventListener('visibilitychange', ()=>{ document.hidden ? stop() : start(); });
 
       if (slides.length === 1){
         prevBtn.style.display = nextBtn.style.display = 'none';
@@ -352,37 +352,8 @@
       }
 
       show(0);
+      start(); // Autoplay starten
     })();
-  })();
-  </script>
-
-  <!-- JS: Autoplay (alle 5s; pausiert bei Hover/Touch/Tab-unsichtbar) -->
-  <script>
-  (function () {
-    const slider = document.getElementById('feteSlider');
-    if (!slider) return;
-
-    function slides(){ return slider.querySelectorAll('.fete-slide'); }
-    function next(){ slider.querySelector('.fete-control.next')?.click(); }
-
-    let timer = null, hover = false;
-
-    function start(){
-      if (timer || slides().length < 2) return;
-      timer = setInterval(() => { if (!hover && !document.hidden) next(); }, 5000);
-    }
-    function stop(){ clearInterval(timer); timer = null; }
-
-    slider.addEventListener('mouseenter', () => hover = true);
-    slider.addEventListener('mouseleave', () => hover = false);
-    slider.addEventListener('touchstart', () => hover = true, { passive: true });
-    slider.addEventListener('touchend',   () => hover = false, { passive: true });
-    document.addEventListener('visibilitychange', () => { document.hidden ? stop() : start(); });
-
-    const mo = new MutationObserver(() => { if (slides().length >= 2) { start(); mo.disconnect(); } });
-    mo.observe(slider, { childList: true, subtree: true });
-
-    setTimeout(start, 2000);
   })();
   </script>
 
