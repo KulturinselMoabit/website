@@ -13,7 +13,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Rubik+Dirt&display=swap" rel="stylesheet" />
 
   <!-- Dein CSS (Cache-Buster gern anpassen) -->
-  <link rel="stylesheet" href="/styles.css?v=16" />
+  <link rel="stylesheet" href="/styles.css?v=17" />
 
   <!-- Event JSON-LD -->
   <script type="application/ld+json">
@@ -79,23 +79,35 @@
     <section class="container page-inner page-inner--wide">
       <div class="page-text">
 
-        <!-- HERO: Grafik (SVG) + Headline-Block (normaler Text) + Slideshow -->
+        <!-- HERO: Brand-Banner + Slideshow -->
         <section class="fete-hero">
 
-          <!-- ► Grafik als SVG-Datei -->
-          <figure class="fete-graphic" aria-label="Festivalgrafik">
-            <img src="Fete_Artwork.svg" alt="Fête du Seeee – Grafik" />
-          </figure>
+          <!-- ► BRAND-BANNER (Icon + echter Text) -->
+          <div class="fete-brand" aria-label="Fête du Seeee – Banner">
+            <!-- Inline-SVG Icon (Farben kommen aus deinen CSS-Variablen) -->
+            <svg class="fete-brand__icon" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <!-- Schirm -->
+              <path d="M12 52a48 38 0 0 1 96 0H12z" fill="var(--primary)"/>
+              <path d="M12 52h96a48 38 0 0 0-16-28C80 12 67 8 60 8S40 12 28 24a48 38 0 0 0-16 28z" fill="var(--highlight)"/>
+              <rect x="56" y="52" width="8" height="45" rx="3" fill="var(--primary)"/>
+              <!-- Wellen -->
+              <path d="M10 100c8 0 8-6 16-6s8 6 16 6 8-6 16-6 8 6 16 6 8-6 16-6 8 6 16 6" stroke="var(--highlight)" stroke-width="6" fill="none" stroke-linecap="round"/>
+              <!-- „Noten/Gitarre“ Punkt -->
+              <circle cx="28" cy="78" r="6" fill="var(--primary)"/>
+            </svg>
 
-          <!-- ► Headline-Block als echter Text -->
-          <div class="hero-headline" role="group" aria-label="Festivalüberschrift">
-            <h1 class="hero-title">FÊTE DU SEEEE</h1>
-            <p class="hero-subtitle">29–30 AUG 2025 · STRANDBAD TEGELSEE – Musik, Theater &amp; Kinderprogramm</p>
+            <div class="fete-brand__text">
+              <h1 class="brand-title">
+                <span class="brand-title__main">Fête du Seeee</span>
+                <span class="brand-title__num">#3</span>
+              </h1>
+              <p class="brand-sub">SOMMERFEST • KONZERTE • THEATER • KINDERPROGRAMM</p>
+            </div>
           </div>
 
           <!-- ► Slideshow -->
           <div class="fete-slider" id="feteSlider" aria-label="Festival-Impressionen">
-            <!-- Sichtbarer Fallback (erscheint sofort, wird entfernt wenn Slides da sind) -->
+            <!-- Sofort sichtbarer Fallback, wird entfernt sobald Slides da sind -->
             <img class="fete-static" src="1.jpg" alt="Festivalbild 1" />
             <button class="fete-control prev" aria-label="Vorheriges">‹</button>
             <button class="fete-control next" aria-label="Nächstes">›</button>
@@ -171,7 +183,6 @@
             </p>
           </div>
         </section>
-        <!-- ===== /INFOS ===== -->
 
         <div class="divider_long"></div>
 
@@ -213,7 +224,7 @@
     }
   </script>
 
-  <!-- JS: Slideshow-Loader (mit Autoplay) -->
+  <!-- JS: Slideshow-Loader + Autoplay (unverändert) -->
   <script>
   (function(){
     const slider = document.getElementById('feteSlider');
@@ -287,9 +298,7 @@
         if (r) found.push(r);
       }
 
-      if (!found.length){
-        return; // Fallback-Bild bleibt stehen
-      }
+      if (!found.length){ return; }
 
       staticImg && staticImg.remove();
 
@@ -345,7 +354,6 @@
         if (e.key === 'ArrowRight') show(current + 1);
       });
 
-      // Touch/Hover
       let sx=null;
       slider.addEventListener('touchstart', e=>{ hover=true; sx=e.touches[0].clientX; }, {passive:true});
       slider.addEventListener('touchend',   e=>{
