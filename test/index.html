@@ -13,8 +13,8 @@
   <!-- „gestempelte“ Schrift nur fürs Line-up -->
   <link href="https://fonts.googleapis.com/css2?family=Rubik+Dirt&display=swap" rel="stylesheet">
 
-  <!-- CSS (mit Cache-Buster, damit der Browser die aktuelle Datei lädt) -->
-  <link rel="stylesheet" href="/styles.css?v=8" />
+  <!-- CSS mit Cache-Buster -->
+  <link rel="stylesheet" href="/styles.css?v=9" />
 
   <!-- Event JSON-LD -->
   <script type="application/ld+json">
@@ -80,17 +80,16 @@
     <section class="container page-inner page-inner--wide">
       <div class="page-text">
 
-        <!-- HERO-SLIDESHOW (lädt 1–9.jpg/.mp4 aus demselben Ordner) -->
+        <!-- HERO-SLIDESHOW -->
         <section class="fete-hero">
           <div class="fete-slider" id="feteSlider" aria-label="Festival-Impressionen">
+            <!-- Sichtbarer Fallback (wird per JS entfernt, sobald Slides da sind) -->
+            <img class="fete-static" src="1.jpg" alt="Festivalbild 1" />
+
             <button class="fete-control prev" aria-label="Vorheriges">‹</button>
             <button class="fete-control next" aria-label="Nächstes">›</button>
             <div class="fete-dots" role="tablist" aria-label="Slideshow-Navigation"></div>
           </div>
-          <noscript>
-            <!-- Fallback ohne JS: zeigt 1.jpg, wenn vorhanden -->
-            <img src="1.jpg" alt="Festivalbild 1" style="width:100%;height:auto;border:2px solid #016DAF;border-radius:12px;display:block;margin-top:.5rem;">
-          </noscript>
         </section>
 
         <h1>Fête du Seeee #3</h1>
@@ -200,11 +199,13 @@
     }
   </script>
 
-  <!-- JS: Slideshow-Loader (robuster Ordnerpfad, JPG/MP4, richtige Reihenfolge, Pfeile/Dots) -->
+  <!-- JS: Slideshow-Loader (robuster Ordnerpfad, JPG/MP4, richtige Reihenfolge, Pfeile/Dots, Fallback-Handling) -->
   <script>
   (function(){
     const slider = document.getElementById('feteSlider');
     if (!slider) return;
+
+    const staticImg = slider.querySelector('.fete-static'); // Fallback-Bild
 
     // Controls/Dots sicherstellen
     let prevBtn = slider.querySelector('.fete-control.prev');
@@ -222,18 +223,16 @@
     if (!nextBtn){ nextBtn = mk('button','fete-control next','›'); nextBtn.setAttribute('aria-label','Nächstes'); slider.appendChild(nextBtn); }
     if (!dotsWrap){ dotsWrap = mk('div','fete-dots'); dotsWrap.setAttribute('role','tablist'); dotsWrap.setAttribute('aria-label','Slideshow-Navigation'); slider.appendChild(dotsWrap); }
 
-    // *** ROBUSTER ORDNERPFAD ***
-    // Liefert immer z. B. "/test/" oder "/fete/" – egal, ob Seite mit oder ohne Slash aufgerufen wurde.
+    // Robuster Ordnerpfad für /test, /test/, /test/index.html, …
     function folderPath(){
       const p = location.pathname;
-      if (p.endsWith('/')) return p;                                 // /test/
-      if (/\/index\.html?$/i.test(p)) return p.replace(/index\.html?$/i,''); // /test/index.html -> /test/
-      if (p.includes('.')) return p.replace(/[^/]+$/, '');           // /foo/bar.html -> /foo/
-      return p + '/';                                                // /test -> /test/
+      if (p.endsWith('/')) return p;
+      if (/\/index\.html?$/i.test(p)) return p.replace(/index\.html?$/i,'');
+      if (p.includes('.')) return p.replace(/[^/]+$/, '');
+      return p + '/';
     }
     const base = location.origin + folderPath();
 
-    // Loader (.jpg -> .mp4)
     function loadImage(url){
       return new Promise(resolve=>{
         const img = new Image();
@@ -256,7 +255,6 @@
       });
     }
     async function probe(n){
-      // zuerst .jpg, dann .mp4
       const jpg = base + `${n}.jpg`;
       let r = await loadImage(jpg);
       if (r.ok){ r.node.alt = `Festivalbild ${n}`; return {idx:n, node:r.node}; }
@@ -270,16 +268,20 @@
       const want = 9;
       const results = await Promise.all(Array.from({length: want}, (_,i)=>probe(i+1)));
       const items = results.filter(Boolean).sort((a,b)=>a.idx - b.idx);
+
       if (!items.length){
-        // sichtbarer kleiner Hinweis, wenn gar nichts gefunden wurde
+        // Nichts gefunden -> Fallback-Bild bleibt + Hinweis
         if (hero){
           const msg = document.createElement('div');
           msg.textContent = 'Keine Medien gefunden (erwartet: 1.jpg … 9.jpg / .mp4 im gleichen Ordner).';
-          msg.style.cssText = 'padding:1rem;border:2px solid #016DAF;border-radius:8px;background:#fff;text-align:center;';
+          msg.style.cssText = 'margin-top:.5rem;padding:1rem;border:2px solid #016DAF;border-radius:8px;background:#fff;text-align:center;';
           hero.appendChild(msg);
         }
         return;
       }
+
+      // Slides vorhanden -> Fallback entfernen
+      if (staticImg) staticImg.remove();
 
       const slides = [], dots = [];
       function addSlide(node, i){
@@ -336,6 +338,16 @@
 
       show(0);
     })();
+
+    // Sichtbarer Fehler-Hinweis, falls JS hart crasht
+    window.addEventListener('error', (e)=>{
+      const hero = document.querySelector('.fete-hero');
+      if (!hero) return;
+      const note = document.createElement('pre');
+      note.textContent = 'Script-Fehler: ' + (e.message || e.type);
+      note.style.cssText = 'margin-top:.5rem;padding:1rem;border:2px dashed #FC411F;border-radius:8px;background:#fff;color:#FC411F;white-space:pre-wrap;';
+      hero.appendChild(note);
+    });
   })();
   </script>
 
