@@ -132,10 +132,10 @@ body {
 .page-inner--wide .page-text { grid-column: 1 / -1; }
 
 /* Banner (SVG) – Abstände */
-.fete-banner { margin: .15rem 0 1.25rem; }
+.fete-banner { margin: .15rem 0 1rem; }
 .fete-banner-img { display:block; width:100%; height:auto; }
 
-/* Meta-Zeile */
+/* Meta-Zeile (mit Stack mobil) */
 .fete-meta {
   width: 100%;
   display: flex; justify-content: center; align-items: center; gap: .6rem;
@@ -144,15 +144,13 @@ body {
   font-size: clamp(1.1rem, 2.3vw, 1.4rem);
 }
 .fete-meta .sep { color: var(--highlight); }
-
-/* Meta-Zeile mobil: untereinander */
 @media (max-width: 560px){
   .fete-meta { flex-direction: column; gap: .25rem; }
   .fete-meta .sep { display: none; }
 }
 
-/* Info-Text (ohne Box/Hintergrund) */
-.info-block { margin: 1rem 0 2rem; padding: 0; border: 0; background: transparent; }
+/* Info-Text (clean) */
+.info-block { margin: 1rem 0 2rem; }
 
 /* ===== Slideshow – CLEAN ===== */
 .fete-hero { margin: 1rem 0 2rem; }
@@ -170,7 +168,7 @@ body {
 .fete-slide.active { opacity:1; pointer-events:auto; }
 .fete-slide img, .fete-slide video { width:100%; height:100%; object-fit:cover; display:block; }
 
-/* Pfeile: nur Chevrons, clean */
+/* Pfeile: nur Chevrons */
 .fete-control {
   position: absolute; top: 50%; transform: translateY(-50%);
   background: transparent; border: none;
@@ -178,14 +176,14 @@ body {
   font-weight: 800;
   font-size: clamp(1.4rem, 3.2vw, 2rem);
   line-height: 1; padding: .25rem .35rem;
-  cursor: pointer; z-index: 5; /* höher als Slides */
+  cursor: pointer; z-index: 5;
   text-shadow: 0 0 10px rgba(0,0,0,.55);
 }
 .fete-control:hover { opacity: 1; }
 .fete-control.prev { left: .5rem; }
 .fete-control.next { right: .5rem; }
 
-/* Dots: klein & schlicht */
+/* Dots */
 .fete-dots {
   position: absolute; left: 0; right: 0; bottom: .5rem;
   display: flex; justify-content: center; gap: .35rem; padding: 0 .5rem; z-index: 5;
@@ -237,7 +235,7 @@ body {
   padding:.35rem .6rem; font-size:.95rem; margin:.25rem 0 .75rem 0;
 }
 
-/* Acts-Liste (Stempel-Font) */
+/* Acts-Liste */
 .lineup .acts{
   list-style:none; margin:0 0 1.4rem 0; padding:0;
   display:flex; flex-wrap:wrap; justify-content:center; align-items:center;
@@ -249,7 +247,7 @@ body {
   font-size:clamp(var(--lineup-min),var(--lineup-vw),var(--lineup-max));
   padding:0 .12em;
 }
-/* Punkte nur zwischen Acts derselben Zeile (JS setzt .row-start) */
+/* Punkte nur zwischen Acts derselben Zeile – .row-start kommt per JS */
 .lineup .acts li + li::before{
   content:"•"; display:inline-block; margin:0 .18em 0 .2em; vertical-align:middle;
   color: var(--highlight); opacity: .95;
