@@ -13,22 +13,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Rubik+Dirt&display=swap" rel="stylesheet" />
 
   <!-- CSS -->
-  <link rel="stylesheet" href="/styles.css?v=34" />
-
-  <!-- Event JSON-LD -->
-  <script type="application/ld+json">
-  {
-    "@context":"https://schema.org","@type":"Event","name":"Fête du Seeee 2025",
-    "alternateName":["Fête du See","Fête du Seee"],
-    "startDate":"2025-08-29T12:00","endDate":"2025-08-30T23:00",
-    "eventAttendanceMode":"https://schema.org/OfflineEventAttendanceMode",
-    "eventStatus":"https://schema.org/EventScheduled",
-    "location":{"@type":"Place","name":"Strandbad Tegelsee","address":{"@type":"PostalAddress","streetAddress":"Strandbad Tegelsee","addressLocality":"Berlin","postalCode":"13505","addressCountry":"DE"}},
-    "image":["https://kulturinselmoabit.org/fete-icon.jpg","https://kulturinselmoabit.org/fete.png"],
-    "description":"Ehrenamtliches Musikfestival Fête du Seeee am 29.–30. August 2025 im Strandbad Tegelsee. Musikalische Highlights, Kunst und Gemeinschaft.",
-    "organizer":{"@type":"Organization","name":"Kulturinsel Moabit","url":"https://kulturinselmoabit.org/"}
-  }
-  </script>
+  <link rel="stylesheet" href="/styles.css?v=36" />
 </head>
 <body>
 
@@ -73,6 +58,7 @@
         <!-- Slideshow (clean) -->
         <section class="fete-hero">
           <div class="fete-slider" id="feteSlider" aria-label="Festival-Impressionen">
+            <!-- Statisches Bild als Fallback, wird durch JS ersetzt -->
             <img class="fete-static" src="1.jpg" alt="Festivalbild 1" />
             <button class="fete-control prev" aria-label="Vorheriges">‹</button>
             <button class="fete-control next" aria-label="Nächstes">›</button>
@@ -80,7 +66,7 @@
           </div>
         </section>
 
-        <!-- Info-Text (ohne Box/Hintergrund) -->
+        <!-- Info-Text -->
         <div class="info-block">
           <p>
             Dieses Jahr wird unsere Fête du Seeee noch bunter und größer: Wir feiern
@@ -181,66 +167,111 @@
     if (!slider) return;
 
     const staticImg = slider.querySelector('.fete-static');
-    let prevBtn = slider.querySelector('.fete-control.prev');
-    let nextBtn = slider.querySelector('.fete-control.next');
+    let prevBtn  = slider.querySelector('.fete-control.prev');
+    let nextBtn  = slider.querySelector('.fete-control.next');
     let dotsWrap = slider.querySelector('.fete-dots');
 
-    function mk(t,c,x){const e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e;}
-    if (!prevBtn){ prevBtn=mk('button','fete-control prev','‹'); prevBtn.setAttribute('aria-label','Vorheriges'); slider.appendChild(prevBtn); }
-    if (!nextBtn){ nextBtn=mk('button','fete-control next','›'); nextBtn.setAttribute('aria-label','Nächstes'); slider.appendChild(nextBtn); }
-    if (!dotsWrap){ dotsWrap=mk('div','fete-dots'); dotsWrap.setAttribute('role','tablist'); dotsWrap.setAttribute('aria-label','Slideshow-Navigation'); slider.appendChild(dotsWrap); }
+    function mk(tag, cls, txt){
+      const el = document.createElement(tag);
+      if (cls) el.className = cls;
+      if (txt != null) el.textContent = txt;
+      return el;
+    }
+    if (!prevBtn) { prevBtn = mk('button','fete-control prev','‹'); prevBtn.setAttribute('aria-label','Vorheriges'); slider.appendChild(prevBtn); }
+    if (!nextBtn) { nextBtn = mk('button','fete-control next','›'); nextBtn.setAttribute('aria-label','Nächstes'); slider.appendChild(nextBtn); }
+    if (!dotsWrap){ dotsWrap= mk('div','fete-dots'); dotsWrap.setAttribute('role','tablist'); dotsWrap.setAttribute('aria-label','Slideshow-Navigation'); slider.appendChild(dotsWrap); }
 
-    const base = new URL('.', location.href).href;
-    const CAND = Array.from({length:9},(_,i)=>i+1);
+    /* ORDNERPFAD ROBUST */
+    function folderPath(){
+      const p = location.pathname;
+      if (p.endsWith('/')) return p;
+      if (/\/index\.html?$/i.test(p)) return p.replace(/index\.html?$/i,'');
+      if (p.includes('.')) return p.replace(/[^/]+$/,'');
+      return p + '/';
+    }
+    const base = location.origin + folderPath();
 
-    function probeImg(url){return new Promise(r=>{const im=new Image();im.onload=()=>r({ok:true,node:im});im.onerror=()=>r({ok:false});im.loading='lazy';im.decoding='async';im.src=url;});}
-    function probeVid(url){return new Promise(r=>{const v=document.createElement('video');v.preload='metadata';v.muted=true;v.loop=true;v.playsInline=true;
-      const ok=()=>{v.removeEventListener('loadedmetadata',ok);v.removeEventListener('error',err);r({ok:true,node:v});};
-      const err=()=>{v.removeEventListener('loadedmetadata',ok);v.removeEventListener('error',err);r({ok:false});};
-      v.addEventListener('loadedmetadata',ok);v.addEventListener('error',err);v.src=url;});}
+    /* Loader */
+    function loadImg(url){ return new Promise(res=>{ const im=new Image(); im.onload=()=>res({ok:true,node:im}); im.onerror=()=>res({ok:false}); im.loading='lazy'; im.decoding='async'; im.src=url; }); }
+    function loadVid(url){ return new Promise(res=>{ const v=document.createElement('video'); v.preload='metadata'; v.muted=true; v.loop=true; v.playsInline=true;
+      const ok=()=>{cleanup(); res({ok:true,node:v});}; const err=()=>{cleanup(); res({ok:false});};
+      function cleanup(){ v.removeEventListener('loadedmetadata',ok); v.removeEventListener('error',err); }
+      v.addEventListener('loadedmetadata',ok); v.addEventListener('error',err); v.src=url; }); }
 
-    async function check(n){
-      const jpg = base+`${n}.jpg`; const r1 = await probeImg(jpg); if (r1.ok) return {idx:n,node:r1.node};
-      const mp4 = base+`${n}.mp4`; const r2 = await probeVid(mp4); if (r2.ok) return {idx:n,node:r2.node};
+    async function probe(n){
+      const jpg = base + n + '.jpg';
+      const r1  = await loadImg(jpg);
+      if (r1.ok){ r1.node.alt = 'Festivalbild ' + n; return {idx:n, node:r1.node}; }
+      const mp4 = base + n + '.mp4';
+      const r2  = await loadVid(mp4);
+      if (r2.ok){ return {idx:n, node:r2.node}; }
       return null;
     }
 
     (async function init(){
-      const found=[]; for(const n of CAND){ const r=await check(n); if(r) found.push(r); }
-      if(!found.length) return;
+      const items = [];
+      for (let i=1;i<=9;i++){ const r = await probe(i); if (r) items.push(r); }
+
+      if (!items.length){
+        // Nichts gefunden -> (statisches Bild bleibt) trotzdem Dots anlegen (1 Dot)
+        dotsWrap.innerHTML = '';
+        const d = mk('button','fete-dot',''); dotsWrap.appendChild(d);
+        d.classList.add('active');
+        return;
+      }
 
       staticImg && staticImg.remove();
 
-      const slides=[], dots=[];
-      function add(item,i){
-        const wrap=mk('div','fete-slide'); wrap.dataset.index=i; wrap.setAttribute('aria-hidden','true'); wrap.appendChild(item.node);
+      items.sort((a,b)=>a.idx - b.idx);
+
+      const slides = [], dots = [];
+      function addSlide(obj, i){
+        const wrap = mk('div','fete-slide');
+        wrap.dataset.index = i;
+        wrap.setAttribute('aria-hidden','true');
+        wrap.appendChild(obj.node);
         slider.insertBefore(wrap, dotsWrap);
-        const dot=mk('button','fete-dot'); dot.type='button'; dot.setAttribute('aria-label',`Slide ${i+1}`); dotsWrap.appendChild(dot);
+        const dot = mk('button','fete-dot'); dot.type='button'; dot.setAttribute('aria-label',`Slide ${i+1}`);
+        dotsWrap.appendChild(dot);
         slides.push(wrap); dots.push(dot);
       }
-      found.sort((a,b)=>a.idx-b.idx).forEach((it,i)=>add(it,i));
+      items.forEach(addSlide);
 
-      slider.appendChild(prevBtn); slider.appendChild(nextBtn); slider.appendChild(dotsWrap);
+      // Controls & Dots on top
+      slider.appendChild(prevBtn);
+      slider.appendChild(nextBtn);
+      slider.appendChild(dotsWrap);
 
-      let cur=0, timer=null, hover=false;
+      let cur = 0, timer = null, hover = false;
       function show(i){
-        cur=(i+slides.length)%slides.length;
-        slides.forEach((el,idx)=>{const on=idx===cur; el.classList.toggle('active',on); el.setAttribute('aria-hidden',on?'false':'true');
-          const v=el.querySelector('video'); if(v){ on ? v.play().catch(()=>{}) : v.pause(); }});
-        dots.forEach((d,idx)=>d.classList.toggle('active',idx===cur));
+        cur = (i + slides.length) % slides.length;
+        slides.forEach((el,idx)=>{
+          const on = idx === cur;
+          el.classList.toggle('active', on);
+          el.setAttribute('aria-hidden', on ? 'false' : 'true');
+          const v = el.querySelector('video');
+          if (v){ on ? v.play().catch(()=>{}) : v.pause(); }
+        });
+        dots.forEach((d,idx)=>d.classList.toggle('active', idx===cur));
       }
       function next(){ show(cur+1); }
-      function start(){ if(timer||slides.length<2) return; timer=setInterval(()=>{ if(!hover&&!document.hidden) next(); },5000); }
-      function stop(){ clearInterval(timer); timer=null; }
+      function start(){ if (timer || slides.length < 2) return; timer = setInterval(()=>{ if(!hover && !document.hidden) next(); }, 5000); }
+      function stop(){ clearInterval(timer); timer = null; }
 
-      prevBtn.addEventListener('click',()=>show(cur-1));
-      nextBtn.addEventListener('click',()=>show(cur+1));
-      dots.forEach((d,i)=>d.addEventListener('click',()=>show(i)));
-      slider.addEventListener('mouseenter',()=>hover=true);
-      slider.addEventListener('mouseleave',()=>hover=false);
-      let sx=null; slider.addEventListener('touchstart',e=>{hover=true; sx=e.touches[0].clientX;},{passive:true});
-      slider.addEventListener('touchend',e=>{const dx=sx==null?0:e.changedTouches[0].clientX-sx; if(Math.abs(dx)>40)(dx<0?next():show(cur-1)); sx=null; hover=false;},{passive:true});
-      document.addEventListener('visibilitychange',()=>{document.hidden?stop():start();});
+      prevBtn.addEventListener('click', ()=>show(cur-1));
+      nextBtn.addEventListener('click', ()=>show(cur+1));
+      dots.forEach((d,i)=>d.addEventListener('click', ()=>show(i)));
+
+      slider.addEventListener('mouseenter', ()=>hover=true);
+      slider.addEventListener('mouseleave', ()=>hover=false);
+      let sx=null;
+      slider.addEventListener('touchstart', e=>{ hover=true; sx=e.touches[0].clientX; }, {passive:true});
+      slider.addEventListener('touchend',   e=>{
+        const dx = sx==null ? 0 : e.changedTouches[0].clientX - sx;
+        if (Math.abs(dx) > 40) (dx < 0 ? next() : show(cur-1));
+        sx=null; hover=false;
+      }, {passive:true});
+      document.addEventListener('visibilitychange', ()=>{ document.hidden ? stop() : start(); });
 
       show(0); start();
     })();
