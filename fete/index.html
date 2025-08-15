@@ -7,12 +7,16 @@
   <meta name="description" content="Erlebe das ehrenamtliche Musikfestival Fête du Seeee am 29.–30.08.2025 im Strandbad Tegelsee. Jetzt Programm entdecken!" />
   <link rel="canonical" href="https://kulturinselmoabit.org/fete/" />
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&display=swap"
-    rel="stylesheet"
-  />
-  <link rel="stylesheet" href="/styles.css" />
-    <script type="application/ld+json">
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Rubik+Dirt&display=swap" rel="stylesheet" />
+
+  <!-- Deine CSS (Cache-Buster ggf. anpassen) -->
+  <link rel="stylesheet" href="/styles.css?v=13" />
+
+  <!-- Event JSON-LD -->
+  <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "Event",
@@ -71,128 +75,102 @@
 
   <!-- MAIN -->
   <main>
-    <section class="container page-inner">
-      <div class="page-img">
-        <img src="/fete-icon.jpg" alt="Fête du Seeee Icon" />
-      </div>
+    <!-- Vollbreit wie Startseite -->
+    <section class="container page-inner page-inner--wide">
       <div class="page-text">
-  <h1>Fête du Seeee #3</h1>
-          <img src="/fete.png" alt="Plakat Fête du Seeee Festival #3– Sommerfest mit Konzerten, Theater & Kinderprogramm im Strandbad Tegelsee am 29. & 30. August" class="float-half-left" />
 
-  <p>
-    Liebe Nachbar*innen und Freund*innen,  
-    dieses Jahr wird unsere Fête du Seeee noch bunter und größer: Wir feiern
-    an zwei Tagen auf gleich <strong>zwei Bühnen</strong> im wunderschönen
-    Strandbad Tegelsee! Freut euch auf ein vielseitiges Programm aus
-    Musik, Theater und Kunst, das von ehrenamtlichen Künstler*innen für euch
-    gestaltet wird.
-  </p>
-  <p>
-    Genießt tagsüber Kultur-Highlights und bunte Aktionen für Groß und Klein
-    direkt am Wasser, und lasst euch abends von mitreißenden Konzerten und
-    Performances auf beiden Bühnen mitreißen. Bei den unterschiedlichsten Genres ist für jeden Geschmack
-    etwas dabei!
-  </p>
-  <h3>Programm</h3>
-  <p>
-    Die einzelnen Programmpunkte und Künstler*innen geben wir in Kürze bekannt.
-    Haltet Ausschau nach Updates auf unserer Website und unseren Social-Media-Kanälen!
-  </p>
-  <h3>Wo</h3>
-  <p>Strandbad Tegelsee</p>
-  <h3>Wann</h3>
-  <p>29. &amp; 30. August</p>
-  <h3>Eintritt</h3>
-  <p>Strandbadeintritt</>
-  <ul>
-    <li>Erwachsene: 6 €</li>
-    <li>Ermäßigt: 4 €</li>
-    <li>Ab 18 Uhr: 2,50 €</li>
-  </ul>
-  <p class="note">
-    Kommt vorbei, bringt eure Freund*innen mit und lasst uns gemeinsam am
-    Tegeler See feiern – wir freuen uns auf euch!
-  </p>
-  <div class="divider_long"></div>
-  <h1>Fête du Seeee #2</h1>
-    <img src="/fete_2.jpg" alt="Plakat Fête du Seeee #2 im Strandbad Tegelsee" class="float-right-third" />
-  <p>
-    Am kommenden Samstag, den 31. August 2024 findet im Strandbad Tegelsee unsere Fête du Seeee #2 mit Musiker*innen aus dem Kreis der Neue Nachbarschaft/Moabit und Gästen statt.
-  </p>
-  <h3>Programm:</h3>
-  <p>
-    Das Programm beginnt ab 15 Uhr, ab 18 Uhr geht es mit der Live-Musik los.
-  </p>
-  <p>
-    Kommt vorbei! Wir freuen uns, euch wiederzusehen und zu feiern!
-  </p>
-  <h3>Adresse:</h3>
-  <p>
-    Strandbad Tegelsee / Zentrum für Kultur und Erholung<br>
-    Schwarzer Weg 95<br>
-    13505 Berlin
-  </p>
-  <div class="divider_long"></div>      
-  <h1>Fête du Seeee #1</h1>
-  <p>
-    Wir feiern ein Fête du Seeee im Strandbad! Am Samstag, 14. August 2021, versammeln sich im Strandbad Tegelsee Bands zu einer so noch nie gehörten Fusion: arabische Melodien, elektronischer Balkan Soul, eine byzantinische Lyra, alternativer Indie Rock und ein Hauch Dream Pop.
-  </p>
+        <!-- HERO-SLIDESHOW -->
+        <section class="fete-hero">
+          <div class="fete-slider" id="feteSlider" aria-label="Festival-Impressionen">
+            <!-- Sichtbarer Fallback (wird per JS entfernt, sobald Slides da sind) -->
+            <img class="fete-static" src="1.jpg" alt="Festivalbild 1" />
+            <button class="fete-control prev" aria-label="Vorheriges">‹</button>
+            <button class="fete-control next" aria-label="Nächstes">›</button>
+            <div class="fete-dots" role="tablist" aria-label="Slideshow-Navigation"></div>
+          </div>
+        </section>
 
-  <h3>LineUp:</h3>
-  <ul>
-    <li><strong>16:30–17:15:</strong> Madar Band</li>
-    <li><strong>17:15–17:45:</strong> Theresa Zanon</li>
-    <li><strong>18:00–18:45:</strong> Terra Nullius</li>
-    <li><strong>18:45–19:30:</strong> Pesto</li>
-    <li><strong>19:30–20:15:</strong> Big Bad Shakin'</li>
-    <li><strong>20:30–21:15:</strong> Animal Garden</li>
-    <li><strong>21:15–22:00:</strong> Get High Fiona</li>
-  </ul>
+        <h1>Fête du Seeee #3</h1>
 
-  <h3>Adresse Strandbad Tegelsee:</h3>
-  <p>
-    Schwarzer Weg 95, 13505 Berlin<br>
-    Bus 222 bis Spechtstraße (1200 m Fußweg) • U6 bis Alt-Tegel • mit dem Rad möglich<br>
-    Eintritt ins Strandbad: 3 Euro, Konzertbesuch inbegriffen
-  </p>
+        <!-- ===== LINE-UP ===== -->
+        <section class="lineup">
+          <div class="lineup-wrap">
+            <div class="lineup-heading">Line-Up</div>
 
-  <h3>Zu den einzelnen Bands:</h3>
+            <div class="line">
+              <div class="lineup-daytag">FR. 29. AUGUST</div>
+              <ul class="acts" aria-label="Line-up Freitag, 29. August">
+                <li>Circus Rhapsody</li>
+                <li>Blue Saloon</li>
+                <li>The Brehmes’</li>
+                <li>Theater &amp; Chor für und von Kindern</li>
+              </ul>
+            </div>
 
-  <h3>MADAR</h3>
-  <p>
-    MADAR ist eine von Amjad, Roni und Majd in Berlin gegründete Band, die mit ihrer Mischung aus Flamenco, Latin und volksarabischen Melodien bezaubert.
-  </p>
+            <div class="line">
+              <div class="lineup-daytag">SA. 30. AUGUST</div>
+              <ul class="acts" aria-label="Line-up Samstag, 30. August">
+                <li>Maindish</li>
+                <li>Crescendo Planet</li>
+                <li>XIX</li>
+                <li>Noah &amp; Safa</li>
+                <li>Theater &amp; Chor für und von Kindern</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+        <!-- ===== /LINE-UP ===== -->
 
-  <h3>THERESA ZANON</h3>
-  <p>
-    Theresa Zanon ist eine Berliner Singer-Songwriterin und Multiinstrumentalistin. Ihre Acoustic-Popsongs erzählen von den Herausforderungen, denen sie als queere Person begegnet.
-  </p>
+        <!-- ===== INFO-GRID (inkl. Plakat in normaler Größe) ===== -->
+        <section class="fete-info">
+          <div class="fete-card fete-card--poster">
+            <img src="/fete.png" alt="Plakat Fête du Seeee #3" />
+          </div>
 
-  <h3>TERRA NULLIUS</h3>
-  <p>
-    Terra Nullius ist ein Musiktheater für zwei Performer*innen: verstärkte Lira Calabrese, Live-Elektronik und fixed-media (Audio & Video). Entworfen, geschrieben und aufgeführt von Astra Irene Susi und Edoardo Micheli.
-  </p>
+          <div class="fete-card">
+            <h4>Wo</h4>
+            <p>
+              Strandbad Tegelsee<br>
+              Schwarzer Weg 95<br>
+              13505 Berlin
+            </p>
+          </div>
 
-  <h3>PESTO</h3>
-  <p>
-    PESTO ist die Musik einer mediterranen Insel, zwischen Wedding und Hansaviertel. Zutaten: 200 g Hanfblätter oder Basilikum, 7 EL Olivenöl, 2 Zehen Knoblauch, 1 grüne Paprikaschote, 10 Walnusskerne, Prise Piment und Salz – alles im Mixer kräftig zermatscht.
-  </p>
+          <div class="fete-card">
+            <h4>Wann</h4>
+            <p>Fr 29. &amp; Sa 30. August 2025</p>
+          </div>
 
-  <h3>BIG BAD SHAKIN‘</h3>
-  <p>
-    Wenn massive Gitarrensounds und rumpelnder Bass mit präzisen Drumbeats und einem notorischen Jerry Lee Lewis-Piano gewaltsam in Richtung Startbahn „Straight-into-the-face“ rollen, dann sind BIG BAD SHAKIN‘ in Hochform!<br>
-    <em>Crazy Sören</em> – Piano & Vocals, <em>Felix Hackmann</em> – Drums, <em>Kev Shoulder Widraczek</em> – Guitars, <em>Paolo Di Stefano</em> – Bass
-  </p>
+          <div class="fete-card">
+            <h4>Eintritt</h4>
+            <ul>
+              <li>Erwachsene: 6 €</li>
+              <li>Ermäßigt: 4 €</li>
+              <li>Ab 18 Uhr: 2,50 €</li>
+            </ul>
+          </div>
 
-  <h3>ANIMAL GARDEN</h3>
-  <p>
-    Animal Garden macht alternativen Indie Rock mit einem Hauch Dream Pop. Mehrstimmige Vocals, zwei Gitarren, Bass, Synth und Drums sorgen für einen warm wabernden, temporeich treibenden Sound.
-  </p>
+          <div class="fete-card fete-card--note">
+            <p>
+              Kommt vorbei, bringt eure Freund*innen mit und lasst uns gemeinsam am
+              Tegeler See feiern – wir freuen uns auf euch!
+            </p>
+          </div>
+        </section>
+        <!-- ===== /INFOS ===== -->
 
-  <h3>GET HIGH FIONA</h3>
-  <p>
-    Get High Fiona ist ein elektronisches Balkan-Soul-Songwriting-Duo. Guido Hieronymus und Biljana Pais erzählen balkan-beeinflusste Geschichten, spielen Keyboard, Wavedrums und Gitarre. Ihre Loops und Stimmeffekte haben bereits die Belgrader Radiocharts erobert.
-  </p>
+        <div class="divider_long"></div>
+
+        <!-- Vorjahre (optional) -->
+        <h1>Fête du Seeee #2</h1>
+        <img src="/fete_2.jpg" alt="Plakat Fête du Seeee #2 im Strandbad Tegelsee" class="float-right-third" />
+        <p>Am kommenden Samstag, den 31. August 2024 …</p>
+
+        <div class="divider_long"></div>
+
+        <h1>Fête du Seeee #1</h1>
+        <p>Wir feiern ein Fête du Seeee im Strandbad! …</p>
+
       </div>
     </section>
   </main>
@@ -209,13 +187,196 @@
     </div>
   </footer>
 
+  <!-- JS: Burger-Menü -->
   <script>
     const btn = document.querySelector('.menu-toggle');
     const nav = document.querySelector('.site-nav ul');
-    btn.addEventListener('click', () => {
-      nav.classList.toggle('open');
-      btn.classList.toggle('open');
-    });
+    if (btn && nav) {
+      btn.addEventListener('click', () => {
+        nav.classList.toggle('open');
+        btn.classList.toggle('open');
+      });
+    }
+  </script>
+
+  <!-- JS: Slideshow-Loader (ohne Debug, mit integriertem Autoplay) -->
+  <script>
+  (function(){
+    const slider = document.getElementById('feteSlider');
+    if (!slider) return;
+
+    const staticImg = slider.querySelector('.fete-static');
+    let prevBtn = slider.querySelector('.fete-control.prev');
+    let nextBtn = slider.querySelector('.fete-control.next');
+    let dotsWrap = slider.querySelector('.fete-dots');
+
+    function mk(tag, cls, txt){ const el=document.createElement(tag); if(cls)el.className=cls; if(txt!=null)el.textContent=txt; return el; }
+    if (!prevBtn){ prevBtn = mk('button','fete-control prev','‹'); prevBtn.setAttribute('aria-label','Vorheriges'); slider.appendChild(prevBtn); }
+    if (!nextBtn){ nextBtn = mk('button','fete-control next','›'); nextBtn.setAttribute('aria-label','Nächstes'); slider.appendChild(nextBtn); }
+    if (!dotsWrap){ dotsWrap = mk('div','fete-dots'); dotsWrap.setAttribute('role','tablist'); dotsWrap.setAttribute('aria-label','Slideshow-Navigation'); slider.appendChild(dotsWrap); }
+
+    const base = new URL('.', location.href).href;
+    const CAND = Array.from({length:9}, (_,i)=>i+1);
+
+    async function head(url, ms=6000){
+      if (!('fetch' in window)) return null;
+      try{
+        const ctrl=new AbortController();
+        const t=setTimeout(()=>ctrl.abort(), ms);
+        const r=await fetch(url,{method:'HEAD',cache:'no-store',signal:ctrl.signal});
+        clearTimeout(t);
+        return r.ok ? true : (r.status===405||r.status===501 ? null : false);
+      }catch(_){ return null; }
+    }
+    function probeImg(url){
+      return new Promise(res=>{
+        const im=new Image();
+        im.onload = ()=>res({ok:true,node:im});
+        im.onerror= ()=>res({ok:false});
+        im.loading='lazy'; im.decoding='async'; im.src=url;
+      });
+    }
+    function probeVid(url){
+      return new Promise(res=>{
+        const v=document.createElement('video');
+        v.preload='metadata'; v.muted=true; v.loop=true; v.playsInline=true;
+        const ok=()=>{ done(); res({ok:true,node:v}); };
+        const err=()=>{ done(); res({ok:false}); };
+        function done(){ v.removeEventListener('loadedmetadata', ok); v.removeEventListener('error', err); }
+        v.addEventListener('loadedmetadata', ok);
+        v.addEventListener('error', err);
+        v.src=url;
+      });
+    }
+    async function checkOne(n){
+      const jpg = base + `${n}.jpg`;
+      const h = await head(jpg);
+      if (h === true)  return {idx:n, type:'jpg', url:jpg};
+      if (h !== false){
+        const r = await probeImg(jpg);
+        if (r.ok) return {idx:n, type:'jpg', url:jpg};
+      }
+      const mp4 = base + `${n}.mp4`;
+      const h2 = await head(mp4);
+      if (h2 === true) return {idx:n, type:'mp4', url:mp4};
+      if (h2 !== false){
+        const r2 = await probeVid(mp4);
+        if (r2.ok) return {idx:n, type:'mp4', url:mp4};
+      }
+      return null;
+    }
+
+    (async function init(){
+      const found = [];
+      for (const n of CAND){
+        const r = await checkOne(n);
+        if (r) found.push(r);
+      }
+
+      if (!found.length){
+        return; // Fallback-Bild bleibt stehen
+      }
+
+      staticImg && staticImg.remove();
+
+      const slides = [], dots = [];
+      function addSlide(item, i){
+        const wrap = mk('div','fete-slide'); wrap.dataset.index=i; wrap.setAttribute('aria-hidden','true');
+        let node;
+        if (item.type === 'jpg'){
+          node = new Image(); node.src=item.url; node.alt=`Festivalbild ${item.idx}`; node.loading='lazy'; node.decoding='async';
+        } else {
+          node = document.createElement('video'); node.src=item.url; node.preload='metadata'; node.muted=true; node.loop=true; node.playsInline=true;
+        }
+        wrap.appendChild(node);
+        slider.insertBefore(wrap, dotsWrap);
+
+        const dot = mk('button','fete-dot'); dot.type='button'; dot.setAttribute('aria-label',`Slide ${i+1}`);
+        dotsWrap.appendChild(dot);
+
+        slides.push(wrap); dots.push(dot);
+      }
+      found.sort((a,b)=>a.idx-b.idx).forEach((it,i)=>addSlide(it,i));
+
+      slider.appendChild(prevBtn);
+      slider.appendChild(nextBtn);
+      slider.appendChild(dotsWrap);
+
+      let current = 0, timer = null, hover = false;
+      function show(i){
+        current = (i + slides.length) % slides.length;
+        slides.forEach((el, idx)=>{
+          const active = idx === current;
+          el.classList.toggle('active', active);
+          el.setAttribute('aria-hidden', active ? 'false' : 'true');
+          const v = el.querySelector('video');
+          if (v){ active ? v.play().catch(()=>{}) : v.pause(); }
+        });
+        dots.forEach((d, idx)=>d.classList.toggle('active', idx === current));
+      }
+      function next(){ show(current + 1); }
+      function start(){
+        if (timer || slides.length < 2) return;
+        timer = setInterval(()=>{ if(!hover && !document.hidden) next(); }, 5000);
+      }
+      function stop(){ clearInterval(timer); timer=null; }
+
+      prevBtn.addEventListener('click', ()=>show(current - 1));
+      nextBtn.addEventListener('click', ()=>show(current + 1));
+      dots.forEach((d,i)=>d.addEventListener('click', ()=>show(i)));
+
+      slider.setAttribute('tabindex','0');
+      slider.addEventListener('keydown', e=>{
+        if (e.key === 'ArrowLeft')  show(current - 1);
+        if (e.key === 'ArrowRight') show(current + 1);
+      });
+
+      // Touch/Hover
+      let sx=null;
+      slider.addEventListener('touchstart', e=>{ hover=true; sx=e.touches[0].clientX; }, {passive:true});
+      slider.addEventListener('touchend',   e=>{
+        const dx = sx==null ? 0 : (e.changedTouches[0].clientX - sx);
+        if (Math.abs(dx)>40) (dx<0 ? next() : show(current-1));
+        sx=null; hover=false;
+      });
+      slider.addEventListener('mouseenter', ()=> hover=true);
+      slider.addEventListener('mouseleave', ()=> hover=false);
+      document.addEventListener('visibilitychange', ()=>{ document.hidden ? stop() : start(); });
+
+      if (slides.length === 1){
+        prevBtn.style.display = nextBtn.style.display = 'none';
+        dotsWrap.style.display = 'none';
+      }
+
+      show(0);
+      start();
+    })();
+  })();
+  </script>
+
+  <!-- JS: Line-up – kein Punkt am Zeilenanfang -->
+  <script>
+  (function () {
+    function updateLineupSeparators() {
+      document.querySelectorAll('.lineup .acts').forEach(ul => {
+        const items = Array.from(ul.children);
+        let lastTop = null;
+        items.forEach((li, idx) => {
+          li.classList.remove('row-start');
+          const t = li.offsetTop;
+          if (idx === 0 || lastTop === null || Math.abs(t - lastTop) > 1) {
+            li.classList.add('row-start'); // neuer Zeilenanfang -> kein Punkt davor
+            lastTop = t;
+          }
+        });
+      });
+    }
+    const debounce = (() => { let id; return () => { clearTimeout(id); id = setTimeout(updateLineupSeparators, 100); }; })();
+    window.addEventListener('load', updateLineupSeparators);
+    window.addEventListener('resize', debounce);
+    window.addEventListener('orientationchange', debounce);
+    if (document.fonts && document.fonts.ready) { document.fonts.ready.then(updateLineupSeparators); }
+  })();
   </script>
 </body>
 </html>
