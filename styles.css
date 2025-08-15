@@ -146,76 +146,22 @@ body {
 /* ===================  ERGÄNZUNGEN FÜR FÊTE-SEITE  ==================== */
 /* ===================================================================== */
 
-/* Vollbreit wie Startseite: Bildspalte weg, Text über volle Breite */
+/* Vollbreit wie Startseite */
 .page-inner--wide .page-img { display: none; }
 .page-inner--wide .page-text { grid-column: 1 / -1; }
 
-/* ===== HERO: Banner oben ===== */
-.fete-banner-row{
-  display:flex;
-  align-items:center;
-  gap: clamp(6px, 1.2vw, 16px);
-  margin: 0 0 .8rem;
-}
-.fete-banner-inline{
-  flex: 0 0 clamp(64px, 10vw, 110px);
-}
-.fete-banner-inline svg,
-.fete-banner-inline img{
-  display:block;
-  width:100%;
-  height:auto;
-}
-
-/* Textblock: Block/Justify + Auto-Scaling via JS */
-.fete-banner-text{ flex: 1 1 auto; }
-.fete-title{
-  font-family: 'Montserrat', sans-serif;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: .02em;
-  font-size: clamp(26px, 4.2vw, 48px);
-  line-height: 1.05;
-  text-align: justify;
-  white-space: nowrap;
-}
-.fete-title::after{ content:""; display:inline-block; width:100%; }
-.fete-title .fete-ordinal{ color: var(--highlight); }
-
-.fete-subtitle{
-  margin-top: .2rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: .06em;
-  font-size: clamp(14px, 2.1vw, 18px);
-  line-height: 1.1;
-  text-align: justify;
-  white-space: nowrap;
-}
-.fete-subtitle::after{ content:""; display:inline-block; width:100%; }
-
-@media (max-width: 640px){
-  .fete-banner-row{ flex-direction: column; align-items: center; text-align: center; }
-  .fete-title, .fete-subtitle{ text-align: center; white-space: normal; }
-  .fete-title::after, .fete-subtitle::after{ display: none; }
-}
+/* ===== Voll-SVG-Banner ===== */
+.fete-banner-full{ margin: .5rem 0 1rem; }
+.fete-banner-svg{ display:block; width:100%; height:auto; }
 
 /* ===== Slideshow ===== */
-.fete-hero { margin: 2rem 0 2.5rem; }
+.fete-hero { margin: 1rem 0 2.5rem; }
 .fete-slider {
-  position: relative;
-  width: 100%;
-  aspect-ratio: 16 / 9;
-  overflow: hidden;
-  border: 2px solid var(--primary);
-  border-radius: 12px;
-  background: #ddd;
+  position: relative; width: 100%; aspect-ratio: 16 / 9;
+  overflow: hidden; border: 2px solid var(--primary); border-radius: 12px; background: #ddd;
 }
 .fete-static { width:100%; height:100%; object-fit:cover; display:block; }
-.fete-slide {
-  position: absolute; inset: 0;
-  opacity: 0; transition: opacity .35s ease; pointer-events: none;
-}
+.fete-slide { position: absolute; inset: 0; opacity: 0; transition: opacity .35s ease; pointer-events: none; }
 .fete-slide.active { opacity: 1; pointer-events: auto; }
 .fete-slide img, .fete-slide video { width: 100%; height: 100%; object-fit: cover; display: block; }
 
@@ -242,12 +188,11 @@ body {
 .fete-dot.active { background: var(--highlight); opacity: 1; }
 
 @media (max-width: 768px) {
-  .fete-hero { margin: 1.25rem 0 2rem; }
+  .fete-hero { margin: .75rem 0 2rem; }
   .fete-control { width: 2rem; height: 2rem; line-height: 1.8rem; }
 }
 
 /* ===== FÊTE: LINE-UP ===== */
-/* Stellschrauben für Line-up-Größe (gewünscht: 5vw / max 3rem) */
 :root{
   --lineup-min: 1.8rem;
   --lineup-vw:  5vw;
@@ -277,7 +222,6 @@ body {
   font-size: clamp(var(--lineup-min), var(--lineup-vw), var(--lineup-max));
   padding: 0 .12em;
 }
-/* Punkte in Rot – nur zwischen Acts derselben Zeile */
 .lineup .acts li + li::before{
   content: "•";
   display: inline-block; margin: 0 .18em 0 .2em; vertical-align: middle;
