@@ -12,8 +12,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&display=swap" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css2?family=Rubik+Dirt&display=swap" rel="stylesheet" />
 
-  <!-- CSS (Cache-Buster bei Bedarf anpassen) -->
-  <link rel="stylesheet" href="/styles.css?v=21" />
+  <!-- CSS (Cache-Buster anpassen bei Bedarf) -->
+  <link rel="stylesheet" href="/styles.css?v=24" />
 
   <!-- Event JSON-LD -->
   <script type="application/ld+json">
@@ -63,10 +63,10 @@
 
           <!-- Banner-Zeile -->
           <div class="fete-banner-row">
-            <!-- Inline-SVG (aus selbem Ordner geladen) -->
+            <!-- Inline-SVG aus demselben Ordner laden -->
             <div id="feteBannerInline" class="fete-banner-inline" aria-hidden="true"></div>
 
-            <!-- Textblock (echter Text, automatische gleiche Breite) -->
+            <!-- Textblock (echter Text, automatisch gleiche Breite) -->
             <div class="fete-banner-text">
               <h1 class="fete-title">
                 FÊTE DU SEEEE<span class="fete-ordinal">#3</span>
@@ -187,7 +187,7 @@
     }
   </script>
 
-  <!-- JS: Inline-SVG sicher aus demselben Ordner laden -->
+  <!-- JS: Inline-SVG in den DOM ziehen (aus Fete_Artwork.svg im selben Ordner) -->
   <script>
   (function(){
     const host = document.getElementById('feteBannerInline');
@@ -223,7 +223,7 @@
   })();
   </script>
 
-  <!-- JS: Slideshow-Loader + Autoplay (wie zuvor funktionierend) -->
+  <!-- JS: Slideshow-Loader + Autoplay -->
   <script>
   (function(){
     const slider = document.getElementById('feteSlider');
@@ -375,7 +375,7 @@
   })();
   </script>
 
-  <!-- JS: Line-up – kein Punkt am Zeilenanfang -->
+  <!-- JS: Line-up – kein Punkt am Zeilenanfang (nur innerhalb derselben Zeile) -->
   <script>
   (function () {
     function updateLineupSeparators() {
@@ -400,7 +400,7 @@
   })();
   </script>
 
-  <!-- JS: Titel/Subline automatisch auf gleiche Breite skalieren -->
+  <!-- JS: Titel & Subline auf gleiche Breite skalieren -->
   <script>
   (function(){
     const box = document.querySelector('.fete-banner-text');
