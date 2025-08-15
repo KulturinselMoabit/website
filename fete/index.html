@@ -12,41 +12,21 @@
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&display=swap" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css2?family=Rubik+Dirt&display=swap" rel="stylesheet" />
 
-  <!-- Dein bestehendes CSS (Cache-Buster bei Bedarf anpassen) -->
+  <!-- Dein CSS (Cache-Buster ggf. anpassen) -->
   <link rel="stylesheet" href="/styles.css?v=19" />
 
   <!-- Event JSON-LD -->
   <script type="application/ld+json">
   {
-    "@context": "https://schema.org",
-    "@type": "Event",
-    "name": "Fête du Seeee 2025",
-    "alternateName": ["Fête du See", "Fête du Seee"],
-    "startDate": "2025-08-29T12:00",
-    "endDate": "2025-08-30T23:00",
-    "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
-    "eventStatus": "https://schema.org/EventScheduled",
-    "location": {
-      "@type": "Place",
-      "name": "Strandbad Tegelsee",
-      "address": {
-        "@type": "PostalAddress",
-        "streetAddress": "Strandbad Tegelsee",
-        "addressLocality": "Berlin",
-        "postalCode": "13505",
-        "addressCountry": "DE"
-      }
-    },
-    "image": [
-      "https://kulturinselmoabit.org/fete-icon.jpg",
-      "https://kulturinselmoabit.org/fete.png"
-    ],
-    "description": "Ehrenamtliches Musikfestival Fête du Seeee am 29.–30. August 2025 im Strandbad Tegelsee. Musikalische Highlights, Kunst und Gemeinschaft.",
-    "organizer": {
-      "@type": "Organization",
-      "name": "Kulturinsel Moabit",
-      "url": "https://kulturinselmoabit.org/"
-    }
+    "@context":"https://schema.org","@type":"Event","name":"Fête du Seeee 2025",
+    "alternateName":["Fête du See","Fête du Seee"],
+    "startDate":"2025-08-29T12:00","endDate":"2025-08-30T23:00",
+    "eventAttendanceMode":"https://schema.org/OfflineEventAttendanceMode",
+    "eventStatus":"https://schema.org/EventScheduled",
+    "location":{"@type":"Place","name":"Strandbad Tegelsee","address":{"@type":"PostalAddress","streetAddress":"Strandbad Tegelsee","addressLocality":"Berlin","postalCode":"13505","addressCountry":"DE"}},
+    "image":["https://kulturinselmoabit.org/fete-icon.jpg","https://kulturinselmoabit.org/fete.png"],
+    "description":"Ehrenamtliches Musikfestival Fête du Seeee am 29.–30. August 2025 im Strandbad Tegelsee. Musikalische Highlights, Kunst und Gemeinschaft.",
+    "organizer":{"@type":"Organization","name":"Kulturinsel Moabit","url":"https://kulturinselmoabit.org/"}
   }
   </script>
 </head>
@@ -81,7 +61,7 @@
         <!-- HERO: Inline-SVG-Banner + Slideshow -->
         <section class="fete-hero">
 
-          <!-- ► Platzhalter für INLINE-SVG -->
+          <!-- ► Inline-SVG wird hier reingerendert -->
           <div id="feteBannerInline" class="fete-banner-inline"
                aria-label="Fête du Seeee – Banner"></div>
 
@@ -151,10 +131,7 @@
           </div>
 
           <div class="fete-card fete-card--note">
-            <p>
-              Kommt vorbei, bringt eure Freund*innen mit und lasst uns gemeinsam am
-              Tegeler See feiern – wir freuen uns auf euch!
-            </p>
+            <p>Kommt vorbei, bringt eure Freund*innen mit und lasst uns gemeinsam am Tegeler See feiern – wir freuen uns auf euch!</p>
           </div>
         </section>
 
@@ -198,17 +175,25 @@
     }
   </script>
 
-  <!-- JS: Inline-SVG laden und in den DOM einsetzen -->
+  <!-- JS: Inline-SVG sicher aus demselben Ordner laden -->
   <script>
   (function(){
     const host = document.getElementById('feteBannerInline');
     if (!host) return;
-    const url = new URL('Fete_Artwork.svg', location.href).href;
+
+    // robusten Ordnerpfad bestimmen (/test/, /fete/, …)
+    function folderPath(){
+      const p = location.pathname;
+      if (p.endsWith('/')) return p;
+      if (/\/index\.html?$/i.test(p)) return p.replace(/index\.html?$/i,'');
+      if (p.includes('.')) return p.replace(/[^/]+$/, '');
+      return p + '/';
+    }
+    const url = location.origin + folderPath() + 'Fete_Artwork.svg';
 
     fetch(url, { cache: 'no-store' })
       .then(r => r.ok ? r.text() : Promise.reject())
       .then(txt => {
-        // Nur den <svg>…</svg>-Teil einsetzen
         const m = txt.match(/<svg[\s\S]*<\/svg>/i);
         host.innerHTML = m ? m[0] : txt;
         const svg = host.querySelector('svg');
@@ -222,7 +207,6 @@
         }
       })
       .catch(() => {
-        // Fallback: normale Einbindung
         host.innerHTML = '<img src="'+url+'" alt="Fête du Seeee – Banner" />';
       });
   })();
