@@ -12,8 +12,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&display=swap" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css2?family=Rubik+Dirt&display=swap" rel="stylesheet" />
 
-  <!-- Deine bestehende CSS -->
-  <link rel="stylesheet" href="/styles.css?v=12" />
+  <!-- Deine CSS (Cache-Buster ggf. anpassen) -->
+  <link rel="stylesheet" href="/styles.css?v=13" />
 
   <!-- Event JSON-LD -->
   <script type="application/ld+json">
@@ -121,7 +121,7 @@
         </section>
         <!-- ===== /LINE-UP ===== -->
 
-        <!-- ===== EINHEITLICHE INFOS ALS GRID ===== -->
+        <!-- ===== INFO-GRID (inkl. Plakat in normaler Größe) ===== -->
         <section class="fete-info">
           <div class="fete-card fete-card--poster">
             <img src="/fete.png" alt="Plakat Fête du Seeee #3" />
@@ -274,7 +274,7 @@
       }
 
       if (!found.length){
-        return; // Fallback-Bild bleibt
+        return; // Fallback-Bild bleibt stehen
       }
 
       staticImg && staticImg.remove();
@@ -331,6 +331,7 @@
         if (e.key === 'ArrowRight') show(current + 1);
       });
 
+      // Touch/Hover
       let sx=null;
       slider.addEventListener('touchstart', e=>{ hover=true; sx=e.touches[0].clientX; }, {passive:true});
       slider.addEventListener('touchend',   e=>{
