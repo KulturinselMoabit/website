@@ -167,6 +167,15 @@ body {
 }
 .fete-slide.active { opacity: 1; pointer-events: auto; }
 .fete-slide img, .fete-slide video { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+/* Fallback-Bild (wird per JS entfernt, sobald Slides da sind) */
+.fete-slider .fete-static {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
 /* Controls */
 .fete-control {
   position: absolute; top: 50%; transform: translateY(-50%);
@@ -177,6 +186,7 @@ body {
 .fete-control:hover { opacity: 1; }
 .fete-control.prev { left: .6rem; }
 .fete-control.next { right: .6rem; }
+
 /* Dots */
 .fete-dots {
   position: absolute; left: 0; right: 0; bottom: .5rem;
@@ -187,6 +197,7 @@ body {
   border: 2px solid var(--primary); background: var(--bg); opacity: .85; cursor: pointer;
 }
 .fete-dot.active { background: var(--highlight); opacity: 1; }
+
 @media (max-width: 768px) {
   .fete-hero { margin: 1.25rem 0 2rem; }
   .fete-control { width: 2rem; height: 2rem; line-height: 1.8rem; }
@@ -232,6 +243,7 @@ body {
   color: var(--highlight); opacity: .95;
 }
 .lineup .acts li.row-start::before{ content: none; } /* kein Punkt am Zeilenanfang */
+
 @media (max-width: 768px) {
   .lineup { margin: 1.6rem 0 2rem; }
   .lineup .lineup-daytag { margin-top: .5rem; }
