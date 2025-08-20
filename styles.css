@@ -175,10 +175,10 @@ body {
   .fete-page .fete-meta .sep { display: none; }
 }
 
-/* Info-Text */
+/* Intro-Text */
 .fete-page .info-block { margin: 1rem 0 2rem; }
 
-/* Slideshow – sauber im Content-Rahmen, ohne Border */
+/* Slideshow – clean */
 .fete-page .fete-hero { margin: 1rem 0 2rem; }
 .fete-page .fete-slider {
   position: relative;
@@ -202,7 +202,7 @@ body {
 .fete-page .fete-control {
   position: absolute; top: 50%; transform: translateY(-50%);
   border: none; background: rgba(255,255,255,.75); color: var(--primary);
-  font-weight: 800; width: 2.2rem; height: 2.2rem; line-height: 2.2rem; border-radius: 999px;
+  font-weight: 800; width: 2rem; height: 2rem; line-height: 2rem; border-radius: 999px;
   text-align: center; cursor: pointer; z-index: 2;
 }
 .fete-page .fete-control:hover { background: rgba(255,255,255,.95); }
@@ -310,4 +310,4 @@ body {
 .fete-page .lineup .acts li{ overflow-wrap: anywhere; word-break: break-word; hyphens: auto; }
 .fete-page .fete-slider { overflow: hidden; }
 .fete-page .fete-dots { padding: 0 .35rem; }
-.fete-page .fete-control { width: 2rem; height: 2rem; line-height: 1.9rem; }
+.fete-page .fete-control { width: 2rem; height: 2rem; line-height: 2rem; }
