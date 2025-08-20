@@ -412,5 +412,3 @@ body {
 
 /* Als letzte Leitplanke: keine horizontale Scrollbarkeit auf der Fête-Seite */
 .fete-page { overflow-x: clip; }   /* moderner als hidden; hidden ist auch okay */
-
-
