@@ -392,23 +392,20 @@ body {
   object-fit: cover;
 }
 
-/* Mobile: minimale „Sicherheits-Puffer“ gegen Subpixel-Überlauf + Body-Padding */
+/* Mobile: kleiner Puffer + cleane Optik */
 @media (max-width: 768px){
-  .fete-page .page-text { padding-inline: 12px; } /* hattest du schon, lassen wir drin */
   .fete-page .fete-hero,
   .fete-page .fete-slider {
     max-width: 100%;
     margin-inline: 0;
-    /* ein winziger innerer Saum verhindert abgeschnittene Buchstaben durch Stempelschrift */
     padding-inline: 1px;
     border: none;
     border-radius: 8px;
   }
-  /* Pfeile/Dots sicher innerhalb des Sliders */
   .fete-page .fete-slider { overflow: hidden; }
   .fete-page .fete-dots { padding: 0 .35rem; }
   .fete-page .fete-control { width: 2rem; height: 2rem; line-height: 1.9rem; }
 }
 
 /* Als letzte Leitplanke: keine horizontale Scrollbarkeit auf der Fête-Seite */
-.fete-page { overflow-x: clip; }   /* moderner als hidden; hidden ist auch okay */
+.fete-page { overflow-x: clip; }  /* moderner als hidden; hidden ist auch okay */
