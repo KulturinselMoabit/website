@@ -10,13 +10,47 @@
 
   <!-- Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&display=swap" rel="stylesheet" />
-  <!-- „gestempelte“ Schrift nur fürs Line-up -->
-  <link href="https://fonts.googleapis.com/css2?family=Rubik+Dirt&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Rubik+Dirt&display=swap" rel="stylesheet" />
 
   <!-- CSS -->
-  <link rel="stylesheet" href="/styles.css?v=simple-banner" />
+  <link rel="stylesheet" href="/styles.css?v=9" />
+
+  <!-- Event JSON-LD -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Event",
+    "name": "Fête du Seeee 2025",
+    "alternateName": ["Fête du See", "Fête du Seee"],
+    "startDate": "2025-08-29T12:00",
+    "endDate": "2025-08-30T23:00",
+    "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
+    "eventStatus": "https://schema.org/EventScheduled",
+    "location": {
+      "@type": "Place",
+      "name": "Strandbad Tegelsee",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Strandbad Tegelsee",
+        "addressLocality": "Berlin",
+        "postalCode": "13505",
+        "addressCountry": "DE"
+      }
+    },
+    "image": [
+      "https://kulturinselmoabit.org/fete/fete-banner.svg",
+      "https://kulturinselmoabit.org/fete/1.jpg"
+    ],
+    "description": "Ehrenamtliches Musikfestival Fête du Seeee am 29.–30. August 2025 im Strandbad Tegelsee. Musikalische Highlights, Kunst und Gemeinschaft.",
+    "organizer": {
+      "@type": "Organization",
+      "name": "Kulturinsel Moabit",
+      "url": "https://kulturinselmoabit.org/"
+    }
+  }
+  </script>
 </head>
-<body class="fete-page">
+<body>
 
   <!-- HEADER -->
   <header id="site-header">
@@ -41,37 +75,23 @@
 
   <!-- MAIN -->
   <main>
+    <!-- Vollbreit wie Startseite -->
     <section class="container page-inner page-inner--wide">
       <div class="page-text">
 
-        <!-- Banner (einfaches IMG) -->
-        <section class="fete-banner" aria-label="Festival-Banner">
-          <img class="fete-banner-img" src="fete-banner.svg" alt="Fête du Seeee – Banner" />
-        </section>
-
-        <!-- Meta-Zeile -->
-        <div class="fete-meta">
-          <span>Strandbad Tegelsee</span>
-          <span class="sep">•</span>
-          <span>29. &amp; 30. August 2025</span>
+        <!-- Banner (als einfaches Bild im selben Ordner) -->
+        <div class="fete-banner-wrap">
+          <img src="fete-banner.svg" alt="Fête du Seeee – Banner" class="fete-banner" />
         </div>
 
-        <!-- Intro-Text (clean) -->
-        <section class="info-block">
-          <p>
-            Dieses Jahr wird unsere Fête du Seeee noch bunter und größer:
-            Wir feiern an zwei Tagen auf gleich <strong>zwei Bühnen</strong> im wunderschönen
-            Strandbad Tegelsee! Freut euch auf ein vielseitiges Programm aus Musik, Theater und Kunst,
-            das von ehrenamtlichen Künstler*innen für euch gestaltet wird.
-          </p>
-          <p>
-            Genießt tagsüber Kultur-Highlights und bunte Aktionen für Groß und Klein direkt am Wasser,
-            und lasst euch abends von mitreißenden Konzerten und Performances auf beiden Bühnen mitreißen.
-            Bei den unterschiedlichsten Genres ist für jeden Geschmack etwas dabei!
-          </p>
-        </section>
+        <!-- Subline unter dem Banner -->
+        <div class="fete-subline">
+          <span class="place">Strandbad Tegelsee</span>
+          <span class="dot">•</span>
+          <span class="date">29. &amp; 30. August 2025</span>
+        </div>
 
-        <!-- SLIDESHOW (nimmt 1–9.jpg/.mp4 aus demselben Ordner) -->
+        <!-- HERO-SLIDESHOW (lädt 1–9.jpg/.mp4 aus demselben Ordner) -->
         <section class="fete-hero">
           <div class="fete-slider" id="feteSlider" aria-label="Festival-Impressionen">
             <button class="fete-control prev" aria-label="Vorheriges">‹</button>
@@ -79,15 +99,20 @@
             <div class="fete-dots" role="tablist" aria-label="Slideshow-Navigation"></div>
           </div>
           <noscript>
-            <img src="1.jpg" alt="Festivalbild 1" style="width:100%;height:auto;border-radius:8px;display:block;margin-top:.5rem;">
+            <img src="1.jpg" alt="Festivalbild 1" style="width:100%;height:auto;display:block;margin-top:.5rem;">
           </noscript>
         </section>
 
+        <!-- Introtext -->
+        <div class="intro-copy">
+          <p>Dieses Jahr wird unsere Fête du Seeee noch bunter und größer: Wir feiern an zwei Tagen auf gleich zwei Bühnen im wunderschönen Strandbad Tegelsee! Freut euch auf ein vielseitiges Programm aus Musik, Theater und Kunst, das von ehrenamtlichen Künstler*innen für euch gestaltet wird.</p>
+          <p>Genießt tagsüber Kultur-Highlights und bunte Aktionen für Groß und Klein direkt am Wasser, und lasst euch abends von mitreißenden Konzerten und Performances auf beiden Bühnen mitreißen. Bei den unterschiedlichsten Genres ist für jeden Geschmack etwas dabei!</p>
+        </div>
+
         <!-- ===== LINE-UP ===== -->
+        <h2 class="section-title">Line-Up</h2>
         <section class="lineup">
           <div class="lineup-wrap">
-            <div class="lineup-heading">Line-Up</div>
-
             <div class="line">
               <div class="lineup-daytag">FR. 29. AUGUST</div>
               <ul class="acts" aria-label="Line-up Freitag, 29. August">
@@ -116,17 +141,16 @@
         <!-- ===== /LINE-UP ===== -->
 
         <!-- Eintritt -->
+        <h2 class="section-title">Eintritt</h2>
         <section class="entry">
-          <h2 class="section-title">Eintritt</h2>
-          <p><strong>nur Strandbadeintritt:</strong></p>
+          <p>nur Strandbadeintritt:</p>
           <ul>
             <li>Erwachsene: 6 €</li>
             <li>Ermäßigt: 4 €</li>
             <li>Ab 18 Uhr: 2,50 €</li>
           </ul>
-          <p>
-            Kommt vorbei, bringt eure Freund*innen mit und lasst uns gemeinsam am
-            Tegeler See feiern – wir freuen uns auf euch!
+          <p style="margin-top:.75rem;">
+            Kommt vorbei, bringt eure Freund*innen mit und lasst uns gemeinsam am Tegeler See feiern – wir freuen uns auf euch!
           </p>
         </section>
 
@@ -158,7 +182,7 @@
     }
   </script>
 
-  <!-- JS: Slideshow-Loader (robust, JPG/MP4 1–9) -->
+  <!-- JS: Slideshow-Loader (jpg/mp4, korrekte Reihenfolge, Pfeile/Dots) -->
   <script>
   (function(){
     const slider = document.getElementById('feteSlider');
@@ -175,7 +199,7 @@
       return el;
     }
     if (!prevBtn){ prevBtn = mk('button','fete-control prev','‹'); prevBtn.setAttribute('aria-label','Vorheriges'); slider.appendChild(prevBtn); }
-    if (!nextBtn){ nextBtn = mk('button','fete-control next','›'); nextBtn.setAttribute('aria-label','Nächstes'); slider.appendChild(nextBtn); }
+    if (!nextBtn){ nextBtn = mk('button','fete-control next','›'); nextBtn.setAttribute('aria-label','Nächstes');  slider.appendChild(nextBtn); }
     if (!dotsWrap){ dotsWrap = mk('div','fete-dots'); dotsWrap.setAttribute('role','tablist'); dotsWrap.setAttribute('aria-label','Slideshow-Navigation'); slider.appendChild(dotsWrap); }
 
     function folderPath(){
@@ -192,14 +216,14 @@
         const img = new Image();
         img.onload  = ()=>resolve({ok:true, node:img});
         img.onerror = ()=>resolve({ok:false});
-        img.decoding = 'async';
+        img.loading='lazy'; img.decoding='async';
         img.src = url;
       });
     }
     function loadVideo(url){
       return new Promise(resolve=>{
         const v = document.createElement('video');
-        v.preload='metadata'; v.muted=true; v.playsInline=true; v.setAttribute('playsinline',''); v.loop=true;
+        v.preload='metadata'; v.muted=true; v.playsInline=true; v.loop=true;
         const ok=()=>{ cleanup(); resolve({ok:true, node:v}); };
         const err=()=>{ cleanup(); resolve({ok:false}); };
         function cleanup(){ v.removeEventListener('loadedmetadata', ok); v.removeEventListener('error', err); }
@@ -219,7 +243,8 @@
     }
 
     (async function init(){
-      const results = await Promise.all(Array.from({length: 9}, (_,i)=>probe(i+1)));
+      const want = 9;
+      const results = await Promise.all(Array.from({length: want}, (_,i)=>probe(i+1)));
       const items = results.filter(Boolean).sort((a,b)=>a.idx - b.idx);
       if (!items.length) return;
 
@@ -234,6 +259,7 @@
         const dot = mk('button','fete-dot');
         dot.type='button';
         dot.setAttribute('aria-label','Slide '+(i+1));
+        dot.addEventListener('click', ()=>show(i));
         dotsWrap.appendChild(dot);
 
         slides.push(wrap); dots.push(dot);
@@ -277,16 +303,21 @@
 
       show(0);
 
-      // Autoplay (5s), pausiert bei Interaktion/Tab-Wechsel
+      /* Autoplay */
+      function slidesQ(){ return slider.querySelectorAll('.fete-slide'); }
+      function next(){ nextBtn?.click(); }
       let timer = null, hover = false;
-      function next(){ nextBtn.click(); }
-      function start(){ if (!timer && slides.length > 1) timer = setInterval(()=>{ if (!hover && !document.hidden) next(); }, 5000); }
+      function start(){
+        if (timer || slidesQ().length < 2) return;
+        timer = setInterval(() => { if (!hover && !document.hidden) next(); }, 5000);
+      }
       function stop(){ clearInterval(timer); timer = null; }
-      slider.addEventListener('mouseenter',()=>hover=true);
-      slider.addEventListener('mouseleave',()=>hover=false);
-      slider.addEventListener('touchstart', ()=>hover=true, {passive:true});
-      slider.addEventListener('touchend',   ()=>hover=false, {passive:true});
-      document.addEventListener('visibilitychange', ()=>{ document.hidden ? stop() : start(); });
+      slider.addEventListener('mouseenter', () => hover = true);
+      slider.addEventListener('mouseleave', () => hover = false);
+      slider.addEventListener('touchstart', () => hover = true, { passive: true });
+      slider.addEventListener('touchend',   () => hover = false, { passive: true });
+      document.addEventListener('visibilitychange', () => { document.hidden ? stop() : start(); });
+
       start();
     })();
   })();
@@ -303,7 +334,7 @@
           li.classList.remove('row-start');
           const t = li.offsetTop;
           if (idx === 0 || lastTop === null || Math.abs(t - lastTop) > 1) {
-            li.classList.add('row-start');
+            li.classList.add('row-start'); // neuer Zeilenanfang -> kein Punkt davor
             lastTop = t;
           }
         });
@@ -314,6 +345,161 @@
     window.addEventListener('resize', debounce);
     window.addEventListener('orientationchange', debounce);
     if (document.fonts && document.fonts.ready) { document.fonts.ready.then(updateLineupSeparators); }
+  })();
+  </script>
+
+  <!-- JS: Bandinfos aus TSV/CSV (robuster Parser) + Hover-Tooltip -->
+  <script>
+  (function(){
+    const lineupLists = document.querySelectorAll('.lineup .acts');
+    if (!lineupLists.length) return;
+
+    function folderPath(){
+      const p = location.pathname;
+      if (p.endsWith('/')) return p;
+      if (/\/index\.html?$/i.test(p)) return p.replace(/index\.html?$/i,'');
+      if (p.includes('.')) return p.replace(/[^/]+$/, '');
+      return p + '/';
+    }
+    const base = location.origin + folderPath();
+    const dataURL = base + 'bandinfo/lineup.tsv';
+    const imgBase = base + 'bandinfo/img/';
+
+    function slugify(str){
+      return (str||'')
+        .toString()
+        .toLowerCase()
+        .normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+        .replace(/ä/g,'ae').replace(/ö/g,'oe').replace(/ü/g,'ue').replace(/ß/g,'ss')
+        .replace(/['’`´]/g,'')
+        .replace(/[^a-z0-9]+/g,'-')
+        .replace(/^-+|-+$/g,'');
+    }
+    function esc(s){ return (s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]); }
+
+    function detectDelimiter(text){
+      const firstLine = (text.split(/\r?\n/,1)[0] || '');
+      const candidates = ['\t','; ', ';', ',', '|'];
+      let best = '\t', bestCount = 0;
+      for (const d of candidates){
+        const c = firstLine.split(d).length;
+        if (c > bestCount) { best = d; bestCount = c; }
+      }
+      return best;
+    }
+    function parseDelimited(text, delimiter){
+      const rows = [];
+      let field = '', row = [], inQuotes = false, i = 0;
+      const len = text.length;
+      while (i < len){
+        const ch = text[i];
+
+        if (inQuotes){
+          if (ch === '"'){
+            const peek = text[i+1];
+            if (peek === '"'){ field += '"'; i += 2; continue; }
+            inQuotes = false; i++; continue;
+          }
+          field += ch; i++; continue;
+        }
+
+        if (ch === '"'){ inQuotes = true; i++; continue; }
+        if (ch === '\r'){ i++; continue; }
+        if (ch === '\n'){ row.push(field); rows.push(row); field=''; row=[]; i++; continue; }
+
+        if (delimiter.length > 1 && text.substr(i, delimiter.length) === delimiter){
+          row.push(field); field=''; i+=delimiter.length; continue;
+        }
+        if (delimiter.length === 1 && ch === delimiter){
+          row.push(field); field=''; i++; continue;
+        }
+
+        field += ch; i++;
+      }
+      row.push(field);
+      if (row.length > 1 || row[0].trim() !== '') rows.push(row);
+      return rows;
+    }
+    function parseTable(text){
+      text = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+      const delim = detectDelimiter(text);
+      const rows = parseDelimited(text, delim);
+      if (!rows.length) return [];
+      const headers = rows[0].map(h => h.trim());
+      return rows.slice(1).map(cols=>{
+        const obj = {};
+        headers.forEach((h, idx)=> obj[h] = (cols[idx] || '').trim());
+        return obj;
+      });
+    }
+
+    const tip = document.createElement('div');
+    tip.className = 'band-tooltip';
+    document.body.appendChild(tip);
+
+    function placeTip(target){
+      const r = target.getBoundingClientRect();
+      const ttr = tip.getBoundingClientRect();
+      const sx = window.scrollX || document.documentElement.scrollLeft;
+      const sy = window.scrollY || document.documentElement.scrollTop;
+      let left = sx + r.left + (r.width - ttr.width)/2;
+      left = Math.max(sx + 8, Math.min(left, sx + document.documentElement.clientWidth - ttr.width - 8));
+      let top = sy + r.top - ttr.height - 10;
+      if (top < sy + 8) top = sy + r.bottom + 10;
+      tip.style.left = left + 'px';
+      tip.style.top  = top  + 'px';
+    }
+    function showTipFor(li, data){
+      const time = (data.start && data.end) ? `${esc(data.start)}–${esc(data.end)}` : esc(data.start||'');
+      const img  = data.image ? (data.image.startsWith('http') ? data.image : (imgBase + data.image)) : (imgBase + slugify(data.band) + '.jpg');
+      tip.innerHTML = `
+        ${time ? `<div class="time">${time}</div>` : ``}
+        <h4>${esc(data.band || li.textContent.trim())}</h4>
+        ${img ? `<img src="${img}" alt="${esc(data.band)}">` : ``}
+        ${data.desc ? `<p>${esc(data.desc)}</p>` : ``}
+      `;
+      tip.classList.add('visible');
+      placeTip(li);
+    }
+    function hideTip(){ tip.classList.remove('visible'); }
+
+    fetch(dataURL)
+      .then(r=>r.ok ? r.text() : Promise.reject(r.status))
+      .then(txt=>{
+        const rows = parseTable(txt);
+        const bySlug = new Map();
+        rows.forEach(row=>{
+          const slug = slugify(row.slug || row.band || '');
+          if (slug) bySlug.set(slug, {
+            band: row.band || '',
+            start: row.start || '',
+            end: row.end || '',
+            desc: row.desc || '',
+            image: row.image || ''
+          });
+        });
+
+        lineupLists.forEach(ul=>{
+          ul.querySelectorAll('li').forEach(li=>{
+            const name = li.textContent.trim();
+            const slug = slugify(name);
+            const data = bySlug.get(slug);
+            if (!data) return;
+
+            let hideId;
+            function open(){ clearTimeout(hideId); showTipFor(li, data); }
+            function close(){ hideId = setTimeout(hideTip, 120); }
+
+            li.addEventListener('mouseenter', open);
+            li.addEventListener('mouseleave', close);
+            li.addEventListener('focus', open);
+            li.addEventListener('blur', close);
+            li.addEventListener('touchstart', (e)=>{ open(); e.stopPropagation(); }, {passive:true});
+            document.addEventListener('touchstart', hideTip, {passive:true});
+          });
+        });
+      })
+      .catch(()=>{ /* still */ });
   })();
   </script>
 </body>
