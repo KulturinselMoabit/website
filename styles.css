@@ -353,3 +353,64 @@ body {
 .fete-page .fete-slider { overflow: hidden; }
 .fete-page .fete-control { width: 2rem; height: 2rem; line-height: 1.9rem; }
 .fete-page .fete-dots { padding: 0 .35rem; }
+
+/* =========================================================
+   Fête-Seite: Slideshow darf niemals breiter als der Viewport sein
+   ========================================================= */
+
+/* Sicherheitsnetz: alles innerhalb des Sliders in die Box-Modell-Breite einrechnen */
+.fete-page .fete-hero,
+.fete-page .fete-slider,
+.fete-page .fete-slider * {
+  box-sizing: border-box;
+}
+
+/* Slider auf Containerbreite zentrieren und clampen */
+.fete-page .fete-hero,
+.fete-page .fete-slider {
+  width: 100%;
+  max-width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  overflow: hidden;              /* falls innere Elemente „drücken“ */
+  contain: layout paint size;    /* kapselt Layout -> verhindert Ausbluten */
+}
+
+/* Absolut positionierte Slides strikt innerhalb halten */
+.fete-page .fete-slide {
+  position: absolute;
+  left: 0; right: 0; top: 0; bottom: 0;
+}
+
+/* Bilder/Videos nie größer als der Slider */
+.fete-page .fete-slide img,
+.fete-page .fete-slide video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  object-fit: cover;
+}
+
+/* Mobile: minimale „Sicherheits-Puffer“ gegen Subpixel-Überlauf + Body-Padding */
+@media (max-width: 768px){
+  .fete-page .page-text { padding-inline: 12px; } /* hattest du schon, lassen wir drin */
+  .fete-page .fete-hero,
+  .fete-page .fete-slider {
+    max-width: 100%;
+    margin-inline: 0;
+    /* ein winziger innerer Saum verhindert abgeschnittene Buchstaben durch Stempelschrift */
+    padding-inline: 1px;
+    border: none;
+    border-radius: 8px;
+  }
+  /* Pfeile/Dots sicher innerhalb des Sliders */
+  .fete-page .fete-slider { overflow: hidden; }
+  .fete-page .fete-dots { padding: 0 .35rem; }
+  .fete-page .fete-control { width: 2rem; height: 2rem; line-height: 1.9rem; }
+}
+
+/* Als letzte Leitplanke: keine horizontale Scrollbarkeit auf der Fête-Seite */
+.fete-page { overflow-x: clip; }   /* moderner als hidden; hidden ist auch okay */
+
+
