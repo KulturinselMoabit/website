@@ -10,19 +10,24 @@
 
   <!-- Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&display=swap" rel="stylesheet" />
-  <link href="https://fonts.googleapis.com/css2?family=Rubik+Dirt&display=swap" rel="stylesheet" />
+  <!-- „gestempelte“ Schrift nur fürs Line-up -->
+  <link href="https://fonts.googleapis.com/css2?family=Rubik+Dirt&display=swap" rel="stylesheet">
 
-  <!-- CSS (Cache-Buster gern anpassen) -->
-  <link rel="stylesheet" href="/styles.css?v=92" />
+  <!-- CSS -->
+  <link rel="stylesheet" href="/styles.css?v=final-fix" />
 </head>
 <body class="fete-page">
 
-  <!-- HEADER -->
+  <!-- HEADER (unverändert, behält Container-Breite der anderen Seiten) -->
   <header id="site-header">
     <div class="container header-inner">
-      <div class="logo"><img src="/logo.svg" alt="Logo Kulturinsel Moabit" /></div>
+      <div class="logo">
+        <img src="/logo.svg" alt="Logo Kulturinsel Moabit" />
+      </div>
       <nav class="site-nav">
-        <button class="menu-toggle" aria-label="Menü öffnen / schließen"><span></span><span></span><span></span></button>
+        <button class="menu-toggle" aria-label="Menü öffnen / schließen">
+          <span></span><span></span><span></span>
+        </button>
         <ul>
           <li><a href="/">Startseite</a></li>
           <li><a href="/fete/" class="active">Fête du Seeee</a></li>
@@ -36,13 +41,14 @@
 
   <!-- MAIN -->
   <main>
-    <section class="container page-inner">
+    <!-- Vollbreit wie Startseite (aber innerhalb .container) -->
+    <section class="container page-inner page-inner--wide">
       <div class="page-text">
 
-        <!-- Banner (SVG-Datei im gleichen Ordner) -->
-        <figure class="fete-banner">
-          <img class="fete-banner-img" src="fete-banner.svg" alt="Fête du Seeee – Sommerfest • Konzerte • Theater • Kinderprogramm" />
-        </figure>
+        <!-- Banner als SVG-Grafik (du kannst die Datei ersetzen) -->
+        <section class="fete-banner">
+          <img class="fete-banner-img" src="Fete_Artwork.svg" alt="Fête du Seeee – Banner" />
+        </section>
 
         <!-- Meta-Zeile -->
         <div class="fete-meta">
@@ -51,34 +57,33 @@
           <span>29. &amp; 30. August 2025</span>
         </div>
 
-        <!-- Slideshow -->
+        <!-- Intro-Text -->
+        <section class="info-block">
+          <p>
+            Dieses Jahr wird unsere Fête du Seeee noch bunter und größer:
+            Wir feiern an zwei Tagen auf gleich <strong>zwei Bühnen</strong> im wunderschönen
+            Strandbad Tegelsee! Freut euch auf ein vielseitiges Programm aus Musik, Theater und Kunst,
+            das von ehrenamtlichen Künstler*innen für euch gestaltet wird.
+          </p>
+          <p>
+            Genießt tagsüber Kultur-Highlights und bunte Aktionen für Groß und Klein direkt am Wasser,
+            und lasst euch abends von mitreißenden Konzerten und Performances auf beiden Bühnen mitreißen.
+            Bei den unterschiedlichsten Genres ist für jeden Geschmack etwas dabei!
+          </p>
+        </section>
+
+        <!-- SLIDESHOW (nimmt 1–9.jpg/.mp4 aus demselben Ordner) -->
         <section class="fete-hero">
           <div class="fete-slider" id="feteSlider" aria-label="Festival-Impressionen">
-            <!-- statisches Fallback (wird nach Init entfernt) -->
-            <img class="fete-static" src="1.jpg" alt="Festivalbild 1" />
             <button class="fete-control prev" aria-label="Vorheriges">‹</button>
             <button class="fete-control next" aria-label="Nächstes">›</button>
             <div class="fete-dots" role="tablist" aria-label="Slideshow-Navigation"></div>
           </div>
-          <noscript><p style="text-align:center;margin-top:.5rem;">Slideshow benötigt JavaScript.</p></noscript>
+          <noscript>
+            <img src="1.jpg" alt="Festivalbild 1"
+                 style="width:100%;height:auto;border-radius:8px;display:block;margin-top:.5rem;">
+          </noscript>
         </section>
-
-        <!-- Info-Text -->
-        <div class="info-block">
-          <p>
-            Dieses Jahr wird unsere Fête du Seeee noch bunter und größer: Wir feiern
-            an zwei Tagen auf gleich <strong>zwei Bühnen</strong> im wunderschönen
-            Strandbad Tegelsee! Freut euch auf ein vielseitiges Programm aus
-            Musik, Theater und Kunst, das von ehrenamtlichen Künstler*innen für euch
-            gestaltet wird.
-          </p>
-          <p>
-            Genießt tagsüber Kultur-Highlights und bunte Aktionen für Groß und Klein
-            direkt am Wasser, und lasst euch abends von mitreißenden Konzerten und
-            Performances auf beiden Bühnen mitreißen. Bei den unterschiedlichsten Genres ist für jeden Geschmack
-            etwas dabei!
-          </p>
-        </div>
 
         <!-- ===== LINE-UP ===== -->
         <section class="lineup">
@@ -113,18 +118,19 @@
         <!-- ===== /LINE-UP ===== -->
 
         <!-- Eintritt -->
-        <div class="lineup-wrap">
-          <h3 class="section-title">Eintritt</h3>
-        </div>
-        <div class="entry">
+        <section class="entry">
+          <h2 class="section-title">Eintritt</h2>
           <p><strong>nur Strandbadeintritt:</strong></p>
           <ul>
             <li>Erwachsene: 6 €</li>
             <li>Ermäßigt: 4 €</li>
             <li>Ab 18 Uhr: 2,50 €</li>
           </ul>
-          <p>Kommt vorbei, bringt eure Freund*innen mit und lasst uns gemeinsam am Tegeler See feiern – wir freuen uns auf euch!</p>
-        </div>
+          <p>
+            Kommt vorbei, bringt eure Freund*innen mit und lasst uns gemeinsam am
+            Tegeler See feiern – wir freuen uns auf euch!
+          </p>
+        </section>
 
       </div>
     </section>
@@ -133,12 +139,16 @@
   <!-- FOOTER -->
   <footer id="site-footer">
     <div class="container footer-inner">
-      <p><a href="/impressum.html">Impressum</a> | <a href="/kontakt.html">Kontakt</a> | <a href="/datenschutz.html">Datenschutz</a></p>
+      <p>
+        <a href="/impressum.html">Impressum</a> |
+        <a href="/kontakt.html">Kontakt</a> |
+        <a href="/datenschutz.html">Datenschutz</a>
+      </p>
       <p>© 2025 Kulturinsel Moabit – alle Rechte vorbehalten</p>
     </div>
   </footer>
 
-  <!-- JS: Burger-Menü -->
+  <!-- JS: Burger-Menü (unverändert) -->
   <script>
     const btn = document.querySelector('.menu-toggle');
     const nav = document.querySelector('.site-nav ul');
@@ -150,169 +160,155 @@
     }
   </script>
 
-  <!-- JS: Slideshow (robust, entfernt Fallback, Autoplay vorhanden) -->
+  <!-- JS: Slideshow-Loader – lädt 1–9.jpg/.mp4 aus dem gleichen Ordner -->
   <script>
   (function(){
-    var slider = document.getElementById('feteSlider');
+    const slider = document.getElementById('feteSlider');
     if (!slider) return;
 
-    var prevBtn = slider.querySelector('.fete-control.prev');
-    var nextBtn = slider.querySelector('.fete-control.next');
-    var dotsWrap = slider.querySelector('.fete-dots');
-    var staticImg = slider.querySelector('.fete-static');
+    // Elemente sicherstellen
+    let prevBtn = slider.querySelector('.fete-control.prev');
+    let nextBtn = slider.querySelector('.fete-control.next');
+    let dotsWrap = slider.querySelector('.fete-dots');
 
+    function mk(tag, cls, txt){
+      const el = document.createElement(tag);
+      if (cls) el.className = cls;
+      if (txt != null) el.textContent = txt;
+      return el;
+    }
+    if (!prevBtn){ prevBtn = mk('button','fete-control prev','‹'); prevBtn.setAttribute('aria-label','Vorheriges'); slider.appendChild(prevBtn); }
+    if (!nextBtn){ nextBtn = mk('button','fete-control next','›'); nextBtn.setAttribute('aria-label','Nächstes'); slider.appendChild(nextBtn); }
+    if (!dotsWrap){ dotsWrap = mk('div','fete-dots'); dotsWrap.setAttribute('role','tablist'); dotsWrap.setAttribute('aria-label','Slideshow-Navigation'); slider.appendChild(dotsWrap); }
+
+    // Ordnerpfad robust bestimmen (…/fete/ oder …/test/)
     function folderPath(){
-      var p = location.pathname;
-      if (p.slice(-1) === '/') return p;
+      const p = location.pathname;
+      if (p.endsWith('/')) return p;
       if (/\/index\.html?$/i.test(p)) return p.replace(/index\.html?$/i,'');
-      if (p.indexOf('.') > -1) return p.replace(/[^/]+$/, '');
+      if (p.includes('.')) return p.replace(/[^/]+$/, '');
       return p + '/';
     }
-    var BASE = folderPath();
+    const base = location.origin + folderPath();
 
-    function testImg(url){
-      return new Promise(function(res){
-        var i = new Image();
-        i.onload = function(){ res(true); };
-        i.onerror = function(){ res(false); };
-        i.src = url;
+    // Loader (.jpg -> .mp4)
+    function loadImage(url){
+      return new Promise(resolve=>{
+        const img = new Image();
+        img.onload  = ()=>resolve({ok:true, node:img});
+        img.onerror = ()=>resolve({ok:false});
+        img.loading='lazy'; img.decoding='async';
+        img.src = url;
       });
     }
-    function testVideo(url){
-      return new Promise(function(res){
-        var v = document.createElement('video');
-        function ok(){ cleanup(); res(true); }
-        function err(){ cleanup(); res(false); }
+    function loadVideo(url){
+      return new Promise(resolve=>{
+        const v = document.createElement('video');
+        v.preload='metadata'; v.muted=true; v.playsInline=true; v.loop=true;
+        const ok=()=>{ cleanup(); resolve({ok:true, node:v}); };
+        const err=()=>{ cleanup(); resolve({ok:false}); };
         function cleanup(){ v.removeEventListener('loadedmetadata', ok); v.removeEventListener('error', err); }
         v.addEventListener('loadedmetadata', ok);
         v.addEventListener('error', err);
         v.src = url;
       });
     }
-
-    function loadCandidate(n){
-      return (async function(){
-        var jpg = BASE + n + '.jpg';
-        var hasImg = await testImg(jpg);
-        if (hasImg){
-          var img = new Image();
-          img.src = jpg; img.alt = 'Festivalbild ' + n; img.loading = 'lazy'; img.decoding = 'async';
-          return { idx:n, node: img };
-        }
-        var mp4 = BASE + n + '.mp4';
-        var hasVid = await testVideo(mp4);
-        if (hasVid){
-          var v = document.createElement('video');
-          v.src = mp4; v.preload = 'metadata'; v.muted = true; v.playsInline = true; v.loop = true;
-          return { idx:n, node: v };
-        }
-        return null;
-      })();
+    async function probe(n){
+      const jpg = base + `${n}.jpg`;
+      let r = await loadImage(jpg);
+      if (r.ok){ r.node.alt = `Festivalbild ${n}`; return {idx:n, node:r.node}; }
+      const mp4 = base + `${n}.mp4`;
+      r = await loadVideo(mp4);
+      if (r.ok){ return {idx:n, node:r.node}; }
+      return null;
     }
 
     (async function init(){
-      var nums = Array.from({length:9}, function(_,i){ return i+1; });
-      var results = await Promise.all(nums.map(loadCandidate));
-      var items = results.filter(Boolean).sort(function(a,b){ return a.idx - b.idx; });
+      const results = await Promise.all(Array.from({length: 9}, (_,i)=>probe(i+1)));
+      const items = results.filter(Boolean).sort((a,b)=>a.idx - b.idx);
+      if (!items.length) return;
 
-      if (!items.length){
-        // keine Medien gefunden -> statisches Bild bleibt
-        return;
-      }
-
-      var slides = [], dots = [];
-
+      const slides = [], dots = [];
       function addSlide(node, i){
-        var wrap = document.createElement('div');
-        wrap.className = 'fete-slide';
+        const wrap = mk('div','fete-slide');
         wrap.setAttribute('data-index', i);
-        wrap.setAttribute('aria-hidden', 'true');
+        wrap.setAttribute('aria-hidden','true');
         wrap.appendChild(node);
         slider.insertBefore(wrap, dotsWrap);
 
-        var dot = document.createElement('button');
-        dot.className = 'fete-dot';
-        dot.type = 'button';
-        dot.setAttribute('aria-label', 'Slide ' + (i+1));
+        const dot = mk('button','fete-dot');
+        dot.type='button';
+        dot.setAttribute('aria-label','Slide '+(i+1));
         dotsWrap.appendChild(dot);
 
         slides.push(wrap); dots.push(dot);
       }
+      items.forEach((it,i)=>addSlide(it.node, i));
 
-      items.forEach(function(it,i){ addSlide(it.node, i); });
+      // Controls und Dots ans Ende
+      slider.appendChild(prevBtn);
+      slider.appendChild(nextBtn);
+      slider.appendChild(dotsWrap);
 
-      // statisches Fallback entfernen
-      if (staticImg && staticImg.parentNode) staticImg.parentNode.removeChild(staticImg);
-
-      // Wenn nur 1 Slide: Pfeile & Dots verstecken
-      if (slides.length < 2){
-        prevBtn.style.display = 'none';
-        nextBtn.style.display = 'none';
-        dotsWrap.style.display = 'none';
-      }
-
-      var current = 0;
+      let current = 0;
       function show(i){
         current = (i + slides.length) % slides.length;
-        for (var s=0; s<slides.length; s++){
-          var el = slides[s];
-          var active = (s === current);
+        slides.forEach((el, idx)=>{
+          const active = idx === current;
           el.classList.toggle('active', active);
           el.setAttribute('aria-hidden', active ? 'false' : 'true');
-          var v = el.querySelector('video');
-          if (v){ active ? v.play().catch(function(){}) : v.pause(); }
-        }
-        for (var d=0; d<dots.length; d++){
-          dots[d].classList.toggle('active', d === current);
-        }
+          const v = el.querySelector('video');
+          if (v){ active ? v.play().catch(()=>{}) : v.pause(); }
+        });
+        dots.forEach((d, idx)=>d.classList.toggle('active', idx === current));
       }
 
-      prevBtn.addEventListener('click', function(){ show(current - 1); });
-      nextBtn.addEventListener('click', function(){ show(current + 1); });
-      dots.forEach(function(d, idx){ d.addEventListener('click', function(){ show(idx); }); });
+      prevBtn.addEventListener('click', ()=>show(current - 1));
+      nextBtn.addEventListener('click', ()=>show(current + 1));
 
       slider.setAttribute('tabindex','0');
-      slider.addEventListener('keydown', function(e){
+      slider.addEventListener('keydown', e=>{
         if (e.key === 'ArrowLeft')  show(current - 1);
         if (e.key === 'ArrowRight') show(current + 1);
       });
 
-      // Touch-Swipe
-      var sx = null;
-      slider.addEventListener('touchstart', function(e){ sx = e.touches[0].clientX; }, {passive:true});
-      slider.addEventListener('touchend', function(e){
-        if (sx == null) return;
-        var dx = e.changedTouches[0].clientX - sx;
-        if (Math.abs(dx) > 40){ (dx < 0 ? show(current + 1) : show(current - 1)); }
+      let sx=null;
+      slider.addEventListener('touchstart', e=>{ sx = e.touches[0].clientX; }, {passive:true});
+      slider.addEventListener('touchend',   e=>{
+        if (sx==null) return;
+        const dx = e.changedTouches[0].clientX - sx;
+        if (Math.abs(dx) > 40) (dx < 0 ? show(current + 1) : show(current - 1));
         sx = null;
       });
 
       show(0);
 
-      // Autoplay
-      var timer = null, hover = false;
-      function start(){ if (timer || slides.length < 2) return; timer = setInterval(function(){ if (!hover && !document.hidden) show(current + 1); }, 5000); }
-      function stop(){ if (timer) { clearInterval(timer); timer = null; } }
-      slider.addEventListener('mouseenter', function(){ hover = true; });
-      slider.addEventListener('mouseleave', function(){ hover = false; });
-      slider.addEventListener('touchstart', function(){ hover = true; }, { passive:true });
-      slider.addEventListener('touchend',   function(){ hover = false; }, { passive:true });
-      document.addEventListener('visibilitychange', function(){ document.hidden ? stop() : start(); });
+      // Autoplay (5s, pausiert bei Interaktion & Tab-Wechsel)
+      let timer = null, hover = false;
+      function slidesQ(){ return slider.querySelectorAll('.fete-slide'); }
+      function next(){ nextBtn.click(); }
+      function start(){ if (!timer && slidesQ().length > 1) timer = setInterval(()=>{ if (!hover && !document.hidden) next(); }, 5000); }
+      function stop(){ clearInterval(timer); timer = null; }
+      slider.addEventListener('mouseenter',()=>hover=true);
+      slider.addEventListener('mouseleave',()=>hover=false);
+      slider.addEventListener('touchstart', ()=>hover=true, {passive:true});
+      slider.addEventListener('touchend',   ()=>hover=false, {passive:true});
+      document.addEventListener('visibilitychange', ()=>{ document.hidden ? stop() : start(); });
       start();
     })();
   })();
   </script>
 
-  <!-- JS: Line-up – kein Punkt am Zeilenanfang -->
+  <!-- JS: Line-up – kein Punkt am Zeilenanfang, wenn neue Zeile -->
   <script>
   (function () {
     function updateLineupSeparators() {
-      document.querySelectorAll('.fete-page .lineup .acts').forEach(function(ul){
-        var items = Array.prototype.slice.call(ul.children);
-        var lastTop = null;
-        items.forEach(function(li, idx){
+      document.querySelectorAll('.lineup .acts').forEach(ul => {
+        const items = Array.from(ul.children);
+        let lastTop = null;
+        items.forEach((li, idx) => {
           li.classList.remove('row-start');
-          var t = li.offsetTop;
+          const t = li.offsetTop;
           if (idx === 0 || lastTop === null || Math.abs(t - lastTop) > 1) {
             li.classList.add('row-start');
             lastTop = t;
@@ -320,8 +316,7 @@
         });
       });
     }
-    var debounceId;
-    function debounce(){ clearTimeout(debounceId); debounceId = setTimeout(updateLineupSeparators, 100); }
+    const debounce = (() => { let id; return () => { clearTimeout(id); id = setTimeout(updateLineupSeparators, 100); }; })();
     window.addEventListener('load', updateLineupSeparators);
     window.addEventListener('resize', debounce);
     window.addEventListener('orientationchange', debounce);
