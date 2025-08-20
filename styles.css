@@ -1,6 +1,6 @@
 :root {
   --bg:        #EDE4D9;
-  --primary:   #016DAF;
+  --primary:   #016DAF; 
   --highlight: #FC411F;
   --col1:      200px;
   --gap-col:   1fr;
@@ -287,3 +287,4 @@ body {
 /* Fallbacks */
 .fete-page #feteSlider .fete-slide:first-of-type { opacity: 1; }
 .fete-page #feteSlider { min-height: 240px; }
+
