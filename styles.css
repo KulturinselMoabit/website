@@ -303,17 +303,14 @@ body {
 
 /* 2) Sichere Innenabstände auf kleinen Screens */
 @media (max-width: 768px) {
-  /* zusätzlicher Puffer, damit Stempel-Schrift nicht am Rand „abgeschnitten“ wirkt */
   .fete-page .page-text { padding-inline: 12px; }
 
-  /* Slider randlos & garantiert im Rahmen */
   .fete-page .fete-slider {
-    border: none;           /* du wolltest „clean“ */
+    border: none;
     border-radius: 8px;
     margin-inline: 0;
   }
 
-  /* Banner und Meta-Zeile dürfen niemals rausstehen */
   .fete-page .fete-banner,
   .fete-page .fete-meta,
   .fete-page .lineup,
@@ -321,11 +318,11 @@ body {
   .fete-page .info-block {
     max-width: 100%;
     margin-inline: 0;
-    padding-inline: 2px; /* minimaler Saum gegen „abgeschnittene“ Buchstaben */
+    padding-inline: 2px;
   }
 }
 
-/* 3) Medien strikt einfangen (auch wenn Fonts „übermalen“) */
+/* 3) Medien strikt einfangen */
 .fete-page img,
 .fete-page video {
   display: block;
@@ -334,10 +331,10 @@ body {
   box-sizing: border-box;
 }
 
-/* 4) Keine horizontale Scrollerei auf der Fête-Seite */
+/* 4) Keine horizontale Scrollerei */
 .fete-page { overflow-x: hidden; }
 
-/* 5) Acts/Line-up sauber umbrechen – nie außerhalb des Viewports */
+/* 5) Acts/Line-up sauber umbrechen */
 .fete-page .lineup .acts { padding-inline: .25rem; }
 .fete-page .lineup .acts li{
   overflow-wrap: anywhere;
@@ -345,14 +342,14 @@ body {
   hyphens: auto;
 }
 
-/* 6) Meta-Zeile bricht auf sehr schmalen Phones untereinander */
+/* 6) Meta-Zeile bricht auf Mini-Phones */
 .fete-page .fete-meta { display:flex; justify-content:center; gap:.6rem; text-align:center; }
 @media (max-width: 560px){
   .fete-page .fete-meta { flex-direction: column; gap:.25rem; padding-inline: 4px; }
   .fete-page .fete-meta .sep { display:none; }
 }
 
-/* 7) Slider-Controls/Dots sicher innerhalb des Sliders */
+/* 7) Slider-Controls/Dots sicher innerhalb */
 .fete-page .fete-slider { overflow: hidden; }
 .fete-page .fete-control { width: 2rem; height: 2rem; line-height: 1.9rem; }
 .fete-page .fete-dots { padding: 0 .35rem; }
