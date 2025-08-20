@@ -14,11 +14,11 @@
   <link href="https://fonts.googleapis.com/css2?family=Rubik+Dirt&display=swap" rel="stylesheet">
 
   <!-- CSS -->
-  <link rel="stylesheet" href="/styles.css?v=final-fix" />
+  <link rel="stylesheet" href="/styles.css?v=simple-banner" />
 </head>
 <body class="fete-page">
 
-  <!-- HEADER (unverändert, behält Container-Breite der anderen Seiten) -->
+  <!-- HEADER -->
   <header id="site-header">
     <div class="container header-inner">
       <div class="logo">
@@ -41,13 +41,12 @@
 
   <!-- MAIN -->
   <main>
-    <!-- Vollbreit wie Startseite (aber innerhalb .container) -->
     <section class="container page-inner page-inner--wide">
       <div class="page-text">
 
-        <!-- Banner als SVG-Grafik (du kannst die Datei ersetzen) -->
-        <section class="fete-banner">
-          <img class="fete-banner-img" src="Fete_Artwork.svg" alt="Fête du Seeee – Banner" />
+        <!-- Banner (einfaches IMG) -->
+        <section class="fete-banner" aria-label="Festival-Banner">
+          <img class="fete-banner-img" src="fete banner.svg" alt="Fête du Seeee – Banner" />
         </section>
 
         <!-- Meta-Zeile -->
@@ -57,7 +56,7 @@
           <span>29. &amp; 30. August 2025</span>
         </div>
 
-        <!-- Intro-Text -->
+        <!-- Intro-Text (clean) -->
         <section class="info-block">
           <p>
             Dieses Jahr wird unsere Fête du Seeee noch bunter und größer:
@@ -80,8 +79,7 @@
             <div class="fete-dots" role="tablist" aria-label="Slideshow-Navigation"></div>
           </div>
           <noscript>
-            <img src="1.jpg" alt="Festivalbild 1"
-                 style="width:100%;height:auto;border-radius:8px;display:block;margin-top:.5rem;">
+            <img src="1.jpg" alt="Festivalbild 1" style="width:100%;height:auto;border-radius:8px;display:block;margin-top:.5rem;">
           </noscript>
         </section>
 
@@ -148,7 +146,7 @@
     </div>
   </footer>
 
-  <!-- JS: Burger-Menü (unverändert) -->
+  <!-- JS: Burger-Menü -->
   <script>
     const btn = document.querySelector('.menu-toggle');
     const nav = document.querySelector('.site-nav ul');
@@ -160,13 +158,12 @@
     }
   </script>
 
-  <!-- JS: Slideshow-Loader – lädt 1–9.jpg/.mp4 aus dem gleichen Ordner -->
+  <!-- JS: Slideshow-Loader (robust, JPG/MP4 1–9) -->
   <script>
   (function(){
     const slider = document.getElementById('feteSlider');
     if (!slider) return;
 
-    // Elemente sicherstellen
     let prevBtn = slider.querySelector('.fete-control.prev');
     let nextBtn = slider.querySelector('.fete-control.next');
     let dotsWrap = slider.querySelector('.fete-dots');
@@ -181,7 +178,6 @@
     if (!nextBtn){ nextBtn = mk('button','fete-control next','›'); nextBtn.setAttribute('aria-label','Nächstes'); slider.appendChild(nextBtn); }
     if (!dotsWrap){ dotsWrap = mk('div','fete-dots'); dotsWrap.setAttribute('role','tablist'); dotsWrap.setAttribute('aria-label','Slideshow-Navigation'); slider.appendChild(dotsWrap); }
 
-    // Ordnerpfad robust bestimmen (…/fete/ oder …/test/)
     function folderPath(){
       const p = location.pathname;
       if (p.endsWith('/')) return p;
@@ -191,20 +187,19 @@
     }
     const base = location.origin + folderPath();
 
-    // Loader (.jpg -> .mp4)
     function loadImage(url){
       return new Promise(resolve=>{
         const img = new Image();
         img.onload  = ()=>resolve({ok:true, node:img});
         img.onerror = ()=>resolve({ok:false});
-        img.loading='lazy'; img.decoding='async';
+        img.decoding = 'async';
         img.src = url;
       });
     }
     function loadVideo(url){
       return new Promise(resolve=>{
         const v = document.createElement('video');
-        v.preload='metadata'; v.muted=true; v.playsInline=true; v.loop=true;
+        v.preload='metadata'; v.muted=true; v.playsInline=true; v.setAttribute('playsinline',''); v.loop=true;
         const ok=()=>{ cleanup(); resolve({ok:true, node:v}); };
         const err=()=>{ cleanup(); resolve({ok:false}); };
         function cleanup(){ v.removeEventListener('loadedmetadata', ok); v.removeEventListener('error', err); }
@@ -245,7 +240,6 @@
       }
       items.forEach((it,i)=>addSlide(it.node, i));
 
-      // Controls und Dots ans Ende
       slider.appendChild(prevBtn);
       slider.appendChild(nextBtn);
       slider.appendChild(dotsWrap);
@@ -283,11 +277,10 @@
 
       show(0);
 
-      // Autoplay (5s, pausiert bei Interaktion & Tab-Wechsel)
+      // Autoplay (5s), pausiert bei Interaktion/Tab-Wechsel
       let timer = null, hover = false;
-      function slidesQ(){ return slider.querySelectorAll('.fete-slide'); }
       function next(){ nextBtn.click(); }
-      function start(){ if (!timer && slidesQ().length > 1) timer = setInterval(()=>{ if (!hover && !document.hidden) next(); }, 5000); }
+      function start(){ if (!timer && slides.length > 1) timer = setInterval(()=>{ if (!hover && !document.hidden) next(); }, 5000); }
       function stop(){ clearInterval(timer); timer = null; }
       slider.addEventListener('mouseenter',()=>hover=true);
       slider.addEventListener('mouseleave',()=>hover=false);
@@ -299,7 +292,7 @@
   })();
   </script>
 
-  <!-- JS: Line-up – kein Punkt am Zeilenanfang, wenn neue Zeile -->
+  <!-- JS: Line-up – kein Punkt am Zeilenanfang -->
   <script>
   (function () {
     function updateLineupSeparators() {
