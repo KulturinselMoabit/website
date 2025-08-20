@@ -12,25 +12,10 @@
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&display=swap" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css2?family=Rubik+Dirt&display=swap" rel="stylesheet" />
 
-  <!-- CSS -->
-  <link rel="stylesheet" href="/styles.css?v=33" />
-
-  <!-- Event JSON-LD -->
-  <script type="application/ld+json">
-  {
-    "@context":"https://schema.org","@type":"Event","name":"Fête du Seeee 2025",
-    "alternateName":["Fête du See","Fête du Seee"],
-    "startDate":"2025-08-29T12:00","endDate":"2025-08-30T23:00",
-    "eventAttendanceMode":"https://schema.org/OfflineEventAttendanceMode",
-    "eventStatus":"https://schema.org/EventScheduled",
-    "location":{"@type":"Place","name":"Strandbad Tegelsee","address":{"@type":"PostalAddress","streetAddress":"Strandbad Tegelsee","addressLocality":"Berlin","postalCode":"13505","addressCountry":"DE"}},
-    "image":["https://kulturinselmoabit.org/fete-icon.jpg","https://kulturinselmoabit.org/fete.png"],
-    "description":"Ehrenamtliches Musikfestival Fête du Seeee am 29.–30. August 2025 im Strandbad Tegelsee. Musikalische Highlights, Kunst und Gemeinschaft.",
-    "organizer":{"@type":"Organization","name":"Kulturinsel Moabit","url":"https://kulturinselmoabit.org/"}
-  }
-  </script>
+  <!-- CSS (mit Cache-Buster) -->
+  <link rel="stylesheet" href="/styles.css?v=91" />
 </head>
-<body>
+<body class="fete-page">
 
   <!-- HEADER -->
   <header id="site-header">
@@ -55,10 +40,10 @@
 
   <!-- MAIN -->
   <main>
-    <section class="container page-inner page-inner--wide">
+    <section class="container page-inner">
       <div class="page-text">
 
-        <!-- Banner-SVG (liegt im selben Ordner) -->
+        <!-- Banner (dein SVG als Datei im gleichen Ordner) -->
         <figure class="fete-banner">
           <img class="fete-banner-img" src="fete-banner.svg" alt="Fête du Seeee – Sommerfest • Konzerte • Theater • Kinderprogramm" />
         </figure>
@@ -78,9 +63,12 @@
             <button class="fete-control next" aria-label="Nächstes">›</button>
             <div class="fete-dots" role="tablist" aria-label="Slideshow-Navigation"></div>
           </div>
+          <noscript>
+            <p style="text-align:center;margin-top:.5rem;">Slideshow benötigt JavaScript.</p>
+          </noscript>
         </section>
 
-        <!-- Info-Text (ohne Box/Hintergrund) -->
+        <!-- Info-Text -->
         <div class="info-block">
           <p>
             Dieses Jahr wird unsere Fête du Seeee noch bunter und größer: Wir feiern
@@ -129,7 +117,7 @@
         </section>
         <!-- ===== /LINE-UP ===== -->
 
-        <!-- Eintritt (gleicher Heading-Style wie Line-Up) -->
+        <!-- Eintritt -->
         <div class="lineup-wrap">
           <h3 class="section-title">Eintritt</h3>
         </div>
@@ -174,82 +162,159 @@
     }
   </script>
 
-  <!-- JS: Slideshow + Autoplay + Line-up-Separators -->
+  <!-- JS: Slideshow Loader (stabile Version) -->
   <script>
   (function(){
     const slider = document.getElementById('feteSlider');
     if (!slider) return;
 
-    const staticImg = slider.querySelector('.fete-static');
     let prevBtn = slider.querySelector('.fete-control.prev');
     let nextBtn = slider.querySelector('.fete-control.next');
     let dotsWrap = slider.querySelector('.fete-dots');
+    const hero = slider.closest('.fete-hero');
 
-    function mk(t,c,x){const e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e;}
-    if (!prevBtn){ prevBtn=mk('button','fete-control prev','‹'); prevBtn.setAttribute('aria-label','Vorheriges'); slider.appendChild(prevBtn); }
-    if (!nextBtn){ nextBtn=mk('button','fete-control next','›'); nextBtn.setAttribute('aria-label','Nächstes'); slider.appendChild(nextBtn); }
-    if (!dotsWrap){ dotsWrap=mk('div','fete-dots'); dotsWrap.setAttribute('role','tablist'); dotsWrap.setAttribute('aria-label','Slideshow-Navigation'); slider.appendChild(dotsWrap); }
+    if (!prevBtn) { prevBtn = document.createElement('button'); prevBtn.className = 'fete-control prev'; prevBtn.setAttribute('aria-label','Vorheriges'); prevBtn.textContent = '‹'; slider.appendChild(prevBtn); }
+    if (!nextBtn) { nextBtn = document.createElement('button'); nextBtn.className = 'fete-control next'; nextBtn.setAttribute('aria-label','Nächstes'); nextBtn.textContent = '›'; slider.appendChild(nextBtn); }
+    if (!dotsWrap){ dotsWrap = document.createElement('div'); dotsWrap.className = 'fete-dots'; dotsWrap.setAttribute('role','tablist'); dotsWrap.setAttribute('aria-label','Slideshow-Navigation'); slider.appendChild(dotsWrap); }
 
-    const base = new URL('.', location.href).href;
-    const CAND = Array.from({length:9},(_,i)=>i+1);
+    const dirURL = new URL('.', document.baseURI);
+    const NUMS = Array.from({length: 9}, (_, i) => i + 1);
 
-    function probeImg(url){return new Promise(r=>{const im=new Image();im.onload=()=>r({ok:true,node:im});im.onerror=()=>r({ok:false});im.loading='lazy';im.decoding='async';im.src=url;});}
-    function probeVid(url){return new Promise(r=>{const v=document.createElement('video');v.preload='metadata';v.muted=true;v.loop=true;v.playsInline=true;
-      const ok=()=>{v.removeEventListener('loadedmetadata',ok);v.removeEventListener('error',err);r({ok:true,node:v});};
-      const err=()=>{v.removeEventListener('loadedmetadata',ok);v.removeEventListener('error',err);r({ok:false});};
-      v.addEventListener('loadedmetadata',ok);v.addEventListener('error',err);v.src=url;});}
-
-    async function check(n){
-      const jpg = base+`${n}.jpg`; const r1 = await probeImg(jpg); if (r1.ok) return {idx:n,node:r1.node};
-      const mp4 = base+`${n}.mp4`; const r2 = await probeVid(mp4); if (r2.ok) return {idx:n,node:r2.node};
+    function loadImage(url){
+      return new Promise(res=>{
+        const img = new Image();
+        img.onload  = ()=>res({ok:true, node:img});
+        img.onerror = ()=>res({ok:false});
+        img.loading='lazy'; img.decoding='async';
+        img.src = url;
+      });
+    }
+    function loadVideo(url){
+      return new Promise(res=>{
+        const v = document.createElement('video');
+        v.preload='metadata'; v.muted=true; v.playsInline=true; v.loop=true;
+        const ok=()=>{cleanup(); res({ok:true, node:v});};
+        const err=()=>{cleanup(); res({ok:false});};
+        function cleanup(){ v.removeEventListener('loadedmetadata', ok); v.removeEventListener('error', err); }
+        v.addEventListener('loadedmetadata', ok);
+        v.addEventListener('error', err);
+        v.src = url;
+      });
+    }
+    async function probe(n){
+      const jpg = new URL(`${n}.jpg`, dirURL).href;
+      let r = await loadImage(jpg);
+      if (r.ok){ r.node.alt = `Festivalbild ${n}`; return {idx:n, node:r.node}; }
+      const mp4 = new URL(`${n}.mp4`, dirURL).href;
+      r = await loadVideo(mp4);
+      if (r.ok){ return {idx:n, node:r.node}; }
       return null;
     }
 
     (async function init(){
-      const found=[]; for(const n of CAND){ const r=await check(n); if(r) found.push(r); }
-      if(!found.length) return;
+      const results = await Promise.all(NUMS.map(probe));
+      const items = results.filter(Boolean).sort((a,b)=>a.idx - b.idx);
+      if (!items.length){
+        hero?.appendChild(Object.assign(document.createElement('div'), {
+          textContent: 'Keine Medien gefunden (erwartet: 1.jpg … 9.jpg / .mp4 im gleichen Ordner).',
+          style: 'padding:1rem;border:2px solid #016DAF;border-radius:8px;background:#fff;text-align:center;'
+        }));
+        return;
+      }
 
-      staticImg && staticImg.remove();
-
-      const slides=[], dots=[];
-      function add(item,i){
-        const wrap=mk('div','fete-slide'); wrap.dataset.index=i; wrap.setAttribute('aria-hidden','true'); wrap.appendChild(item.node);
+      const slides = [], dots = [];
+      function addSlide(node, i){
+        const wrap = document.createElement('div');
+        wrap.className='fete-slide';
+        wrap.setAttribute('data-index', i);
+        wrap.setAttribute('aria-hidden','true');
+        wrap.appendChild(node);
         slider.insertBefore(wrap, dotsWrap);
-        const dot=mk('button','fete-dot'); dot.type='button'; dot.setAttribute('aria-label',`Slide ${i+1}`); dotsWrap.appendChild(dot);
+
+        const dot = document.createElement('button');
+        dot.className='fete-dot'; dot.type='button';
+        dot.setAttribute('aria-label','Slide '+(i+1));
+        dotsWrap.appendChild(dot);
+
         slides.push(wrap); dots.push(dot);
       }
-      found.sort((a,b)=>a.idx-b.idx).forEach((it,i)=>add(it,i));
+      items.forEach((it,i)=>addSlide(it.node, i));
 
-      slider.appendChild(prevBtn); slider.appendChild(nextBtn); slider.appendChild(dotsWrap);
+      slider.appendChild(prevBtn);
+      slider.appendChild(nextBtn);
+      slider.appendChild(dotsWrap);
 
-      let cur=0, timer=null, hover=false;
+      let current = 0;
       function show(i){
-        cur=(i+slides.length)%slides.length;
-        slides.forEach((el,idx)=>{const on=idx===cur; el.classList.toggle('active',on); el.setAttribute('aria-hidden',on?'false':'true');
-          const v=el.querySelector('video'); if(v){ on ? v.play().catch(()=>{}) : v.pause(); }});
-        dots.forEach((d,idx)=>d.classList.toggle('active',idx===cur));
+        current = (i + slides.length) % slides.length;
+        slides.forEach((el, idx)=>{
+          const active = idx === current;
+          el.classList.toggle('active', active);
+          el.setAttribute('aria-hidden', active ? 'false' : 'true');
+          const v = el.querySelector('video');
+          if (v){ active ? v.play().catch(()=>{}) : v.pause(); }
+        });
+        dots.forEach((d, idx)=>d.classList.toggle('active', idx === current));
       }
-      function next(){ show(cur+1); }
-      function start(){ if(timer||slides.length<2) return; timer=setInterval(()=>{ if(!hover&&!document.hidden) next(); },5000); }
-      function stop(){ clearInterval(timer); timer=null; }
 
-      prevBtn.addEventListener('click',()=>show(cur-1));
-      nextBtn.addEventListener('click',()=>show(cur+1));
-      dots.forEach((d,i)=>d.addEventListener('click',()=>show(i)));
-      slider.addEventListener('mouseenter',()=>hover=true);
-      slider.addEventListener('mouseleave',()=>hover=false);
-      let sx=null; slider.addEventListener('touchstart',e=>{hover=true; sx=e.touches[0].clientX;},{passive:true});
-      slider.addEventListener('touchend',e=>{const dx=sx==null?0:e.changedTouches[0].clientX-sx; if(Math.abs(dx)>40)(dx<0?next():show(cur-1)); sx=null; hover=false;},{passive:true});
-      document.addEventListener('visibilitychange',()=>{document.hidden?stop():start();});
+      prevBtn.addEventListener('click', ()=>show(current - 1));
+      nextBtn.addEventListener('click', ()=>show(current + 1));
 
-      show(0); start();
+      slider.setAttribute('tabindex','0');
+      slider.addEventListener('keydown', e=>{
+        if (e.key === 'ArrowLeft')  show(current - 1);
+        if (e.key === 'ArrowRight') show(current + 1);
+      });
+
+      let sx=null;
+      slider.addEventListener('touchstart', e=>{ sx = e.touches[0].clientX; }, {passive:true});
+      slider.addEventListener('touchend',   e=>{
+        if (sx==null) return;
+        const dx = e.changedTouches[0].clientX - sx;
+        if (Math.abs(dx) > 40) (dx < 0 ? show(current + 1) : show(current - 1));
+        sx = null;
+      });
+
+      show(0);
     })();
   })();
+  </script>
 
-  /* Punkte im Line-up nur zwischen Acts derselben Zeile */
+  <!-- JS: Autoplay -->
+  <script>
+  (function () {
+    const slider = document.getElementById('feteSlider');
+    if (!slider) return;
+
+    function slides(){ return slider.querySelectorAll('.fete-slide'); }
+    function next(){ slider.querySelector('.fete-control.next')?.click(); }
+
+    let timer = null, hover = false;
+
+    function start(){
+      if (timer || slides().length < 2) return;
+      timer = setInterval(() => { if (!hover && !document.hidden) next(); }, 5000);
+    }
+    function stop(){ clearInterval(timer); timer = null; }
+
+    slider.addEventListener('mouseenter', () => hover = true);
+    slider.addEventListener('mouseleave', () => hover = false);
+    slider.addEventListener('touchstart', () => hover = true, { passive: true });
+    slider.addEventListener('touchend',   () => hover = false, { passive: true });
+    document.addEventListener('visibilitychange', () => { document.hidden ? stop() : start(); });
+
+    const mo = new MutationObserver(() => { if (slides().length >= 2) { start(); mo.disconnect(); } });
+    mo.observe(slider, { childList: true, subtree: true });
+
+    setTimeout(start, 2000);
+  })();
+  </script>
+
+  <!-- JS: Line-up – kein Punkt am Zeilenanfang -->
+  <script>
   (function () {
     function updateLineupSeparators() {
-      document.querySelectorAll('.lineup .acts').forEach(ul => {
+      document.querySelectorAll('.fete-page .lineup .acts').forEach(ul => {
         const items = Array.from(ul.children);
         let lastTop = null;
         items.forEach((li, idx) => {
@@ -257,7 +322,7 @@
           const t = li.offsetTop;
           if (idx === 0 || lastTop === null || Math.abs(t - lastTop) > 1) {
             li.classList.add('row-start');
-            lastTop = t; 
+            lastTop = t;
           }
         });
       });
