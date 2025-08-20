@@ -289,59 +289,70 @@ body {
 .fete-page #feteSlider { min-height: 240px; }
 
 /* =========================================================
-   Mobile-Fix & Overflow-Polish nur für die Fête-Seite
+   Fête-Seite: Mobile-Overflow hart fixen (nur .fete-page)
    ========================================================= */
 
-.fete-page {
-  /* falls exotische Glyphen minimal über den Rand zeichnen: */
-  overflow-x: hidden;
+/* 1) Grundsätzlich niemals breiter als der Viewport */
+.fete-page,
+.fete-page .container,
+.fete-page .page-inner,
+.fete-page .page-text {
+  max-width: 100%;
+  width: 100%;
 }
 
-/* etwas mehr „Luft“ am Rand nur hier */
-@media (max-width: 768px){
-  .fete-page .page-text {
-    padding-inline: var(--pad-sm);
+/* 2) Sichere Innenabstände auf kleinen Screens */
+@media (max-width: 768px) {
+  /* zusätzlicher Puffer, damit Stempel-Schrift nicht am Rand „abgeschnitten“ wirkt */
+  .fete-page .page-text { padding-inline: 12px; }
+
+  /* Slider randlos & garantiert im Rahmen */
+  .fete-page .fete-slider {
+    border: none;           /* du wolltest „clean“ */
+    border-radius: 8px;
+    margin-inline: 0;
+  }
+
+  /* Banner und Meta-Zeile dürfen niemals rausstehen */
+  .fete-page .fete-banner,
+  .fete-page .fete-meta,
+  .fete-page .lineup,
+  .fete-page .entry,
+  .fete-page .info-block {
+    max-width: 100%;
+    margin-inline: 0;
+    padding-inline: 2px; /* minimaler Saum gegen „abgeschnittene“ Buchstaben */
   }
 }
 
-/* Acts sauber umbrechen – niemals aus dem Viewport „ragen“ */
-.fete-page .lineup .acts {
-  padding-inline: .25rem; /* min. Innenabstand, damit Punkte nicht am Rand kleben */
+/* 3) Medien strikt einfangen (auch wenn Fonts „übermalen“) */
+.fete-page img,
+.fete-page video {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  box-sizing: border-box;
 }
+
+/* 4) Keine horizontale Scrollerei auf der Fête-Seite */
+.fete-page { overflow-x: hidden; }
+
+/* 5) Acts/Line-up sauber umbrechen – nie außerhalb des Viewports */
+.fete-page .lineup .acts { padding-inline: .25rem; }
 .fete-page .lineup .acts li{
-  /* harte & weiche Umbrüche erlauben, auch bei langen Namen */
   overflow-wrap: anywhere;
   word-break: break-word;
-  hyphens: auto;           /* Browser hyphenieren lassen (DE) */
+  hyphens: auto;
 }
 
-/* Meta-Zeile unter dem Banner: bei sehr kleinen Viewports sicher umbrechen */
-.fete-page .fete-meta{
-  padding-inline: .25rem;
-  text-align: center;
-}
+/* 6) Meta-Zeile bricht auf sehr schmalen Phones untereinander */
+.fete-page .fete-meta { display:flex; justify-content:center; gap:.6rem; text-align:center; }
 @media (max-width: 560px){
-  .fete-page .fete-meta { 
-    flex-direction: column; 
-    gap: .25rem; 
-  }
-  .fete-page .fete-meta .sep { display:none; } /* Punkt ausblenden, wenn zeilig */
+  .fete-page .fete-meta { flex-direction: column; gap:.25rem; padding-inline: 4px; }
+  .fete-page .fete-meta .sep { display:none; }
 }
 
-/* Stempel-Schrift auf wirklich kleinen Screens minimal entschärfen,
-   damit sie optisch nicht anstößt */
-@media (max-width: 420px){
-  .fete-page {
-    --lineup-vw: 6.2vw;   /* etwas kleiner */
-    --lineup-max: 2.4rem; /* Deckel tiefer */
-  }
-}
-
-/* Dots/Controls dürfen nicht aus dem Slider „herausragen“ */
+/* 7) Slider-Controls/Dots sicher innerhalb des Sliders */
 .fete-page .fete-slider { overflow: hidden; }
-.fete-page .fete-control { 
-  /* kleine Sicherheit bei ganz schmalen Geräten */
-  width: 2rem; height: 2rem; line-height: 1.9rem;
-}
+.fete-page .fete-control { width: 2rem; height: 2rem; line-height: 1.9rem; }
 .fete-page .fete-dots { padding: 0 .35rem; }
-
