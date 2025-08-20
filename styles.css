@@ -153,7 +153,7 @@ body {
   --lineup-row-gap: .6em;
 }
 
-/* Vollbreit wie Startseite */
+/* Vollbreit-Text in der Fête-Seite (Bildspalte weg) */
 .fete-page .page-img { display: none; }
 .fete-page .page-text { grid-column: 1 / -1; }
 
@@ -178,15 +178,16 @@ body {
 /* Info-Text */
 .fete-page .info-block { margin: 1rem 0 2rem; }
 
-/* Slideshow */
+/* Slideshow – sauber im Content-Rahmen, ohne Border */
 .fete-page .fete-hero { margin: 1rem 0 2rem; }
 .fete-page .fete-slider {
   position: relative;
   width: 100%;
+  max-width: 100%;
   aspect-ratio: 16 / 9;
   overflow: hidden;
-  border: 2px solid var(--primary);
-  border-radius: 12px;
+  border: none;
+  border-radius: 8px;
   background: #ddd;
 }
 .fete-page .fete-slide {
@@ -197,27 +198,27 @@ body {
 .fete-page .fete-slide img,
 .fete-page .fete-slide video { width: 100%; height: 100%; object-fit: cover; display: block; }
 
-/* Controls */
+/* Controls – clean */
 .fete-page .fete-control {
   position: absolute; top: 50%; transform: translateY(-50%);
-  border: 2px solid var(--primary); background: var(--bg); color: var(--primary);
-  font-weight: 800; width: 2.2rem; height: 2.2rem; line-height: 2rem; border-radius: 999px;
-  text-align: center; cursor: pointer; opacity: .9; z-index: 2;
+  border: none; background: rgba(255,255,255,.75); color: var(--primary);
+  font-weight: 800; width: 2.2rem; height: 2.2rem; line-height: 2.2rem; border-radius: 999px;
+  text-align: center; cursor: pointer; z-index: 2;
 }
-.fete-page .fete-control:hover { opacity: 1; }
+.fete-page .fete-control:hover { background: rgba(255,255,255,.95); }
 .fete-page .fete-control.prev { left: .6rem; }
 .fete-page .fete-control.next { right: .6rem; }
 
-/* Dots */
+/* Dots – clean */
 .fete-page .fete-dots {
   position: absolute; left: 0; right: 0; bottom: .5rem;
   display: flex; justify-content: center; gap: .4rem; padding: 0 .5rem; z-index: 2;
 }
 .fete-page .fete-dot {
-  width: .6rem; height: .6rem; border-radius: 999px;
-  border: 2px solid var(--primary); background: var(--bg); opacity: .85; cursor: pointer;
+  width: .5rem; height: .5rem; border-radius: 999px;
+  border: 1px solid var(--primary); background: rgba(255,255,255,.85); cursor: pointer;
 }
-.fete-page .fete-dot.active { background: var(--highlight); opacity: 1; }
+.fete-page .fete-dot.active { background: var(--highlight); border-color: var(--highlight); }
 
 /* LINE-UP */
 .fete-page .lineup { margin: 2.2rem 0 2rem; }
@@ -265,7 +266,6 @@ body {
   font-size: clamp(var(--lineup-min), var(--lineup-vw), var(--lineup-max));
   padding: 0 .12em;
 }
-/* Punkte nur zwischen Acts derselben Zeile */
 .fete-page .lineup .acts li + li::before{
   content: "•";
   display: inline-block; margin: 0 .18em 0 .2em; vertical-align: middle;
@@ -278,39 +278,16 @@ body {
   .fete-page .lineup .lineup-daytag { margin-top: .5rem; }
 }
 
-/* Eintritt-Block */
+/* Eintritt */
 .fete-page .entry { margin: .75rem 0 2rem; text-align: left; }
 .fete-page .entry p { margin-bottom: .75rem; }
 .fete-page .entry ul { list-style: none; margin: 0 0 1rem 0; padding: 0; }
 .fete-page .entry li { margin: .25rem 0; }
 
-/* Fallbacks */
-.fete-page #feteSlider .fete-slide:first-of-type { opacity: 1; }
-.fete-page #feteSlider { min-height: 240px; }
-
-/* =========================================================
-   Fête-Seite: Mobile-Overflow hart fixen (nur .fete-page)
-   ========================================================= */
-
-/* 1) Grundsätzlich niemals breiter als der Viewport */
-.fete-page,
-.fete-page .container,
-.fete-page .page-inner,
-.fete-page .page-text {
-  max-width: 100%;
-  width: 100%;
-}
-
-/* 2) Sichere Innenabstände auf kleinen Screens */
+/* Mobile-Polish nur für Fête */
 @media (max-width: 768px) {
   .fete-page .page-text { padding-inline: 12px; }
-
-  .fete-page .fete-slider {
-    border: none;
-    border-radius: 8px;
-    margin-inline: 0;
-  }
-
+  .fete-page .fete-slider { margin-inline: 0; }
   .fete-page .fete-banner,
   .fete-page .fete-meta,
   .fete-page .lineup,
@@ -321,8 +298,6 @@ body {
     padding-inline: 2px;
   }
 }
-
-/* 3) Medien strikt einfangen */
 .fete-page img,
 .fete-page video {
   display: block;
@@ -330,82 +305,9 @@ body {
   height: auto;
   box-sizing: border-box;
 }
-
-/* 4) Keine horizontale Scrollerei */
 .fete-page { overflow-x: hidden; }
-
-/* 5) Acts/Line-up sauber umbrechen */
 .fete-page .lineup .acts { padding-inline: .25rem; }
-.fete-page .lineup .acts li{
-  overflow-wrap: anywhere;
-  word-break: break-word;
-  hyphens: auto;
-}
-
-/* 6) Meta-Zeile bricht auf Mini-Phones */
-.fete-page .fete-meta { display:flex; justify-content:center; gap:.6rem; text-align:center; }
-@media (max-width: 560px){
-  .fete-page .fete-meta { flex-direction: column; gap:.25rem; padding-inline: 4px; }
-  .fete-page .fete-meta .sep { display:none; }
-}
-
-/* 7) Slider-Controls/Dots sicher innerhalb */
+.fete-page .lineup .acts li{ overflow-wrap: anywhere; word-break: break-word; hyphens: auto; }
 .fete-page .fete-slider { overflow: hidden; }
-.fete-page .fete-control { width: 2rem; height: 2rem; line-height: 1.9rem; }
 .fete-page .fete-dots { padding: 0 .35rem; }
-
-/* =========================================================
-   Fête-Seite: Slideshow darf niemals breiter als der Viewport sein
-   ========================================================= */
-
-/* Sicherheitsnetz: alles innerhalb des Sliders in die Box-Modell-Breite einrechnen */
-.fete-page .fete-hero,
-.fete-page .fete-slider,
-.fete-page .fete-slider * {
-  box-sizing: border-box;
-}
-
-/* Slider auf Containerbreite zentrieren und clampen */
-.fete-page .fete-hero,
-.fete-page .fete-slider {
-  width: 100%;
-  max-width: 100%;
-  margin-left: auto;
-  margin-right: auto;
-  overflow: hidden;              /* falls innere Elemente „drücken“ */
-  contain: layout paint size;    /* kapselt Layout -> verhindert Ausbluten */
-}
-
-/* Absolut positionierte Slides strikt innerhalb halten */
-.fete-page .fete-slide {
-  position: absolute;
-  left: 0; right: 0; top: 0; bottom: 0;
-}
-
-/* Bilder/Videos nie größer als der Slider */
-.fete-page .fete-slide img,
-.fete-page .fete-slide video {
-  display: block;
-  width: 100%;
-  height: 100%;
-  max-width: 100%;
-  object-fit: cover;
-}
-
-/* Mobile: kleiner Puffer + cleane Optik */
-@media (max-width: 768px){
-  .fete-page .fete-hero,
-  .fete-page .fete-slider {
-    max-width: 100%;
-    margin-inline: 0;
-    padding-inline: 1px;
-    border: none;
-    border-radius: 8px;
-  }
-  .fete-page .fete-slider { overflow: hidden; }
-  .fete-page .fete-dots { padding: 0 .35rem; }
-  .fete-page .fete-control { width: 2rem; height: 2rem; line-height: 1.9rem; }
-}
-
-/* Als letzte Leitplanke: keine horizontale Scrollbarkeit auf der Fête-Seite */
-.fete-page { overflow-x: clip; }  /* moderner als hidden; hidden ist auch okay */
+.fete-page .fete-control { width: 2rem; height: 2rem; line-height: 1.9rem; }
