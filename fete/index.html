@@ -13,7 +13,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Rubik+Dirt&display=swap" rel="stylesheet" />
 
   <!-- CSS -->
-  <link rel="stylesheet" href="/styles.css?v=9" />
+  <link rel="stylesheet" href="/styles.css?v=10" />
 
   <!-- Event JSON-LD -->
   <script type="application/ld+json">
@@ -75,32 +75,29 @@
 
   <!-- MAIN -->
   <main>
-    <!-- Vollbreit wie Startseite -->
     <section class="container page-inner page-inner--wide">
       <div class="page-text">
 
-        <!-- Banner (als einfaches Bild im selben Ordner) -->
+        <!-- Banner -->
         <div class="fete-banner-wrap">
           <img src="fete-banner.svg" alt="Fête du Seeee – Banner" class="fete-banner" />
         </div>
 
-        <!-- Subline unter dem Banner -->
+        <!-- Subline -->
         <div class="fete-subline">
           <span class="place">Strandbad Tegelsee</span>
           <span class="dot">•</span>
           <span class="date">29. &amp; 30. August 2025</span>
         </div>
 
-        <!-- HERO-SLIDESHOW (lädt 1–9.jpg/.mp4 aus demselben Ordner) -->
+        <!-- SLIDESHOW -->
         <section class="fete-hero">
           <div class="fete-slider" id="feteSlider" aria-label="Festival-Impressionen">
             <button class="fete-control prev" aria-label="Vorheriges">‹</button>
             <button class="fete-control next" aria-label="Nächstes">›</button>
             <div class="fete-dots" role="tablist" aria-label="Slideshow-Navigation"></div>
           </div>
-          <noscript>
-            <img src="1.jpg" alt="Festivalbild 1" style="width:100%;height:auto;display:block;margin-top:.5rem;">
-          </noscript>
+          <noscript><img src="1.jpg" alt="Festivalbild 1" style="width:100%;height:auto;display:block;margin-top:.5rem;"></noscript>
         </section>
 
         <!-- Introtext -->
@@ -113,32 +110,17 @@
         <h2 class="section-title">Line-Up</h2>
         <section class="lineup">
           <div class="lineup-wrap">
-            <div class="line">
+            <div class="line" data-daytag="FR">
               <div class="lineup-daytag">FR. 29. AUGUST</div>
-              <ul class="acts" aria-label="Line-up Freitag, 29. August">
-                <li>Circus Rhapsody</li>
-                <li>Blue Saloon</li>
-                <li>The Brehmes’</li>
-                <li>Futari</li>
-                <li>Theater &amp; Chor für und von Kindern</li>
-              </ul>
+              <ul class="acts" aria-label="Line-up Freitag, 29. August"><!-- wird per TSV gefüllt --></ul>
             </div>
 
-            <div class="line">
+            <div class="line" data-daytag="SA">
               <div class="lineup-daytag">SA. 30. AUGUST</div>
-              <ul class="acts" aria-label="Line-up Samstag, 30. August">
-                <li>Maindish</li>
-                <li>Crescendo Planet</li>
-                <li>XIX</li>
-                <li>Noah &amp; Safa</li>
-                <li>Kvytlyst</li>
-                <li>Julius Kayser</li>
-                <li>Theater &amp; Chor für und von Kindern</li>
-              </ul>
+              <ul class="acts" aria-label="Line-up Samstag, 30. August"><!-- wird per TSV gefüllt --></ul>
             </div>
           </div>
         </section>
-        <!-- ===== /LINE-UP ===== -->
 
         <!-- Eintritt -->
         <h2 class="section-title">Eintritt</h2>
@@ -182,7 +164,7 @@
     }
   </script>
 
-  <!-- JS: Slideshow-Loader (jpg/mp4, korrekte Reihenfolge, Pfeile/Dots) -->
+  <!-- JS: Slideshow -->
   <script>
   (function(){
     const slider = document.getElementById('feteSlider');
@@ -192,12 +174,7 @@
     let nextBtn = slider.querySelector('.fete-control.next');
     let dotsWrap = slider.querySelector('.fete-dots');
 
-    function mk(tag, cls, txt){
-      const el = document.createElement(tag);
-      if (cls) el.className = cls;
-      if (txt != null) el.textContent = txt;
-      return el;
-    }
+    function mk(tag, cls, txt){ const el=document.createElement(tag); if(cls)el.className=cls; if(txt!=null)el.textContent=txt; return el; }
     if (!prevBtn){ prevBtn = mk('button','fete-control prev','‹'); prevBtn.setAttribute('aria-label','Vorheriges'); slider.appendChild(prevBtn); }
     if (!nextBtn){ nextBtn = mk('button','fete-control next','›'); nextBtn.setAttribute('aria-label','Nächstes');  slider.appendChild(nextBtn); }
     if (!dotsWrap){ dotsWrap = mk('div','fete-dots'); dotsWrap.setAttribute('role','tablist'); dotsWrap.setAttribute('aria-label','Slideshow-Navigation'); slider.appendChild(dotsWrap); }
@@ -211,148 +188,85 @@
     }
     const base = location.origin + folderPath();
 
-    function loadImage(url){
-      return new Promise(resolve=>{
-        const img = new Image();
-        img.onload  = ()=>resolve({ok:true, node:img});
-        img.onerror = ()=>resolve({ok:false});
-        img.loading='lazy'; img.decoding='async';
-        img.src = url;
-      });
-    }
-    function loadVideo(url){
-      return new Promise(resolve=>{
-        const v = document.createElement('video');
-        v.preload='metadata'; v.muted=true; v.playsInline=true; v.loop=true;
-        const ok=()=>{ cleanup(); resolve({ok:true, node:v}); };
-        const err=()=>{ cleanup(); resolve({ok:false}); };
-        function cleanup(){ v.removeEventListener('loadedmetadata', ok); v.removeEventListener('error', err); }
-        v.addEventListener('loadedmetadata', ok);
-        v.addEventListener('error', err);
-        v.src = url;
-      });
-    }
+    function loadImage(url){ return new Promise(res=>{ const i=new Image(); i.onload=()=>res({ok:true,node:i}); i.onerror=()=>res({ok:false}); i.loading='lazy'; i.decoding='async'; i.src=url; }); }
+    function loadVideo(url){ return new Promise(res=>{ const v=document.createElement('video'); v.preload='metadata'; v.muted=true; v.playsInline=true; v.loop=true; const ok=()=>{c();res({ok:true,node:v});}; const er=()=>{c();res({ok:false});}; function c(){v.removeEventListener('loadedmetadata',ok);v.removeEventListener('error',er);} v.addEventListener('loadedmetadata',ok); v.addEventListener('error',er); v.src=url; }); }
     async function probe(n){
-      const jpg = base + `${n}.jpg`;
-      let r = await loadImage(jpg);
+      let r = await loadImage(base + `${n}.jpg`);
       if (r.ok){ r.node.alt = `Festivalbild ${n}`; return {idx:n, node:r.node}; }
-      const mp4 = base + `${n}.mp4`;
-      r = await loadVideo(mp4);
+      r = await loadVideo(base + `${n}.mp4`);
       if (r.ok){ return {idx:n, node:r.node}; }
       return null;
     }
 
     (async function init(){
-      const want = 9;
-      const results = await Promise.all(Array.from({length: want}, (_,i)=>probe(i+1)));
-      const items = results.filter(Boolean).sort((a,b)=>a.idx - b.idx);
+      const results = await Promise.all(Array.from({length:9},(_,i)=>probe(i+1)));
+      const items = results.filter(Boolean).sort((a,b)=>a.idx-b.idx);
       if (!items.length) return;
 
-      const slides = [], dots = [];
+      const slides=[], dots=[];
       function addSlide(node, i){
-        const wrap = mk('div','fete-slide');
-        wrap.setAttribute('data-index', i);
-        wrap.setAttribute('aria-hidden','true');
-        wrap.appendChild(node);
+        const wrap = mk('div','fete-slide'); wrap.setAttribute('data-index',i); wrap.setAttribute('aria-hidden','true'); wrap.appendChild(node);
         slider.insertBefore(wrap, dotsWrap);
-
-        const dot = mk('button','fete-dot');
-        dot.type='button';
-        dot.setAttribute('aria-label','Slide '+(i+1));
-        dot.addEventListener('click', ()=>show(i));
+        const dot = mk('button','fete-dot'); dot.type='button'; dot.setAttribute('aria-label','Slide '+(i+1)); dot.addEventListener('click',()=>show(i));
         dotsWrap.appendChild(dot);
-
         slides.push(wrap); dots.push(dot);
       }
-      items.forEach((it,i)=>addSlide(it.node, i));
-
-      slider.appendChild(prevBtn);
-      slider.appendChild(nextBtn);
-      slider.appendChild(dotsWrap);
+      items.forEach((it,i)=>addSlide(it.node,i));
+      slider.appendChild(prevBtn); slider.appendChild(nextBtn); slider.appendChild(dotsWrap);
 
       let current = 0;
       function show(i){
         current = (i + slides.length) % slides.length;
-        slides.forEach((el, idx)=>{
-          const active = idx === current;
-          el.classList.toggle('active', active);
-          el.setAttribute('aria-hidden', active ? 'false' : 'true');
-          const v = el.querySelector('video');
-          if (v){ active ? v.play().catch(()=>{}) : v.pause(); }
-        });
-        dots.forEach((d, idx)=>d.classList.toggle('active', idx === current));
+        slides.forEach((el,idx)=>{ const a=idx===current; el.classList.toggle('active',a); el.setAttribute('aria-hidden',a?'false':'true'); const v=el.querySelector('video'); if(v){ a ? v.play().catch(()=>{}) : v.pause(); } });
+        dots.forEach((d,idx)=>d.classList.toggle('active', idx===current));
       }
-
-      prevBtn.addEventListener('click', ()=>show(current - 1));
-      nextBtn.addEventListener('click', ()=>show(current + 1));
-
+      prevBtn.addEventListener('click', ()=>show(current-1));
+      nextBtn.addEventListener('click', ()=>show(current+1));
       slider.setAttribute('tabindex','0');
-      slider.addEventListener('keydown', e=>{
-        if (e.key === 'ArrowLeft')  show(current - 1);
-        if (e.key === 'ArrowRight') show(current + 1);
-      });
-
-      let sx=null;
-      slider.addEventListener('touchstart', e=>{ sx = e.touches[0].clientX; }, {passive:true});
-      slider.addEventListener('touchend',   e=>{
-        if (sx==null) return;
-        const dx = e.changedTouches[0].clientX - sx;
-        if (Math.abs(dx) > 40) (dx < 0 ? show(current + 1) : show(current - 1));
-        sx = null;
-      });
+      slider.addEventListener('keydown', e=>{ if(e.key==='ArrowLeft')show(current-1); if(e.key==='ArrowRight')show(current+1); });
+      let sx=null; slider.addEventListener('touchstart',e=>{sx=e.touches[0].clientX;},{passive:true});
+      slider.addEventListener('touchend',e=>{ if(sx==null)return; const dx=e.changedTouches[0].clientX - sx; if(Math.abs(dx)>40)(dx<0?show(current+1):show(current-1)); sx=null; });
 
       show(0);
 
       /* Autoplay */
-      function slidesQ(){ return slider.querySelectorAll('.fete-slide'); }
       function next(){ nextBtn?.click(); }
-      let timer = null, hover = false;
-      function start(){
-        if (timer || slidesQ().length < 2) return;
-        timer = setInterval(() => { if (!hover && !document.hidden) next(); }, 5000);
-      }
-      function stop(){ clearInterval(timer); timer = null; }
-      slider.addEventListener('mouseenter', () => hover = true);
-      slider.addEventListener('mouseleave', () => hover = false);
-      slider.addEventListener('touchstart', () => hover = true, { passive: true });
-      slider.addEventListener('touchend',   () => hover = false, { passive: true });
-      document.addEventListener('visibilitychange', () => { document.hidden ? stop() : start(); });
-
+      let timer=null, hover=false;
+      function start(){ if(timer||slides.length<2)return; timer=setInterval(()=>{ if(!hover && !document.hidden) next(); }, 5000); }
+      function stop(){ clearInterval(timer); timer=null; }
+      slider.addEventListener('mouseenter',()=>hover=true);
+      slider.addEventListener('mouseleave',()=>hover=false);
+      slider.addEventListener('touchstart',()=>hover=true,{passive:true});
+      slider.addEventListener('touchend',()=>hover=false,{passive:true});
+      document.addEventListener('visibilitychange',()=>{ document.hidden?stop():start(); });
       start();
     })();
   })();
   </script>
 
-  <!-- JS: Line-up – kein Punkt am Zeilenanfang -->
+  <!-- JS: Line-up – Punkte nur am Zeilenanfang entfernen -->
   <script>
-  (function () {
-    function updateLineupSeparators() {
-      document.querySelectorAll('.lineup .acts').forEach(ul => {
-        const items = Array.from(ul.children);
-        let lastTop = null;
-        items.forEach((li, idx) => {
-          li.classList.remove('row-start');
-          const t = li.offsetTop;
-          if (idx === 0 || lastTop === null || Math.abs(t - lastTop) > 1) {
-            li.classList.add('row-start'); // neuer Zeilenanfang -> kein Punkt davor
-            lastTop = t;
-          }
-        });
+  function updateLineupSeparators() {
+    document.querySelectorAll('.lineup .acts').forEach(ul => {
+      const items = Array.from(ul.children);
+      let lastTop = null;
+      items.forEach((li, idx) => {
+        li.classList.remove('row-start');
+        const t = li.offsetTop;
+        if (idx === 0 || lastTop === null || Math.abs(t - lastTop) > 1) {
+          li.classList.add('row-start'); // neuer Zeilenanfang -> kein Punkt davor
+          lastTop = t;
+        }
       });
-    }
-    const debounce = (() => { let id; return () => { clearTimeout(id); id = setTimeout(updateLineupSeparators, 100); }; })();
-    window.addEventListener('load', updateLineupSeparators);
-    window.addEventListener('resize', debounce);
-    window.addEventListener('orientationchange', debounce);
-    if (document.fonts && document.fonts.ready) { document.fonts.ready.then(updateLineupSeparators); }
-  })();
+    });
+  }
   </script>
 
-  <!-- JS: Bandinfos aus TSV/CSV (robuster Parser) + Hover-Tooltip -->
+  <!-- JS: TSV laden -> Line-up befüllen + Hover-Tooltips -->
   <script>
   (function(){
-    const lineupLists = document.querySelectorAll('.lineup .acts');
-    if (!lineupLists.length) return;
+    const dayBlocks = document.querySelectorAll('.lineup .line');
+    if (!dayBlocks.length) return;
 
     function folderPath(){
       const p = location.pathname;
@@ -363,20 +277,8 @@
     }
     const base = location.origin + folderPath();
     const dataURL = base + 'bandinfo/lineup.tsv';
-    const imgBase = base + 'bandinfo/img/';
 
-    function slugify(str){
-      return (str||'')
-        .toString()
-        .toLowerCase()
-        .normalize('NFD').replace(/[\u0300-\u036f]/g,'')
-        .replace(/ä/g,'ae').replace(/ö/g,'oe').replace(/ü/g,'ue').replace(/ß/g,'ss')
-        .replace(/['’`´]/g,'')
-        .replace(/[^a-z0-9]+/g,'-')
-        .replace(/^-+|-+$/g,'');
-    }
-    function esc(s){ return (s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]); }
-
+    // robust parser mit Header-Normalisierung (lowercase)
     function detectDelimiter(text){
       const firstLine = (text.split(/\r?\n/,1)[0] || '');
       const candidates = ['\t','; ', ';', ',', '|'];
@@ -393,7 +295,6 @@
       const len = text.length;
       while (i < len){
         const ch = text[i];
-
         if (inQuotes){
           if (ch === '"'){
             const peek = text[i+1];
@@ -402,18 +303,11 @@
           }
           field += ch; i++; continue;
         }
-
         if (ch === '"'){ inQuotes = true; i++; continue; }
         if (ch === '\r'){ i++; continue; }
         if (ch === '\n'){ row.push(field); rows.push(row); field=''; row=[]; i++; continue; }
-
-        if (delimiter.length > 1 && text.substr(i, delimiter.length) === delimiter){
-          row.push(field); field=''; i+=delimiter.length; continue;
-        }
-        if (delimiter.length === 1 && ch === delimiter){
-          row.push(field); field=''; i++; continue;
-        }
-
+        if (delimiter.length > 1 && text.substr(i, delimiter.length) === delimiter){ row.push(field); field=''; i+=delimiter.length; continue; }
+        if (delimiter.length === 1 && ch === delimiter){ row.push(field); field=''; i++; continue; }
         field += ch; i++;
       }
       row.push(field);
@@ -425,7 +319,7 @@
       const delim = detectDelimiter(text);
       const rows = parseDelimited(text, delim);
       if (!rows.length) return [];
-      const headers = rows[0].map(h => h.trim());
+      const headers = rows[0].map(h => (h||'').trim().toLowerCase());
       return rows.slice(1).map(cols=>{
         const obj = {};
         headers.forEach((h, idx)=> obj[h] = (cols[idx] || '').trim());
@@ -433,33 +327,37 @@
       });
     }
 
-    const tip = document.createElement('div');
-    tip.className = 'band-tooltip';
-    document.body.appendChild(tip);
+    function dayCode(s){
+      return (s||'').toString().trim().toUpperCase().slice(0,2); // FR, SA, SO …
+    }
+    function minutes(hhmm){
+      const m = /^(\d{1,2}):(\d{2})$/.exec((hhmm||'').trim());
+      if (!m) return null;
+      return parseInt(m[1],10)*60 + parseInt(m[2],10);
+    }
+    function esc(s){ return (s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]); }
 
+    // Tooltip
+    const tip = document.createElement('div'); tip.className = 'band-tooltip'; document.body.appendChild(tip);
     function placeTip(target){
-      const r = target.getBoundingClientRect();
-      const ttr = tip.getBoundingClientRect();
+      const r = target.getBoundingClientRect(), ttr = tip.getBoundingClientRect();
       const sx = window.scrollX || document.documentElement.scrollLeft;
       const sy = window.scrollY || document.documentElement.scrollTop;
       let left = sx + r.left + (r.width - ttr.width)/2;
       left = Math.max(sx + 8, Math.min(left, sx + document.documentElement.clientWidth - ttr.width - 8));
       let top = sy + r.top - ttr.height - 10;
       if (top < sy + 8) top = sy + r.bottom + 10;
-      tip.style.left = left + 'px';
-      tip.style.top  = top  + 'px';
+      tip.style.left = left + 'px'; tip.style.top  = top  + 'px';
     }
-    function showTipFor(li, data){
-      const time = (data.start && data.end) ? `${esc(data.start)}–${esc(data.end)}` : esc(data.start||'');
-      const img  = data.image ? (data.image.startsWith('http') ? data.image : (imgBase + data.image)) : (imgBase + slugify(data.band) + '.jpg');
-      tip.innerHTML = `
-        ${time ? `<div class="time">${time}</div>` : ``}
-        <h4>${esc(data.band || li.textContent.trim())}</h4>
-        ${img ? `<img src="${img}" alt="${esc(data.band)}">` : ``}
-        ${data.desc ? `<p>${esc(data.desc)}</p>` : ``}
-      `;
-      tip.classList.add('visible');
-      placeTip(li);
+    function showTip(li, d){
+      const time = (d.start && d.end) ? `${esc(d.start)}–${esc(d.end)}` : esc(d.start||'');
+      let imgHTML = '';
+      if (d.image){ // nur wenn in TSV vorhanden
+        const src = d.image.startsWith('http') ? d.image : (base + d.image);
+        imgHTML = `<img src="${esc(src)}" alt="${esc(d.band)}">`;
+      }
+      tip.innerHTML = `${time?`<div class="time">${time}</div>`:''}<h4>${esc(d.band||li.textContent.trim())}</h4>${imgHTML}${d.desc?`<p>${esc(d.desc)}</p>`:''}`;
+      tip.classList.add('visible'); placeTip(li);
     }
     function hideTip(){ tip.classList.remove('visible'); }
 
@@ -467,29 +365,51 @@
       .then(r=>r.ok ? r.text() : Promise.reject(r.status))
       .then(txt=>{
         const rows = parseTable(txt);
-        const bySlug = new Map();
-        rows.forEach(row=>{
-          const slug = slugify(row.slug || row.band || '');
-          if (slug) bySlug.set(slug, {
-            band: row.band || '',
-            start: row.start || '',
-            end: row.end || '',
-            desc: row.desc || '',
-            image: row.image || ''
-          });
+
+        // Map nach Tag & Sortierung
+        const byDay = new Map(); // FR -> [rows]
+        rows.forEach(r=>{
+          // Header-Namen robust: band, start, end, desc, image, day
+          const d = {
+            day:   dayCode(r.day || r.tag || r.wochentag),
+            band:  r.band || r.artist || r.act || r.name || '',
+            start: r.start || r.beginn || r.beginnzeit || '',
+            end:   r.end || r.ende || r.endzeit || '',
+            desc:  r.desc || r.beschreibung || r.info || r.text || '',
+            image: r.image || r['image url'] || r['image_url'] || r['bild'] || r['bild url'] || r.url || ''
+          };
+          if (!d.day || !d.band) return;
+          if (!byDay.has(d.day)) byDay.set(d.day, []);
+          byDay.get(d.day).push(d);
         });
 
-        lineupLists.forEach(ul=>{
-          ul.querySelectorAll('li').forEach(li=>{
-            const name = li.textContent.trim();
-            const slug = slugify(name);
-            const data = bySlug.get(slug);
-            if (!data) return;
+        // pro Tag in UI schreiben
+        dayBlocks.forEach(block=>{
+          const code = (block.getAttribute('data-daytag') || '').toUpperCase();
+          const ul = block.querySelector('.acts');
+          if (!ul) return;
 
+          const list = (byDay.get(code) || []).slice();
+          // sortiere nach Startzeit, dann Bandname
+          list.sort((a,b)=>{
+            const ma = minutes(a.start), mb = minutes(b.start);
+            if (ma!=null && mb!=null) return ma - mb;
+            if (ma!=null) return -1;
+            if (mb!=null) return 1;
+            return (a.band||'').localeCompare(b.band||'', 'de');
+          });
+
+          // Liste befüllen
+          ul.innerHTML = '';
+          list.forEach(d=>{
+            const li = document.createElement('li');
+            li.textContent = d.band;
+            ul.appendChild(li);
+
+            // Tooltip-Events
             let hideId;
-            function open(){ clearTimeout(hideId); showTipFor(li, data); }
+            function open(){ clearTimeout(hideId); showTip(li, d); }
             function close(){ hideId = setTimeout(hideTip, 120); }
-
             li.addEventListener('mouseenter', open);
             li.addEventListener('mouseleave', close);
             li.addEventListener('focus', open);
@@ -498,8 +418,13 @@
             document.addEventListener('touchstart', hideTip, {passive:true});
           });
         });
+
+        // Punkte richtig setzen
+        updateLineupSeparators();
+        window.addEventListener('resize', ()=>{ setTimeout(updateLineupSeparators,100); });
+        if (document.fonts && document.fonts.ready) { document.fonts.ready.then(()=>setTimeout(updateLineupSeparators,0)); }
       })
-      .catch(()=>{ /* still */ });
+      .catch(()=>{ /* still: falls TSV fehlt, bleibt die Liste leer */ });
   })();
   </script>
 </body>
