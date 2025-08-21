@@ -12,7 +12,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&display=swap" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css2?family=Rubik+Dirt&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="/styles.css?v=14" />
+  <link rel="stylesheet" href="/styles.css?v=20" />
 </head>
 <body>
 
@@ -86,16 +86,12 @@
 
             <div class="line">
               <div class="lineup-daytag">FR. 29. AUGUST</div>
-              <ul class="acts" id="actsFR" aria-label="Line-up Freitag, 29. August">
-                <!-- wird via TSV gefüllt -->
-              </ul>
+              <ul class="acts" id="actsFR" aria-label="Line-up Freitag, 29. August"></ul>
             </div>
 
             <div class="line">
               <div class="lineup-daytag">SA. 30. AUGUST</div>
-              <ul class="acts" id="actsSA" aria-label="Line-up Samstag, 30. August">
-                <!-- wird via TSV gefüllt -->
-              </ul>
+              <ul class="acts" id="actsSA" aria-label="Line-up Samstag, 30. August"></ul>
             </div>
 
           </div>
@@ -143,58 +139,65 @@
     }
   </script>
 
-  <!-- JS: Slideshow (robuste, bewährte Variante) -->
+  <!-- JS: Slideshow (stabile, einfache Variante) -->
   <script>
   (function(){
     const slider = document.getElementById('feteSlider');
     if (!slider) return;
 
-    let prevBtn = slider.querySelector('.fete-control.prev');
-    let nextBtn = slider.querySelector('.fete-control.next');
-    let dotsWrap = slider.querySelector('.fete-dots');
+    const prevBtn = slider.querySelector('.fete-control.prev');
+    const nextBtn = slider.querySelector('.fete-control.next');
+    const dotsWrap = slider.querySelector('.fete-dots');
 
-    // Basis-URL des Ordners (funktioniert in /fete/ und /test/)
-    const dirURL = new URL('.', document.baseURI);
+    /* Robuster Ordnerpfad – klappt in /fete/ und /test/ */
+    function folderPath(){
+      const p = location.pathname;
+      if (p.endsWith('/')) return p;                                 // /fete/
+      if (/\/index\.html?$/i.test(p)) return p.replace(/index\.html?$/i,''); // /fete/index.html -> /fete/
+      if (p.includes('.')) return p.replace(/[^/]+$/, '');           // /foo/bar.html -> /foo/
+      return p + '/';                                                // /fete -> /fete/
+    }
+    const base = location.origin + folderPath();
 
-    function loadImage(url){
-      return new Promise(resolve=>{
+    function loadImage(src){
+      return new Promise(res=>{
         const img = new Image();
-        img.onload  = ()=>resolve({ok:true, node:img});
-        img.onerror = ()=>resolve({ok:false});
+        img.onload = ()=>res({ok:true, node:img});
+        img.onerror= ()=>res({ok:false});
         img.loading='lazy'; img.decoding='async';
-        img.src = url;
+        img.src = src;
       });
     }
-    function loadVideo(url){
-      return new Promise(resolve=>{
+    function loadVideo(src){
+      return new Promise(res=>{
         const v = document.createElement('video');
         v.preload='metadata'; v.muted=true; v.playsInline=true; v.loop=true;
-        const ok=()=>{ cleanup(); resolve({ok:true, node:v}); };
-        const err=()=>{ cleanup(); resolve({ok:false}); };
+        const ok=()=>{ cleanup(); res({ok:true, node:v}); };
+        const err=()=>{ cleanup(); res({ok:false}); };
         function cleanup(){ v.removeEventListener('loadedmetadata', ok); v.removeEventListener('error', err); }
         v.addEventListener('loadedmetadata', ok);
         v.addEventListener('error', err);
-        v.src = url;
+        v.src = src;
       });
     }
     async function probe(n){
-      const jpg = new URL(`${n}.jpg`, dirURL).href;
+      const jpg = base + `${n}.jpg`;
       let r = await loadImage(jpg);
       if (r.ok){ r.node.alt = `Festivalbild ${n}`; return {idx:n, node:r.node}; }
-      const mp4 = new URL(`${n}.mp4`, dirURL).href;
+      const mp4 = base + `${n}.mp4`;
       r = await loadVideo(mp4);
       if (r.ok){ return {idx:n, node:r.node}; }
       return null;
     }
 
     (async function init(){
-      const nums = Array.from({length:9}, (_,i)=>i+1);
-      const results = await Promise.all(nums.map(probe));
+      const results = await Promise.all(Array.from({length:9}, (_,i)=>probe(i+1)));
       const items = results.filter(Boolean).sort((a,b)=>a.idx - b.idx);
       if (!items.length) return;
 
       const slides=[], dots=[];
-      function addSlide(node,i){
+
+      function addSlide(node, i){
         const wrap = document.createElement('div');
         wrap.className='fete-slide';
         wrap.setAttribute('data-index', i);
@@ -202,44 +205,45 @@
         wrap.appendChild(node);
         slider.insertBefore(wrap, dotsWrap);
 
-        const dot=document.createElement('button');
+        const dot = document.createElement('button');
         dot.className='fete-dot'; dot.type='button';
         dot.setAttribute('aria-label','Slide '+(i+1));
         dotsWrap.appendChild(dot);
+
         slides.push(wrap); dots.push(dot);
       }
-      items.forEach((it,i)=>addSlide(it.node,i));
+      items.forEach((it,i)=>addSlide(it.node, i));
 
-      let current=0;
+      let current = 0;
       function show(i){
-        current=(i+slides.length)%slides.length;
-        slides.forEach((el,idx)=>{
-          const active=idx===current;
-          el.classList.toggle('active', active);
-          el.setAttribute('aria-hidden', active?'false':'true');
-          const v=el.querySelector('video');
-          if (v){ active ? v.play().catch(()=>{}) : v.pause(); }
+        current = (i + slides.length) % slides.length;
+        slides.forEach((el, idx)=>{
+          const on = idx === current;
+          el.classList.toggle('active', on);
+          el.setAttribute('aria-hidden', on ? 'false' : 'true');
+          const v = el.querySelector('video');
+          if (v){ on ? v.play().catch(()=>{}) : v.pause(); }
         });
-        dots.forEach((d,idx)=>d.classList.toggle('active', idx===current));
+        dots.forEach((d, idx)=>d.classList.toggle('active', idx===current));
       }
 
-      prevBtn.addEventListener('click', ()=>show(current-1));
-      nextBtn.addEventListener('click', ()=>show(current+1));
-      dots.forEach((d,idx)=>d.addEventListener('click', ()=>show(idx)));
+      prevBtn.addEventListener('click', ()=>show(current - 1));
+      nextBtn.addEventListener('click', ()=>show(current + 1));
+      dots.forEach((d, idx)=>d.addEventListener('click', ()=>show(idx)));
 
-      // Keyboard + Touch
+      // Tastatur & Touch
       slider.setAttribute('tabindex','0');
       slider.addEventListener('keydown', e=>{
-        if (e.key==='ArrowLeft') show(current-1);
-        if (e.key==='ArrowRight') show(current+1);
+        if (e.key === 'ArrowLeft')  show(current - 1);
+        if (e.key === 'ArrowRight') show(current + 1);
       });
       let sx=null;
-      slider.addEventListener('touchstart', e=>{ sx=e.touches[0].clientX; }, {passive:true});
-      slider.addEventListener('touchend', e=>{
+      slider.addEventListener('touchstart', e=>{ sx = e.touches[0].clientX; }, {passive:true});
+      slider.addEventListener('touchend',   e=>{
         if (sx==null) return;
-        const dx=e.changedTouches[0].clientX - sx;
-        if (Math.abs(dx)>40) (dx<0 ? show(current+1) : show(current-1));
-        sx=null;
+        const dx = e.changedTouches[0].clientX - sx;
+        if (Math.abs(dx) > 40) (dx < 0 ? show(current + 1) : show(current - 1));
+        sx = null;
       });
 
       // Autoplay
@@ -258,7 +262,7 @@
   })();
   </script>
 
-  <!-- JS: Line-up aus TSV + Hover-Karten; Punkte nur zeilenintern -->
+  <!-- JS: Line-up (TSV + Hover-Karten + Punkteregel) -->
   <script>
   (function(){
     const actsFR = document.getElementById('actsFR');
@@ -377,17 +381,23 @@
 
     (async function init(){
       try{
-        // Basis-Ordner der TSV (…/fete/bandinfo/)
-        const dirURL = new URL('.', document.baseURI);
-        const tsvUrl = new URL('bandinfo/lineup.tsv', dirURL).href;
-        const baseImg = new URL('bandinfo/', dirURL).href;
+        const base = location.origin + (function(){
+          const p = location.pathname;
+          if (p.endsWith('/')) return p;
+          if (/\/index\.html?$/i.test(p)) return p.replace(/index\.html?$/i,'');
+          if (p.includes('.')) return p.replace(/[^/]+$/, '');
+          return p + '/';
+        })();
+
+        const tsvUrl = base + 'bandinfo/lineup.tsv';
+        const baseImg = base + 'bandinfo/';
 
         const txt = await fetchText(tsvUrl);
-        if (!txt){ return; }
+        if (!txt) return;
 
         const {data} = parseDelimited(txt);
-
         const toNum = t => (t||'').replace(':','')*1 || 0;
+
         data.sort((a,b)=>{
           const da = dayCode(a.day), db = dayCode(b.day);
           if (da !== db) return da < db ? -1 : 1;
