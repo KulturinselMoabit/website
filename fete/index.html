@@ -10,9 +10,8 @@
 
   <!-- Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&display=swap" rel="stylesheet" />
-  <link href="https://fonts.googleapis.com/css2?family=Rubik+Dirt&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Rubik+Dirt&display=swap" rel="stylesheet">
 
-  <!-- CSS -->
   <link rel="stylesheet" href="/styles.css?v=12" />
 
   <!-- Event JSON-LD -->
@@ -38,8 +37,7 @@
       }
     },
     "image": [
-      "https://kulturinselmoabit.org/fete/fete-banner.svg",
-      "https://kulturinselmoabit.org/fete/1.jpg"
+      "https://kulturinselmoabit.org/fete/fete-banner.svg"
     ],
     "description": "Ehrenamtliches Musikfestival Fête du Seeee am 29.–30. August 2025 im Strandbad Tegelsee. Musikalische Highlights, Kunst und Gemeinschaft.",
     "organizer": {
@@ -79,59 +77,74 @@
       <div class="page-text">
 
         <!-- Banner -->
-        <div class="fete-banner-wrap">
-          <img src="fete-banner.svg" alt="Fête du Seeee – Banner" class="fete-banner" />
-        </div>
+        <img class="fete-banner" src="fete-banner.svg" alt="Fête du Seeee – Banner" />
 
-        <!-- Subline -->
-        <div class="fete-subline">
-          <span class="place">Strandbad Tegelsee</span>
+        <!-- Ort/Datum -->
+        <div class="fete-meta">
+          <span>Strandbad Tegelsee</span>
           <span class="dot">•</span>
-          <span class="date">29. &amp; 30. August 2025</span>
+          <span>29. &amp; 30. August 2025</span>
         </div>
 
-        <!-- SLIDESHOW -->
+        <!-- Slideshow -->
         <section class="fete-hero">
           <div class="fete-slider" id="feteSlider" aria-label="Festival-Impressionen">
             <button class="fete-control prev" aria-label="Vorheriges">‹</button>
             <button class="fete-control next" aria-label="Nächstes">›</button>
             <div class="fete-dots" role="tablist" aria-label="Slideshow-Navigation"></div>
           </div>
-          <noscript><img src="1.jpg" alt="Festivalbild 1" style="width:100%;height:auto;display:block;margin-top:.5rem;"></noscript>
+          <noscript>
+            <img src="1.jpg" alt="Festivalbild 1" style="width:100%;height:auto;display:block;margin-top:.5rem;">
+          </noscript>
         </section>
 
-        <!-- Introtext -->
-        <div class="intro-copy">
-          <p>Dieses Jahr wird unsere Fête du Seeee noch bunter und größer: Wir feiern an zwei Tagen auf gleich zwei Bühnen im wunderschönen Strandbad Tegelsee! Freut euch auf ein vielseitiges Programm aus Musik, Theater und Kunst, das von ehrenamtlichen Künstler*innen für euch gestaltet wird.</p>
-          <p>Genießt tagsüber Kultur-Highlights und bunte Aktionen für Groß und Klein direkt am Wasser, und lasst euch abends von mitreißenden Konzerten und Performances auf beiden Bühnen mitreißen. Bei den unterschiedlichsten Genres ist für jeden Geschmack etwas dabei!</p>
-        </div>
+        <!-- Intro-Text -->
+        <section class="intro">
+          <p>
+            Dieses Jahr wird unsere Fête du Seeee noch bunter und größer: Wir feiern an zwei Tagen
+            auf gleich zwei Bühnen im wunderschönen Strandbad Tegelsee! Freut euch auf ein vielseitiges
+            Programm aus Musik, Theater und Kunst, das von ehrenamtlichen Künstler*innen für euch
+            gestaltet wird.
+          </p>
+          <p>
+            Genießt tagsüber Kultur-Highlights und bunte Aktionen für Groß und Klein direkt am Wasser,
+            und lasst euch abends von mitreißenden Konzerten und Performances auf beiden Bühnen mitreißen.
+            Bei den unterschiedlichsten Genres ist für jeden Geschmack etwas dabei!
+          </p>
+        </section>
 
-        <!-- ===== LINE-UP ===== -->
+        <!-- LINE-UP -->
         <h2 class="section-title">Line-Up</h2>
         <section class="lineup">
           <div class="lineup-wrap">
-            <div class="line" data-daytag="FR">
+
+            <div class="line">
               <div class="lineup-daytag">FR. 29. AUGUST</div>
-              <ul class="acts" aria-label="Line-up Freitag, 29. August"><!-- TSV --></ul>
+              <ul class="acts" id="actsFR" aria-label="Line-up Freitag, 29. August">
+                <!-- wird via TSV gefüllt -->
+              </ul>
             </div>
 
-            <div class="line" data-daytag="SA">
+            <div class="line">
               <div class="lineup-daytag">SA. 30. AUGUST</div>
-              <ul class="acts" aria-label="Line-up Samstag, 30. August"><!-- TSV --></ul>
+              <ul class="acts" id="actsSA" aria-label="Line-up Samstag, 30. August">
+                <!-- wird via TSV gefüllt -->
+              </ul>
             </div>
+
           </div>
         </section>
 
         <!-- Eintritt -->
         <h2 class="section-title">Eintritt</h2>
-        <section class="entry">
+        <section class="admission">
           <p>nur Strandbadeintritt:</p>
           <ul>
             <li>Erwachsene: 6 €</li>
             <li>Ermäßigt: 4 €</li>
             <li>Ab 18 Uhr: 2,50 €</li>
           </ul>
-          <p style="margin-top:.75rem;">
+          <p style="margin-top:.8rem">
             Kommt vorbei, bringt eure Freund*innen mit und lasst uns gemeinsam am Tegeler See feiern – wir freuen uns auf euch!
           </p>
         </section>
@@ -164,21 +177,18 @@
     }
   </script>
 
-  <!-- JS: Slideshow (robust, 1–9.jpg/.mp4) -->
+  <!-- JS: Slideshow (1–9 .jpg/.mp4 im gleichen Ordner) -->
   <script>
   (function(){
     const slider = document.getElementById('feteSlider');
     if (!slider) return;
 
+    // Controls/Dots sicherstellen
     let prevBtn = slider.querySelector('.fete-control.prev');
     let nextBtn = slider.querySelector('.fete-control.next');
     let dotsWrap = slider.querySelector('.fete-dots');
 
-    function mk(tag, cls, txt){ const el=document.createElement(tag); if(cls)el.className=cls; if(txt!=null)el.textContent=txt; return el; }
-    if (!prevBtn){ prevBtn = mk('button','fete-control prev','‹'); prevBtn.setAttribute('aria-label','Vorheriges'); slider.appendChild(prevBtn); }
-    if (!nextBtn){ nextBtn = mk('button','fete-control next','›'); nextBtn.setAttribute('aria-label','Nächstes');  slider.appendChild(nextBtn); }
-    if (!dotsWrap){ dotsWrap = mk('div','fete-dots'); dotsWrap.setAttribute('role','tablist'); dotsWrap.setAttribute('aria-label','Slideshow-Navigation'); slider.appendChild(dotsWrap); }
-
+    // Ordnerpfad robust bestimmen (…/fete/ oder …/test/)
     function folderPath(){
       const p = location.pathname;
       if (p.endsWith('/')) return p;
@@ -188,240 +198,275 @@
     }
     const base = location.origin + folderPath();
 
-    function loadImage(url){ return new Promise(res=>{ const i=new Image(); i.onload=()=>res({ok:true,node:i}); i.onerror=()=>res({ok:false}); i.loading='lazy'; i.decoding='async'; i.src=url; }); }
-    function loadVideo(url){ return new Promise(res=>{ const v=document.createElement('video'); v.preload='metadata'; v.muted=true; v.playsInline=true; v.loop=true; const ok=()=>{c();res({ok:true,node:v});}; const er=()=>{c();res({ok:false});}; function c(){v.removeEventListener('loadedmetadata',ok);v.removeEventListener('error',er);} v.addEventListener('loadedmetadata',ok); v.addEventListener('error',er); v.src=url; }); }
+    function loadImage(url){
+      return new Promise(resolve=>{
+        const img = new Image();
+        img.onload  = ()=>resolve({ok:true, node:img});
+        img.onerror = ()=>resolve({ok:false});
+        img.loading='lazy'; img.decoding='async';
+        img.src = url;
+      });
+    }
+    function loadVideo(url){
+      return new Promise(resolve=>{
+        const v = document.createElement('video');
+        v.preload='metadata'; v.muted=true; v.playsInline=true; v.loop=true;
+        const ok=()=>{ cleanup(); resolve({ok:true, node:v}); };
+        const err=()=>{ cleanup(); resolve({ok:false}); };
+        function cleanup(){ v.removeEventListener('loadedmetadata', ok); v.removeEventListener('error', err); }
+        v.addEventListener('loadedmetadata', ok);
+        v.addEventListener('error', err);
+        v.src = url;
+      });
+    }
     async function probe(n){
-      let r = await loadImage(base + `${n}.jpg`);
+      const jpg = base + `${n}.jpg`;
+      let r = await loadImage(jpg);
       if (r.ok){ r.node.alt = `Festivalbild ${n}`; return {idx:n, node:r.node}; }
-      r = await loadVideo(base + `${n}.mp4`);
+      const mp4 = base + `${n}.mp4`;
+      r = await loadVideo(mp4);
       if (r.ok){ return {idx:n, node:r.node}; }
       return null;
     }
 
     (async function init(){
-      const results = await Promise.all(Array.from({length:9},(_,i)=>probe(i+1)));
-      const items = results.filter(Boolean).sort((a,b)=>a.idx-b.idx);
+      const nums = Array.from({length:9}, (_,i)=>i+1);
+      const results = await Promise.all(nums.map(probe));
+      const items = results.filter(Boolean).sort((a,b)=>a.idx - b.idx);
       if (!items.length) return;
 
       const slides=[], dots=[];
-      function addSlide(node, i){
-        const wrap = mk('div','fete-slide'); wrap.setAttribute('data-index',i); wrap.setAttribute('aria-hidden','true'); wrap.appendChild(node);
+      function addSlide(node,i){
+        const wrap = document.createElement('div');
+        wrap.className='fete-slide';
+        wrap.setAttribute('data-index', i);
+        wrap.setAttribute('aria-hidden','true');
+        wrap.appendChild(node);
         slider.insertBefore(wrap, dotsWrap);
-        const dot = mk('button','fete-dot'); dot.type='button'; dot.setAttribute('aria-label','Slide '+(i+1)); dot.addEventListener('click',()=>show(i));
+
+        const dot=document.createElement('button');
+        dot.className='fete-dot'; dot.type='button';
+        dot.setAttribute('aria-label','Slide '+(i+1));
         dotsWrap.appendChild(dot);
         slides.push(wrap); dots.push(dot);
       }
       items.forEach((it,i)=>addSlide(it.node,i));
-      slider.appendChild(prevBtn); slider.appendChild(nextBtn); slider.appendChild(dotsWrap);
 
-      let current = 0;
+      let current=0;
       function show(i){
-        current = (i + slides.length) % slides.length;
-        slides.forEach((el,idx)=>{ const a=idx===current; el.classList.toggle('active',a); el.setAttribute('aria-hidden',a?'false':'true'); const v=el.querySelector('video'); if(v){ a ? v.play().catch(()=>{}) : v.pause(); } });
+        current=(i+slides.length)%slides.length;
+        slides.forEach((el,idx)=>{
+          const active=idx===current;
+          el.classList.toggle('active', active);
+          el.setAttribute('aria-hidden', active?'false':'true');
+          const v=el.querySelector('video');
+          if (v){ active ? v.play().catch(()=>{}) : v.pause(); }
+        });
         dots.forEach((d,idx)=>d.classList.toggle('active', idx===current));
       }
       prevBtn.addEventListener('click', ()=>show(current-1));
       nextBtn.addEventListener('click', ()=>show(current+1));
+      dots.forEach((d,idx)=>d.addEventListener('click', ()=>show(idx)));
+
+      // Keyboard + Touch
       slider.setAttribute('tabindex','0');
-      slider.addEventListener('keydown', e=>{ if(e.key==='ArrowLeft')show(current-1); if(e.key==='ArrowRight')show(current+1); });
-      let sx=null; slider.addEventListener('touchstart',e=>{sx=e.touches[0].clientX;},{passive:true});
-      slider.addEventListener('touchend',e=>{ if(sx==null)return; const dx=e.changedTouches[0].clientX - sx; if(Math.abs(dx)>40)(dx<0?show(current+1):show(current-1)); sx=null; });
+      slider.addEventListener('keydown', e=>{
+        if (e.key==='ArrowLeft') show(current-1);
+        if (e.key==='ArrowRight') show(current+1);
+      });
+      let sx=null;
+      slider.addEventListener('touchstart', e=>{ sx=e.touches[0].clientX; }, {passive:true});
+      slider.addEventListener('touchend', e=>{
+        if (sx==null) return;
+        const dx=e.changedTouches[0].clientX - sx;
+        if (Math.abs(dx)>40) (dx<0 ? show(current+1) : show(current-1));
+        sx=null;
+      });
 
-      show(0);
-
-      /* Autoplay */
-      function next(){ nextBtn?.click(); }
+      // Autoplay
       let timer=null, hover=false;
-      function start(){ if(timer||slides.length<2)return; timer=setInterval(()=>{ if(!hover && !document.hidden) next(); }, 5000); }
+      function next(){ nextBtn.click(); }
+      function start(){ if (!timer && slides.length>1) timer=setInterval(()=>{ if(!hover && !document.hidden) next(); }, 5000); }
       function stop(){ clearInterval(timer); timer=null; }
-      slider.addEventListener('mouseenter',()=>hover=true);
-      slider.addEventListener('mouseleave',()=>hover=false);
-      slider.addEventListener('touchstart',()=>hover=true,{passive:true});
-      slider.addEventListener('touchend',()=>hover=false,{passive:true});
-      document.addEventListener('visibilitychange',()=>{ document.hidden?stop():start(); });
-      start();
+      slider.addEventListener('mouseenter', ()=>hover=true);
+      slider.addEventListener('mouseleave', ()=>hover=false);
+      slider.addEventListener('touchstart', ()=>hover=true, {passive:true});
+      slider.addEventListener('touchend', ()=>hover=false, {passive:true});
+      document.addEventListener('visibilitychange', ()=>{ document.hidden ? stop() : start(); });
+
+      show(0); start();
     })();
   })();
   </script>
 
-  <!-- JS: Punkte nur innerhalb der Zeile -->
-  <script>
-  function updateLineupSeparators() {
-    document.querySelectorAll('.lineup .acts').forEach(ul => {
-      const items = Array.from(ul.children);
-      let lastTop = null;
-      items.forEach((li, idx) => {
-        li.classList.remove('row-start');
-        const t = li.offsetTop;
-        if (idx === 0 || lastTop === null || Math.abs(t - lastTop) > 1) {
-          li.classList.add('row-start');
-          lastTop = t;
-        }
-      });
-    });
-  }
-  </script>
-
-  <!-- JS: TSV laden -> Line-up + Tooltips -->
+  <!-- JS: Line-up aus TSV + Hover-Karten; Punkte nur zeilenintern -->
   <script>
   (function(){
-    const dayBlocks = document.querySelectorAll('.lineup .line');
-    if (!dayBlocks.length) return;
+    const actsFR = document.getElementById('actsFR');
+    const actsSA = document.getElementById('actsSA');
+    if (!actsFR || !actsSA) return;
 
-    function folderPath(){
-      const p = location.pathname;
-      if (p.endsWith('/')) return p;
-      if (/\/index\.html?$/i.test(p)) return p.replace(/index\.html?$/i,'');
-      if (p.includes('.')) return p.replace(/[^/]+$/, '');
-      return p + '/';
+    // robustes Decoding (UTF-8, Windows-1252)
+    async function fetchText(url){
+      const res = await fetch(url, {cache:'no-store'});
+      const buf = await res.arrayBuffer();
+      const encodings = ['utf-8','windows-1252','iso-8859-1'];
+      for (const enc of encodings){
+        try{
+          const t = new TextDecoder(enc, {fatal:false}).decode(buf);
+          // Heuristik: zu viele Replacement-Char?
+          const bad = (t.match(/\uFFFD/g)||[]).length;
+          if (bad/t.length < 0.01) return t;
+        }catch(e){}
+      }
+      return new TextDecoder().decode(buf);
     }
-    const base = location.origin + folderPath();
-    const dataURL = base + 'bandinfo/lineup.tsv';
 
-    // Delimiter & Parser (mit Quotes, BOM-Handling)
-    function stripBOM(t){ return t.charCodeAt(0) === 0xFEFF ? t.slice(1) : t; }
-    function detectDelimiter(text){
-      const first = (text.split(/\r?\n/,1)[0] || '');
-      const cands = ['\t',';','|',','];
-      let best = '\t', max = 0;
-      for (const d of cands){ const n = first.split(d).length; if (n > max){ max=n; best=d; } }
-      return best;
-    }
-    function parseDelimited(text, delimiter){
+    function parseDelimited(text){
+      text = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+      const firstLine = text.split('\n',1)[0] || '';
+      const delim = ['\t',';','|',','].sort((a,b)=>{
+        return (firstLine.split(b).length-1) - (firstLine.split(a).length-1);
+      })[0] || '\t';
+
       const rows = [];
-      let field = '', row = [], inQuotes = false, i = 0;
-      const len = text.length;
-      while (i < len){
-        const ch = text[i];
+      let row = [], field = '', inQuotes = false;
+      for (let i=0;i<text.length;i++){
+        const ch = text[i], next = text[i+1];
         if (inQuotes){
           if (ch === '"'){
-            const peek = text[i+1];
-            if (peek === '"'){ field += '"'; i += 2; continue; }
-            inQuotes = false; i++; continue;
-          }
-          field += ch; i++; continue;
+            if (next === '"'){ field+='"'; i++; }
+            else { inQuotes = false; }
+          } else { field += ch; }
+        } else {
+          if (ch === '"'){ inQuotes = true; }
+          else if (ch === delim){ row.push(field); field = ''; }
+          else if (ch === '\n'){ row.push(field); rows.push(row); row=[]; field=''; }
+          else { field += ch; }
         }
-        if (ch === '"'){ inQuotes = true; i++; continue; }
-        if (ch === '\r'){ i++; continue; }
-        if (ch === '\n'){ row.push(field); rows.push(row); field=''; row=[]; i++; continue; }
-        if (ch === delimiter){ row.push(field); field=''; i++; continue; }
-        field += ch; i++;
       }
-      row.push(field);
-      if (row.length > 1 || row[0].trim() !== '') rows.push(row);
-      return rows;
-    }
+      if (field.length || row.length){ row.push(field); rows.push(row); }
 
-    function parseTable(text){
-      text = stripBOM(text).replace(/\r\n/g, '\n').replace(/\r/g, '\n');
-      const delim = detectDelimiter(text);
-      const rows = parseDelimited(text, delim);
-      if (!rows.length) return [];
-      const headers = rows[0].map(h => (h||'').trim().toLowerCase());
-      return rows.slice(1).map(cols=>{
+      if (!rows.length) return {headers:[], data:[]};
+      const headers = rows[0].map(h=>h.trim().toLowerCase());
+      const data = rows.slice(1).map(r=>{
         const obj = {};
-        headers.forEach((h, idx)=> obj[h] = (cols[idx] || '').trim());
+        headers.forEach((h,idx)=>{ obj[h] = (r[idx]||'').trim(); });
         return obj;
       });
+      return {headers, data};
     }
 
     function dayCode(s){
-      const t = (s||'').toString().trim().toLowerCase();
-      if (!t) return '';
-      if (t.startsWith('fr')) return 'FR';        // fr, freitag
-      if (t.startsWith('sa')) return 'SA';        // sa, samstag
-      return t.slice(0,2).toUpperCase();          // FR/SA etc.
+      const t = (s||'').trim().toLowerCase();
+      if (t.startsWith('fr')) return 'FR';
+      if (t.startsWith('sa')) return 'SA';
+      return t.slice(0,2).toUpperCase();
     }
-    function minutes(hhmm){
-      const m = /^(\d{1,2}):(\d{2})$/.exec((hhmm||'').trim());
-      if (!m) return null;
-      return parseInt(m[1],10)*60 + parseInt(m[2],10);
-    }
-    function esc(s){ return (s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]); }
 
-    const tip = document.createElement('div'); tip.className = 'band-tooltip'; document.body.appendChild(tip);
-    function placeTip(target){
-      const r = target.getBoundingClientRect(), ttr = tip.getBoundingClientRect();
-      const sx = window.scrollX || document.documentElement.scrollLeft;
-      const sy = window.scrollY || document.documentElement.scrollTop;
-      let left = sx + r.left + (r.width - ttr.width)/2;
-      left = Math.max(sx + 8, Math.min(left, sx + document.documentElement.clientWidth - ttr.width - 8));
-      let top = sy + r.top - ttr.height - 10;
-      if (top < sy + 8) top = sy + r.bottom + 10;
-      tip.style.left = left + 'px'; tip.style.top  = top  + 'px';
-    }
-    function showTip(li, d){
-      const time = (d.start && d.end) ? `${esc(d.start)}–${esc(d.end)}` : esc(d.start||'');
-      let imgHTML = '';
-      if (d.image){
-        const src = d.image.startsWith('http') ? d.image : (base + d.image);
-        imgHTML = `<img src="${esc(src)}" alt="${esc(d.band)}">`;
+    function makeActItem(rec, baseDir){
+      const li = document.createElement('li');
+      li.tabIndex = 0;
+      li.textContent = rec.band || '';
+
+      const card = document.createElement('div');
+      card.className = 'act-card';
+      const time = (rec.start && rec.end) ? (rec.start + '–' + rec.end) : '';
+      if (time){
+        const t = document.createElement('div');
+        t.className = 'time';
+        t.textContent = time;
+        card.appendChild(t);
       }
-      tip.innerHTML = `${time?`<div class="time">${time}</div>`:''}<h4>${esc(d.band||li.textContent.trim())}</h4>${imgHTML}${d.desc?`<p>${esc(d.desc)}</p>`:''}`;
-      tip.classList.add('visible'); placeTip(li);
-    }
-    function hideTip(){ tip.classList.remove('visible'); }
+      if (rec.image){
+        const img = document.createElement('img');
+        // Bildpfad: wenn URL absolut -> so lassen; sonst relativ zum bandinfo-Ordner
+        img.src = /^(https?:)?\/\//i.test(rec.image) ? rec.image : (baseDir + rec.image);
+        img.alt = rec.band || '';
+        card.appendChild(img);
+      }
+      if (rec.desc){
+        const p = document.createElement('p');
+        p.textContent = rec.desc;
+        card.appendChild(p);
+      }
+      if (card.children.length){ li.appendChild(card); }
 
-    fetch(dataURL)
-      .then(r=> r.ok ? r.text() : Promise.reject(new Error('TSV not found')))
-      .then(txt=>{
-        const rows = parseTable(txt);
-        const byDay = new Map();
-
-        rows.forEach(r=>{
-          const d = {
-            day:   dayCode(r.day || r.tag || r.wochentag || r.weekday || r['day ']),
-            band:  r.band || r.artist || r.act || r.name || '',
-            start: r.start || r.beginn || r.beginnzeit || '',
-            end:   r.end || r.ende || r.endzeit || '',
-            desc:  r.desc || r.beschreibung || r.info || r.text || '',
-            image: r.image || r['image url'] || r['image_url'] || r['bild'] || r['bild url'] || r.url || ''
-          };
-          if (!d.day || !d.band) return;
-          if (!byDay.has(d.day)) byDay.set(d.day, []);
-          byDay.get(d.day).push(d);
-        });
-
-        document.querySelectorAll('.lineup .line').forEach(block=>{
-          const code = (block.getAttribute('data-daytag') || '').toUpperCase();
-          const ul = block.querySelector('.acts');
-          if (!ul) return;
-
-          const list = (byDay.get(code) || []).slice().sort((a,b)=>{
-            const ma = minutes(a.start), mb = minutes(b.start);
-            if (ma!=null && mb!=null) return ma - mb;
-            if (ma!=null) return -1;
-            if (mb!=null) return 1;
-            return (a.band||'').localeCompare(b.band||'', 'de');
-          });
-
-          ul.innerHTML = '';
-          list.forEach(d=>{
-            const li = document.createElement('li');
-            li.textContent = d.band;
-            ul.appendChild(li);
-
-            let hideId;
-            function open(){ clearTimeout(hideId); showTip(li, d); }
-            function close(){ hideId = setTimeout(hideTip, 120); }
-            li.addEventListener('mouseenter', open);
-            li.addEventListener('mouseleave', close);
-            li.addEventListener('focus', open);
-            li.addEventListener('blur', close);
-            li.addEventListener('touchstart', (e)=>{ open(); e.stopPropagation(); }, {passive:true});
-            document.addEventListener('touchstart', hideTip, {passive:true});
-          });
-        });
-
-        updateLineupSeparators();
-        window.addEventListener('resize', ()=>{ setTimeout(updateLineupSeparators,100); });
-        if (document.fonts && document.fonts.ready) { document.fonts.ready.then(()=>setTimeout(updateLineupSeparators,0)); }
-      })
-      .catch(err=>{
-        // still: wenn TSV fehlt/fehlerhaft -> Listen bleiben leer, Seite läuft weiter
-        console.warn('Line-up TSV konnte nicht geladen werden:', err);
+      // Klick zum Öffnen auf Touch
+      li.addEventListener('click', (e)=>{
+        if (window.matchMedia('(hover: none)').matches){
+          li.classList.toggle('open');
+          e.stopPropagation();
+        }
       });
+      document.addEventListener('click', ()=> li.classList.remove('open'));
+      return li;
+    }
+
+    function updateRowStarts(){
+      document.querySelectorAll('.lineup .acts').forEach(ul=>{
+        const items = Array.from(ul.children);
+        let lastTop = null;
+        items.forEach((li, idx)=>{
+          li.classList.remove('row-start');
+          const t = li.offsetTop;
+          if (idx === 0 || lastTop === null || Math.abs(t - lastTop) > 1){
+            li.classList.add('row-start');
+            lastTop = t;
+          }
+        });
+      });
+    }
+    const debounce = (() => { let id; return () => { clearTimeout(id); id = setTimeout(updateRowStarts, 100); }; })();
+
+    (async function init(){
+      try{
+        // Basis-Ordner der TSV (…/fete/bandinfo/)
+        function folderPath(){
+          const p = location.pathname;
+          if (p.endsWith('/')) return p;
+          if (/\/index\.html?$/i.test(p)) return p.replace(/index\.html?$/i,'');
+          if (p.includes('.')) return p.replace(/[^/]+$/, '');
+          return p + '/';
+        }
+        const basePage = location.origin + folderPath();
+        const tsvUrl = basePage + 'bandinfo/lineup.tsv';
+        const baseImg = basePage + 'bandinfo/';
+
+        const txt = await fetchText(tsvUrl);
+        if (!txt){ return; }
+
+        const {data} = parseDelimited(txt);
+        // sort nach day/date/start
+        const toNum = t => (t||'').replace(':','')*1 || 0;
+        data.sort((a,b)=>{
+          const da = dayCode(a.day), db = dayCode(b.day);
+          if (da !== db) return da < db ? -1 : 1;
+          const sa = toNum(a.start), sb = toNum(b.start);
+          return sa - sb;
+        });
+
+        actsFR.innerHTML = '';
+        actsSA.innerHTML = '';
+        data.forEach(rec=>{
+          if (!rec.band) return;
+          const li = makeActItem(rec, baseImg);
+          const day = dayCode(rec.day);
+          if (day === 'FR') actsFR.appendChild(li);
+          else if (day === 'SA') actsSA.appendChild(li);
+        });
+
+        // Zeilenanfänge bestimmen
+        updateRowStarts();
+        window.addEventListener('resize', debounce);
+        window.addEventListener('orientationchange', debounce);
+        if (document.fonts && document.fonts.ready) { document.fonts.ready.then(updateRowStarts); }
+      } catch(e){
+        console.warn('Line-up konnte nicht geladen werden:', e);
+      }
+    })();
   })();
   </script>
+
 </body>
 </html>
