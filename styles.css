@@ -10,8 +10,8 @@
 
   /* Line-up Stellschrauben */
   --lineup-min: 1.8rem;
-  --lineup-vw:  5vw;     /* skaliert */
-  --lineup-max: 3rem;    /* max */
+  --lineup-vw:  5vw;
+  --lineup-max: 3rem;
   --lineup-row-gap: .6em;
 }
 
@@ -171,15 +171,15 @@ body {
   .fete-meta .dot { display:none; }
 }
 
-/* Slideshow – clean, keine eigenen Scrollbars */
+/* Slideshow – clean, keine internen Scrollbars */
 .fete-hero { margin: .5rem 0 1.5rem; }
 .fete-slider {
   position: relative;
   width: 100%;
   max-width: 100%;
   aspect-ratio: 16 / 9;
-  overflow: hidden;              /* wichtig: keine internen Scrollbalken */
-  background: #ddd;              /* Fallback, wenn noch nichts geladen */
+  overflow: hidden;
+  background: #ddd;  /* Fallback-Hintergrund */
 }
 .fete-slide { position: absolute; inset: 0; opacity: 0; transition: opacity .35s ease; pointer-events: none; }
 .fete-slide.active { opacity: 1; pointer-events: auto; }
