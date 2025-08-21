@@ -10,13 +10,16 @@
 
   /* Line-up Stellschrauben */
   --lineup-min: 1.8rem;
-  --lineup-vw:  5vw;     /* Größe skaliert */
-  --lineup-max: 3rem;    /* Maximalgröße */
+  --lineup-vw:  5vw;     /* skaliert */
+  --lineup-max: 3rem;    /* max */
   --lineup-row-gap: .6em;
 }
 
 /* Reset */
 * { margin: 0; padding: 0; box-sizing: border-box; }
+
+/* Verhindert horizontales Scrollen insgesamt */
+html, body { max-width: 100%; overflow-x: hidden; }
 
 /* Body */
 body {
@@ -154,11 +157,7 @@ body {
 
 /* Vollbreit wie Startseite */
 .page-inner--wide .page-img { display: none; }
-.page-inner--wide .page-text {
-  grid-column: 1 / -1;
-  /* verhindert horizontales Scrollen durch absolute/transform-Elemente */
-  overflow-x: hidden;
-}
+.page-inner--wide .page-text { grid-column: 1 / -1; overflow-x: hidden; }
 
 /* Banner + Meta-Zeile */
 .fete-banner { display:block; width:100%; height:auto; margin: 0 auto; max-width:100%; }
@@ -172,15 +171,15 @@ body {
   .fete-meta .dot { display:none; }
 }
 
-/* Slideshow – clean, containerbreit, kein Rahmen */
+/* Slideshow – clean, keine eigenen Scrollbars */
 .fete-hero { margin: .5rem 0 1.5rem; }
 .fete-slider {
   position: relative;
   width: 100%;
   max-width: 100%;
   aspect-ratio: 16 / 9;
-  overflow: hidden;
-  background: #ddd; /* grauer Fallback, wenn keine Medien vorhanden */
+  overflow: hidden;              /* wichtig: keine internen Scrollbalken */
+  background: #ddd;              /* Fallback, wenn noch nichts geladen */
 }
 .fete-slide { position: absolute; inset: 0; opacity: 0; transition: opacity .35s ease; pointer-events: none; }
 .fete-slide.active { opacity: 1; pointer-events: auto; }
