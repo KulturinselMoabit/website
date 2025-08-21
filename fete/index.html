@@ -1,275 +1,420 @@
-:root {
-  --bg:        #EDE4D9;
-  --primary:   #016DAF;
-  --highlight: #FC411F;
-  --col1:      200px;
-  --gap-col:   1fr;
-  --gutter:    2rem;
-  --pad-lg:    2rem;
-  --pad-sm:    .75rem;
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Fête du Seeee 2025 im Strandbad Tegelsee | Kulturinsel Moabit</title>
+  <meta name="description" content="Erlebe das ehrenamtliche Musikfestival Fête du Seeee am 29.–30.08.2025 im Strandbad Tegelsee. Jetzt Programm entdecken!" />
+  <link rel="canonical" href="https://kulturinselmoabit.org/fete/" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
 
-  /* Line-up Stellschrauben */
-  --lineup-min: 1.8rem;
-  --lineup-vw:  5vw;     /* Größe skaliert */
-  --lineup-max: 3rem;    /* Maximalgröße */
-  --lineup-row-gap: .6em;
-}
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Rubik+Dirt&display=swap" rel="stylesheet">
 
-/* Reset */
-* { margin: 0; padding: 0; box-sizing: border-box; }
+  <link rel="stylesheet" href="/styles.css?v=14" />
+</head>
+<body>
 
-/* Body */
-body {
-  background: var(--bg);
-  color: var(--primary);
-  font-family: 'Montserrat', sans-serif;
-  line-height: 1.4;
-  padding: 0 var(--pad-lg);
-}
-@media (max-width: 768px) {
-  body { padding: 0 var(--pad-sm); }
-  .page-text img.fullwidth,
-  .page-text img.float-left-third,
-  .page-text img.float-right-third,
-  .page-text img.float-half-left,
-  .page-text img.float-half-right {
-    float: none !important;
-    width: 100% !important;
-    margin: 0 auto 1em !important;
-    display: block;
-  }
-}
+  <!-- HEADER -->
+  <header id="site-header">
+    <div class="container header-inner">
+      <div class="logo">
+        <img src="/logo.svg" alt="Logo Kulturinsel Moabit" />
+      </div>
+      <nav class="site-nav">
+        <button class="menu-toggle" aria-label="Menü öffnen / schließen">
+          <span></span><span></span><span></span>
+        </button>
+        <ul>
+          <li><a href="/">Startseite</a></li>
+          <li><a href="/fete/" class="active">Fête du Seeee</a></li>
+          <li><a href="/jam/">Jamsession</a></li>
+          <li><a href="/mitmachen/">Mitmachen</a></li>
+          <li><a href="/uber-uns/">Über uns</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
 
-/* Container */
-.container { max-width: 60rem; margin: 0 auto; }
+  <!-- MAIN -->
+  <main>
+    <section class="container page-inner page-inner--wide">
+      <div class="page-text">
 
-/* HEADER */
-#site-header { position: relative; background: var(--bg); border-bottom: 2px solid var(--primary); }
-.header-inner {
-  display: grid;
-  grid-template-columns: var(--col1) repeat(5, var(--gap-col));
-  column-gap: var(--gutter);
-  align-items: flex-end;
-  padding: 1rem 0;
-}
+        <!-- Banner -->
+        <img class="fete-banner" src="fete-banner.svg" alt="Fête du Seeee – Banner" />
 
-/* Logo */
-.logo img { width: var(--col1); display: block; object-fit: contain; }
+        <!-- Ort/Datum -->
+        <div class="fete-meta">
+          <span>Strandbad Tegelsee</span>
+          <span class="dot">•</span>
+          <span>29. &amp; 30. August 2025</span>
+        </div>
 
-/* NAVIGATION */
-.site-nav { grid-column: 2 / -1; }
-.site-nav ul {
-  display: flex; justify-content: space-between; align-items: flex-end;
-  gap: 1rem; list-style: none; margin: 0; padding: 0;
-}
-.site-nav ul.open { display: flex; flex-direction: column; grid-column: auto; margin-top: .5rem; background: var(--bg); align-items: center; }
-.site-nav ul.open li + li { border-top: none; }
-.site-nav a {
-  display: block; text-align: center; white-space: nowrap; text-decoration: none;
-  color: var(--primary); font-weight: 700; padding: .75rem 0; position: relative;
-}
-.site-nav a::after {
-  content: ''; position: absolute; left: 50%; bottom: 0; transform: translateX(-50%);
-  width: 0; height: 2px; background: var(--highlight); transition: width .25s ease;
-}
-.site-nav a:hover::after { width: 100%; }
+        <!-- Slideshow -->
+        <section class="fete-hero">
+          <div class="fete-slider" id="feteSlider" aria-label="Festival-Impressionen">
+            <button class="fete-control prev" aria-label="Vorheriges">‹</button>
+            <button class="fete-control next" aria-label="Nächstes">›</button>
+            <div class="fete-dots" role="tablist" aria-label="Slideshow-Navigation"></div>
+          </div>
+          <noscript>
+            <img src="1.jpg" alt="Festivalbild 1" style="width:100%;height:auto;display:block;margin-top:.5rem;">
+          </noscript>
+        </section>
 
-/* Hamburger-/Close-Icon */
-.menu-toggle { display: none; background: none; border: none; cursor: pointer; position: absolute; top: calc(1rem + 5px); right: var(--pad-sm); z-index: 1000; }
-.menu-toggle span { display: block; width: 25px; height: 3px; margin: 4px 0; background: var(--primary); transition: transform .3s, opacity .3s; }
-.menu-toggle.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
-.menu-toggle.open span:nth-child(2) { opacity: 0; }
-.menu-toggle.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+        <!-- Intro-Text -->
+        <section class="intro">
+          <p>
+            Dieses Jahr wird unsere Fête du Seeee noch bunter und größer: Wir feiern an zwei Tagen
+            auf gleich zwei Bühnen im wunderschönen Strandbad Tegelsee! Freut euch auf ein vielseitiges
+            Programm aus Musik, Theater und Kunst, das von ehrenamtlichen Künstler*innen für euch
+            gestaltet wird.
+          </p>
+          <p>
+            Genießt tagsüber Kultur-Highlights und bunte Aktionen für Groß und Klein direkt am Wasser,
+            und lasst euch abends von mitreißenden Konzerten und Performances auf beiden Bühnen mitreißen.
+            Bei den unterschiedlichsten Genres ist für jeden Geschmack etwas dabei!
+          </p>
+        </section>
 
-/* PAGE SECTION */
-.page-inner {
-  display: grid;
-  grid-template-columns: var(--col1) repeat(5, var(--gap-col));
-  column-gap: var(--gutter);
-  align-items: start;
-  padding: 6rem 0;
-}
-.page-img img {
-  width: var(--col1); height: var(--col1); object-fit: cover; border-radius: 50%; display: block;
-}
+        <!-- LINE-UP -->
+        <h2 class="section-title">Line-Up</h2>
+        <section class="lineup">
+          <div class="lineup-wrap">
 
-/* Textbereich */
-.page-text { grid-column: 2 / -1; }
-.page-text h1 { font-size: clamp(2rem,5vw,2.5rem); font-weight: 800; margin-bottom: 1rem; line-height: 1.2; }
-.page-text h2 { font-size: 1.5rem; font-weight: 600; margin: 2rem 0 1rem; }
-.page-text h3 { font-size: 1 rem; font-weight: 700; margin: 1.5rem 0 .75rem; }
-.page-text .divider { width: 3rem; height: 1px; background: var(--highlight); margin: 0 auto 2rem; border: none; }
-.page-text .divider_long { width: 9rem; height: 1px; background: var(--highlight); margin: 0 auto 2rem; border: none; }
-.page-text p { margin-bottom: 1.5rem; font-size: 1rem; line-height: 1.2; text-align: justify; }
-.page-text img.fullwidth { width: 100%; height: auto; display: block; float: none; margin: 0; }
+            <div class="line">
+              <div class="lineup-daytag">FR. 29. AUGUST</div>
+              <ul class="acts" id="actsFR" aria-label="Line-up Freitag, 29. August">
+                <!-- wird via TSV gefüllt -->
+              </ul>
+            </div>
 
-/* ----------Bilder im Text-------------- */
-.page-text img.float-left-third   { float: left;  width: 33.333%; height: auto; margin: 0 1em 1em 0; display: block; box-shadow: 0 0 8px rgba(0,0,0,.1); }
-.page-text img.float-right-third  { float: right; width: 33.333%; height: auto; margin: 0 0 1em 1em; display: block; box-shadow: 0 0 8px rgba(0,0,0,.1); }
-.page-text img.float-half-left    { float: left;  width: 50%;    height: auto; margin: 0 1em 1em 0; display: block; box-shadow: 0 0 8px rgba(0,0,0,.1); }
-.page-text img.float-half-right   { float: right; width: 50%;    height: auto; margin: 0 0 1em 1em; display: block; box-shadow: 0 0 8px rgba(0,0,0,.1); }
+            <div class="line">
+              <div class="lineup-daytag">SA. 30. AUGUST</div>
+              <ul class="acts" id="actsSA" aria-label="Line-up Samstag, 30. August">
+                <!-- wird via TSV gefüllt -->
+              </ul>
+            </div>
 
-/* Aufräum-Clearfix nach schwimmenden Elementen */
-.page-text::after { content: ""; display: block; clear: both; }
-.page-text ul { margin-left: 1.5rem; padding-left: .5rem; list-style-position: outside; }
-.page-text a { color: var(--primary); text-decoration: underline; }
-.page-text a:hover { color: var(--highlight); }
-.page-text .btn-primary { display: inline-block; margin-top: 2rem; background: var(--highlight); color: #fff; padding: 1rem 2.5rem; border-radius: 4px; font-weight: 700; text-decoration: none; transition: transform .15s ease; }
-.page-text .btn-primary:hover { transform: translateY(-2px); }
+          </div>
+        </section>
 
-/* Index-Galerie */
-.index-gallery { display: flex; flex-direction: column; gap: var(--gutter); padding: 6rem 0; }
-.index-gallery__wide { width: 100%; aspect-ratio: 3 / 1; overflow: hidden; }
-.index-gallery__wide-img { width: 100%; height: 100%; object-fit: cover; display: block; }
-.index-gallery__quads { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--gutter); }
-.index-gallery__quad { width: 100%; aspect-ratio: 1 / 1; overflow: hidden; }
-.index-gallery__quad-img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        <!-- Eintritt -->
+        <h2 class="section-title">Eintritt</h2>
+        <section class="admission">
+          <p>nur Strandbadeintritt:</p>
+          <ul>
+            <li>Erwachsene: 6 €</li>
+            <li>Ermäßigt: 4 €</li>
+            <li>Ab 18 Uhr: 2,50 €</li>
+          </ul>
+          <p style="margin-top:.8rem">
+            Kommt vorbei, bringt eure Freund*innen mit und lasst uns gemeinsam am Tegeler See feiern – wir freuen uns auf euch!
+          </p>
+        </section>
 
-/* FOOTER */
-#site-footer { background: var(--bg); border-top: 2px solid var(--primary); }
-.footer-inner { padding: 2rem 0; text-align: center; font-size: .9rem; }
-#site-footer a { color: var(--primary); text-decoration: none; font-weight: 600; margin: 0 .5rem; }
-#site-footer a:hover { text-decoration: underline; }
+      </div>
+    </section>
+  </main>
 
-/* MOBILE */
-@media (max-width: 768px) {
-  .header-inner { display: flex; flex-direction: column; align-items: center; }
-  .site-nav { grid-column: auto; margin-top: .5rem; }
-  .site-nav ul { display: none; }
-  .site-nav ul.open { display: flex; flex-direction: column; }
-  .menu-toggle { display: block; }
-  .logo, .page-img { padding: 0 var(--pad-sm); }
-  .page-inner { display: flex !important; flex-direction: column; gap: var(--gutter); align-items: center; }
-  .page-img { margin-bottom: var(--gutter); }
-  .page-text h1, .page-text h2, .page-text h3 { text-align: center; }
-}
+  <!-- FOOTER -->
+  <footer id="site-footer">
+    <div class="container footer-inner">
+      <p>
+        <a href="/impressum.html">Impressum</a> |
+        <a href="/kontakt.html">Kontakt</a> |
+        <a href="/datenschutz.html">Datenschutz</a>
+      </p>
+      <p>© 2025 Kulturinsel Moabit – alle Rechte vorbehalten</p>
+    </div>
+  </footer>
 
-/* — QR-Code-Override — */
-.page-text img.qr-code { width: 150px; height: auto; display: block; margin: 1.5rem 0; object-fit: contain; }
-@media (max-width: 768px) { .page-text img.qr-code { width: 120px; height: auto; } }
+  <!-- JS: Burger-Menü -->
+  <script>
+    const btn = document.querySelector('.menu-toggle');
+    const nav = document.querySelector('.site-nav ul');
+    if (btn && nav) {
+      btn.addEventListener('click', () => {
+        nav.classList.toggle('open');
+        btn.classList.toggle('open');
+      });
+    }
+  </script>
 
-/* ===================================================================== */
-/* ===================  ERGÄNZUNGEN FÜR FÊTE-SEITE  ==================== */
-/* ===================================================================== */
+  <!-- JS: Slideshow (robuste, bewährte Variante) -->
+  <script>
+  (function(){
+    const slider = document.getElementById('feteSlider');
+    if (!slider) return;
 
-/* Vollbreit wie Startseite */
-.page-inner--wide .page-img { display: none; }
-.page-inner--wide .page-text {
-  grid-column: 1 / -1;
-  /* verhindert horizontales Scrollen durch absolute/transform-Elemente */
-  overflow-x: hidden;
-}
+    let prevBtn = slider.querySelector('.fete-control.prev');
+    let nextBtn = slider.querySelector('.fete-control.next');
+    let dotsWrap = slider.querySelector('.fete-dots');
 
-/* Banner + Meta-Zeile */
-.fete-banner { display:block; width:100%; height:auto; margin: 0 auto; max-width:100%; }
-.fete-meta {
-  display:flex; justify-content:center; gap:.5rem; margin:.4rem 0 1rem;
-  font-weight:700; text-align:center; flex-wrap:wrap;
-}
-.fete-meta .dot { color: var(--highlight); }
-@media (max-width: 520px){
-  .fete-meta { flex-direction:column; gap:0; }
-  .fete-meta .dot { display:none; }
-}
+    // Basis-URL des Ordners (funktioniert in /fete/ und /test/)
+    const dirURL = new URL('.', document.baseURI);
 
-/* Slideshow – clean, containerbreit, kein Rahmen */
-.fete-hero { margin: .5rem 0 1.5rem; }
-.fete-slider {
-  position: relative;
-  width: 100%;
-  max-width: 100%;
-  aspect-ratio: 16 / 9;
-  overflow: hidden;
-  background: #ddd; /* grauer Fallback, wenn keine Medien vorhanden */
-}
-.fete-slide { position: absolute; inset: 0; opacity: 0; transition: opacity .35s ease; pointer-events: none; }
-.fete-slide.active { opacity: 1; pointer-events: auto; }
-.fete-slide img, .fete-slide video { width: 100%; height: 100%; object-fit: cover; display: block; }
+    function loadImage(url){
+      return new Promise(resolve=>{
+        const img = new Image();
+        img.onload  = ()=>resolve({ok:true, node:img});
+        img.onerror = ()=>resolve({ok:false});
+        img.loading='lazy'; img.decoding='async';
+        img.src = url;
+      });
+    }
+    function loadVideo(url){
+      return new Promise(resolve=>{
+        const v = document.createElement('video');
+        v.preload='metadata'; v.muted=true; v.playsInline=true; v.loop=true;
+        const ok=()=>{ cleanup(); resolve({ok:true, node:v}); };
+        const err=()=>{ cleanup(); resolve({ok:false}); };
+        function cleanup(){ v.removeEventListener('loadedmetadata', ok); v.removeEventListener('error', err); }
+        v.addEventListener('loadedmetadata', ok);
+        v.addEventListener('error', err);
+        v.src = url;
+      });
+    }
+    async function probe(n){
+      const jpg = new URL(`${n}.jpg`, dirURL).href;
+      let r = await loadImage(jpg);
+      if (r.ok){ r.node.alt = `Festivalbild ${n}`; return {idx:n, node:r.node}; }
+      const mp4 = new URL(`${n}.mp4`, dirURL).href;
+      r = await loadVideo(mp4);
+      if (r.ok){ return {idx:n, node:r.node}; }
+      return null;
+    }
 
-/* Minimalistische Controls/Dots */
-.fete-control {
-  position: absolute; top: 50%; transform: translateY(-50%);
-  border: none; background: rgba(255,255,255,.6); color: var(--primary);
-  font-weight: 800; width: 2.2rem; height: 2.2rem; line-height: 2.2rem;
-  border-radius: 999px; text-align: center; cursor: pointer; z-index: 2;
-}
-.fete-control.prev { left: .4rem; }
-.fete-control.next { right: .4rem; }
-.fete-dots {
-  position: absolute; left: 0; right: 0; bottom: .4rem;
-  display: flex; justify-content: center; gap: .4rem; z-index: 2;
-}
-.fete-dot { width: .6rem; height: .6rem; border-radius: 999px; border: none; background: rgba(255,255,255,.7); }
-.fete-dot.active { background: var(--highlight); }
+    (async function init(){
+      const nums = Array.from({length:9}, (_,i)=>i+1);
+      const results = await Promise.all(nums.map(probe));
+      const items = results.filter(Boolean).sort((a,b)=>a.idx - b.idx);
+      if (!items.length) return;
 
-/* SECTION-Titel (clean, mit Unterstrich) */
-.section-title {
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: .06em;
-  text-align: center;
-  margin: 2rem 0 .75rem;
-  position: relative;
-}
-.section-title::after{
-  content:''; display:block; width: 120px; height: 3px;
-  background: var(--highlight); margin: .4rem auto 0;
-}
+      const slides=[], dots=[];
+      function addSlide(node,i){
+        const wrap = document.createElement('div');
+        wrap.className='fete-slide';
+        wrap.setAttribute('data-index', i);
+        wrap.setAttribute('aria-hidden','true');
+        wrap.appendChild(node);
+        slider.insertBefore(wrap, dotsWrap);
 
-/* Intro-Block (schlicht) */
-.intro { margin: 1rem 0 1.2rem; }
-.intro p { text-align: left; line-height: 1.35; }
+        const dot=document.createElement('button');
+        dot.className='fete-dot'; dot.type='button';
+        dot.setAttribute('aria-label','Slide '+(i+1));
+        dotsWrap.appendChild(dot);
+        slides.push(wrap); dots.push(dot);
+      }
+      items.forEach((it,i)=>addSlide(it.node,i));
 
-/* LINE-UP */
-.lineup { margin: 1.2rem 0 2rem; }
-.lineup-wrap { text-align: center; }
-.lineup .line { margin-bottom: 1.4rem; }
-.lineup .lineup-daytag{
-  display: inline-block; background: var(--primary); color: #fff;
-  font-weight: 800; letter-spacing: .06em; border-radius: 6px;
-  padding: .35rem .6rem; font-size: .95rem; margin: .25rem 0 .75rem 0;
-}
-.lineup .acts{
-  list-style: none; margin: 0; padding: 0;
-  display: flex; flex-wrap: wrap; justify-content: center; align-items: center;
-  row-gap: var(--lineup-row-gap); text-align: center; max-width: 100%;
-}
-.lineup .acts li{
-  font-family: "Rubik Dirt", "Montserrat", sans-serif;
-  text-transform: uppercase; letter-spacing: .03em; line-height: .9;
-  color: var(--primary);
-  font-size: clamp(var(--lineup-min), var(--lineup-vw), var(--lineup-max));
-  padding: 0 .12em;
-  position: relative;
-}
-/* Punkte nur innerhalb einer Zeile (JS markiert .row-start) */
-.lineup .acts li + li::before{
-  content: "•";
-  display: inline-block; margin: 0 .18em 0 .2em; vertical-align: middle;
-  color: var(--highlight); opacity: .95;
-}
-.lineup .acts li.row-start::before{ content: none; }
+      let current=0;
+      function show(i){
+        current=(i+slides.length)%slides.length;
+        slides.forEach((el,idx)=>{
+          const active=idx===current;
+          el.classList.toggle('active', active);
+          el.setAttribute('aria-hidden', active?'false':'true');
+          const v=el.querySelector('video');
+          if (v){ active ? v.play().catch(()=>{}) : v.pause(); }
+        });
+        dots.forEach((d,idx)=>d.classList.toggle('active', idx===current));
+      }
 
-/* Hover-Karte */
-.act-card {
-  position: absolute; left: 50%; top: 100%; transform: translate(-50%, .4rem);
-  width: max(240px, 60%);
-  max-width: min(360px, 90vw);
-  background: #fff; border: 2px solid var(--primary); border-radius: 10px;
-  box-shadow: 0 6px 18px rgba(0,0,0,.12);
-  padding: .75rem; text-align: left; z-index: 5;
-  opacity: 0; pointer-events: none; transition: opacity .15s ease, transform .15s ease;
-}
-.acts li:hover .act-card, .acts li:focus-within .act-card, .acts li.open .act-card {
-  opacity: 1; pointer-events: auto; transform: translate(-50%, .2rem);
-}
-.act-card .time { font-weight: 800; margin-bottom: .35rem; }
-.act-card img { width: 100%; height: auto; display: block; border-radius: 6px; margin-top: .35rem; }
+      prevBtn.addEventListener('click', ()=>show(current-1));
+      nextBtn.addEventListener('click', ()=>show(current+1));
+      dots.forEach((d,idx)=>d.addEventListener('click', ()=>show(idx)));
 
-/* Eintritt */
-.admission { margin: 1.2rem 0 2rem; text-align: center; }
-.admission ul { display:inline-block; text-align:left; margin-top:.5rem; }
+      // Keyboard + Touch
+      slider.setAttribute('tabindex','0');
+      slider.addEventListener('keydown', e=>{
+        if (e.key==='ArrowLeft') show(current-1);
+        if (e.key==='ArrowRight') show(current+1);
+      });
+      let sx=null;
+      slider.addEventListener('touchstart', e=>{ sx=e.touches[0].clientX; }, {passive:true});
+      slider.addEventListener('touchend', e=>{
+        if (sx==null) return;
+        const dx=e.changedTouches[0].clientX - sx;
+        if (Math.abs(dx)>40) (dx<0 ? show(current+1) : show(current-1));
+        sx=null;
+      });
 
-/* Fallbacks */
-#feteSlider .fete-slide:first-of-type { opacity: 1; }
-#feteSlider { min-height: 240px; }
+      // Autoplay
+      let timer=null, hover=false;
+      function next(){ nextBtn.click(); }
+      function start(){ if (!timer && slides.length>1) timer=setInterval(()=>{ if(!hover && !document.hidden) next(); }, 5000); }
+      function stop(){ clearInterval(timer); timer=null; }
+      slider.addEventListener('mouseenter', ()=>hover=true);
+      slider.addEventListener('mouseleave', ()=>hover=false);
+      slider.addEventListener('touchstart', ()=>hover=true, {passive:true});
+      slider.addEventListener('touchend', ()=>hover=false, {passive:true});
+      document.addEventListener('visibilitychange', ()=>{ document.hidden ? stop() : start(); });
+
+      show(0); start();
+    })();
+  })();
+  </script>
+
+  <!-- JS: Line-up aus TSV + Hover-Karten; Punkte nur zeilenintern -->
+  <script>
+  (function(){
+    const actsFR = document.getElementById('actsFR');
+    const actsSA = document.getElementById('actsSA');
+    if (!actsFR || !actsSA) return;
+
+    async function fetchText(url){
+      const res = await fetch(url, {cache:'no-store'});
+      const buf = await res.arrayBuffer();
+      const encodings = ['utf-8','windows-1252','iso-8859-1'];
+      for (const enc of encodings){
+        try{
+          const t = new TextDecoder(enc, {fatal:false}).decode(buf);
+          const bad = (t.match(/\uFFFD/g)||[]).length;
+          if (!t.length || bad/t.length < 0.01) return t;
+        }catch(e){}
+      }
+      return new TextDecoder().decode(buf);
+    }
+
+    function parseDelimited(text){
+      text = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+      const firstLine = text.split('\n',1)[0] || '';
+      const delim = ['\t',';','|',','].sort((a,b)=>{
+        return (firstLine.split(b).length-1) - (firstLine.split(a).length-1);
+      })[0] || '\t';
+
+      const rows = [];
+      let row = [], field = '', inQuotes = false;
+      for (let i=0;i<text.length;i++){
+        const ch = text[i], next = text[i+1];
+        if (inQuotes){
+          if (ch === '"'){
+            if (next === '"'){ field+='"'; i++; }
+            else { inQuotes = false; }
+          } else { field += ch; }
+        } else {
+          if (ch === '"'){ inQuotes = true; }
+          else if (ch === delim){ row.push(field); field = ''; }
+          else if (ch === '\n'){ row.push(field); rows.push(row); row=[]; field=''; }
+          else { field += ch; }
+        }
+      }
+      if (field.length || row.length){ row.push(field); rows.push(row); }
+
+      if (!rows.length) return {headers:[], data:[]};
+      const headers = rows[0].map(h=>h.trim().toLowerCase());
+      const data = rows.slice(1).map(r=>{
+        const obj = {};
+        headers.forEach((h,idx)=>{ obj[h] = (r[idx]||'').trim(); });
+        return obj;
+      });
+      return {headers, data};
+    }
+
+    function dayCode(s){
+      const t = (s||'').trim().toLowerCase();
+      if (t.startsWith('fr')) return 'FR';
+      if (t.startsWith('sa')) return 'SA';
+      return t.slice(0,2).toUpperCase();
+    }
+
+    function makeActItem(rec, baseDir){
+      const li = document.createElement('li');
+      li.tabIndex = 0;
+      li.textContent = rec.band || '';
+
+      const card = document.createElement('div');
+      card.className = 'act-card';
+      const time = (rec.start && rec.end) ? (rec.start + '–' + rec.end) : '';
+      if (time){
+        const t = document.createElement('div');
+        t.className = 'time';
+        t.textContent = time;
+        card.appendChild(t);
+      }
+      if (rec.image){
+        const img = document.createElement('img');
+        img.src = /^(https?:)?\/\//i.test(rec.image) ? rec.image : (baseDir + rec.image);
+        img.alt = rec.band || '';
+        card.appendChild(img);
+      }
+      if (rec.desc){
+        const p = document.createElement('p');
+        p.textContent = rec.desc;
+        card.appendChild(p);
+      }
+      if (card.children.length){ li.appendChild(card); }
+
+      // Tap zum Öffnen (Mobil)
+      li.addEventListener('click', (e)=>{
+        if (window.matchMedia('(hover: none)').matches){
+          li.classList.toggle('open');
+          e.stopPropagation();
+        }
+      });
+      document.addEventListener('click', ()=> li.classList.remove('open'));
+      return li;
+    }
+
+    function updateRowStarts(){
+      document.querySelectorAll('.lineup .acts').forEach(ul=>{
+        const items = Array.from(ul.children);
+        let lastTop = null;
+        items.forEach((li, idx)=>{
+          li.classList.remove('row-start');
+          const t = li.offsetTop;
+          if (idx === 0 || lastTop === null || Math.abs(t - lastTop) > 1){
+            li.classList.add('row-start');
+            lastTop = t;
+          }
+        });
+      });
+    }
+    const debounce = (() => { let id; return () => { clearTimeout(id); id = setTimeout(updateRowStarts, 100); }; })();
+
+    (async function init(){
+      try{
+        // Basis-Ordner der TSV (…/fete/bandinfo/)
+        const dirURL = new URL('.', document.baseURI);
+        const tsvUrl = new URL('bandinfo/lineup.tsv', dirURL).href;
+        const baseImg = new URL('bandinfo/', dirURL).href;
+
+        const txt = await fetchText(tsvUrl);
+        if (!txt){ return; }
+
+        const {data} = parseDelimited(txt);
+
+        const toNum = t => (t||'').replace(':','')*1 || 0;
+        data.sort((a,b)=>{
+          const da = dayCode(a.day), db = dayCode(b.day);
+          if (da !== db) return da < db ? -1 : 1;
+          const sa = toNum(a.start), sb = toNum(b.start);
+          return sa - sb;
+        });
+
+        actsFR.innerHTML = '';
+        actsSA.innerHTML = '';
+        data.forEach(rec=>{
+          if (!rec.band) return;
+          const li = makeActItem(rec, baseImg);
+          const day = dayCode(rec.day);
+          if (day === 'FR') actsFR.appendChild(li);
+          else if (day === 'SA') actsSA.appendChild(li);
+        });
+
+        updateRowStarts();
+        window.addEventListener('resize', debounce);
+        window.addEventListener('orientationchange', debounce);
+        if (document.fonts && document.fonts.ready) { document.fonts.ready.then(updateRowStarts); }
+      } catch(e){
+        console.warn('Line-up konnte nicht geladen werden:', e);
+      }
+    })();
+  })();
+  </script>
+
+</body>
+</html>
