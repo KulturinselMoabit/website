@@ -13,7 +13,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Rubik+Dirt&display=swap" rel="stylesheet" />
 
   <!-- CSS -->
-  <link rel="stylesheet" href="/styles.css?v=10" />
+  <link rel="stylesheet" href="/styles.css?v=12" />
 
   <!-- Event JSON-LD -->
   <script type="application/ld+json">
@@ -112,12 +112,12 @@
           <div class="lineup-wrap">
             <div class="line" data-daytag="FR">
               <div class="lineup-daytag">FR. 29. AUGUST</div>
-              <ul class="acts" aria-label="Line-up Freitag, 29. August"><!-- wird per TSV gefüllt --></ul>
+              <ul class="acts" aria-label="Line-up Freitag, 29. August"><!-- TSV --></ul>
             </div>
 
             <div class="line" data-daytag="SA">
               <div class="lineup-daytag">SA. 30. AUGUST</div>
-              <ul class="acts" aria-label="Line-up Samstag, 30. August"><!-- wird per TSV gefüllt --></ul>
+              <ul class="acts" aria-label="Line-up Samstag, 30. August"><!-- TSV --></ul>
             </div>
           </div>
         </section>
@@ -164,7 +164,7 @@
     }
   </script>
 
-  <!-- JS: Slideshow -->
+  <!-- JS: Slideshow (robust, 1–9.jpg/.mp4) -->
   <script>
   (function(){
     const slider = document.getElementById('feteSlider');
@@ -244,7 +244,7 @@
   })();
   </script>
 
-  <!-- JS: Line-up – Punkte nur am Zeilenanfang entfernen -->
+  <!-- JS: Punkte nur innerhalb der Zeile -->
   <script>
   function updateLineupSeparators() {
     document.querySelectorAll('.lineup .acts').forEach(ul => {
@@ -254,7 +254,7 @@
         li.classList.remove('row-start');
         const t = li.offsetTop;
         if (idx === 0 || lastTop === null || Math.abs(t - lastTop) > 1) {
-          li.classList.add('row-start'); // neuer Zeilenanfang -> kein Punkt davor
+          li.classList.add('row-start');
           lastTop = t;
         }
       });
@@ -262,7 +262,7 @@
   }
   </script>
 
-  <!-- JS: TSV laden -> Line-up befüllen + Hover-Tooltips -->
+  <!-- JS: TSV laden -> Line-up + Tooltips -->
   <script>
   (function(){
     const dayBlocks = document.querySelectorAll('.lineup .line');
@@ -278,15 +278,13 @@
     const base = location.origin + folderPath();
     const dataURL = base + 'bandinfo/lineup.tsv';
 
-    // robust parser mit Header-Normalisierung (lowercase)
+    // Delimiter & Parser (mit Quotes, BOM-Handling)
+    function stripBOM(t){ return t.charCodeAt(0) === 0xFEFF ? t.slice(1) : t; }
     function detectDelimiter(text){
-      const firstLine = (text.split(/\r?\n/,1)[0] || '');
-      const candidates = ['\t','; ', ';', ',', '|'];
-      let best = '\t', bestCount = 0;
-      for (const d of candidates){
-        const c = firstLine.split(d).length;
-        if (c > bestCount) { best = d; bestCount = c; }
-      }
+      const first = (text.split(/\r?\n/,1)[0] || '');
+      const cands = ['\t',';','|',','];
+      let best = '\t', max = 0;
+      for (const d of cands){ const n = first.split(d).length; if (n > max){ max=n; best=d; } }
       return best;
     }
     function parseDelimited(text, delimiter){
@@ -306,16 +304,16 @@
         if (ch === '"'){ inQuotes = true; i++; continue; }
         if (ch === '\r'){ i++; continue; }
         if (ch === '\n'){ row.push(field); rows.push(row); field=''; row=[]; i++; continue; }
-        if (delimiter.length > 1 && text.substr(i, delimiter.length) === delimiter){ row.push(field); field=''; i+=delimiter.length; continue; }
-        if (delimiter.length === 1 && ch === delimiter){ row.push(field); field=''; i++; continue; }
+        if (ch === delimiter){ row.push(field); field=''; i++; continue; }
         field += ch; i++;
       }
       row.push(field);
       if (row.length > 1 || row[0].trim() !== '') rows.push(row);
       return rows;
     }
+
     function parseTable(text){
-      text = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+      text = stripBOM(text).replace(/\r\n/g, '\n').replace(/\r/g, '\n');
       const delim = detectDelimiter(text);
       const rows = parseDelimited(text, delim);
       if (!rows.length) return [];
@@ -328,7 +326,11 @@
     }
 
     function dayCode(s){
-      return (s||'').toString().trim().toUpperCase().slice(0,2); // FR, SA, SO …
+      const t = (s||'').toString().trim().toLowerCase();
+      if (!t) return '';
+      if (t.startsWith('fr')) return 'FR';        // fr, freitag
+      if (t.startsWith('sa')) return 'SA';        // sa, samstag
+      return t.slice(0,2).toUpperCase();          // FR/SA etc.
     }
     function minutes(hhmm){
       const m = /^(\d{1,2}):(\d{2})$/.exec((hhmm||'').trim());
@@ -337,7 +339,6 @@
     }
     function esc(s){ return (s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]); }
 
-    // Tooltip
     const tip = document.createElement('div'); tip.className = 'band-tooltip'; document.body.appendChild(tip);
     function placeTip(target){
       const r = target.getBoundingClientRect(), ttr = tip.getBoundingClientRect();
@@ -352,7 +353,7 @@
     function showTip(li, d){
       const time = (d.start && d.end) ? `${esc(d.start)}–${esc(d.end)}` : esc(d.start||'');
       let imgHTML = '';
-      if (d.image){ // nur wenn in TSV vorhanden
+      if (d.image){
         const src = d.image.startsWith('http') ? d.image : (base + d.image);
         imgHTML = `<img src="${esc(src)}" alt="${esc(d.band)}">`;
       }
@@ -362,16 +363,14 @@
     function hideTip(){ tip.classList.remove('visible'); }
 
     fetch(dataURL)
-      .then(r=>r.ok ? r.text() : Promise.reject(r.status))
+      .then(r=> r.ok ? r.text() : Promise.reject(new Error('TSV not found')))
       .then(txt=>{
         const rows = parseTable(txt);
+        const byDay = new Map();
 
-        // Map nach Tag & Sortierung
-        const byDay = new Map(); // FR -> [rows]
         rows.forEach(r=>{
-          // Header-Namen robust: band, start, end, desc, image, day
           const d = {
-            day:   dayCode(r.day || r.tag || r.wochentag),
+            day:   dayCode(r.day || r.tag || r.wochentag || r.weekday || r['day ']),
             band:  r.band || r.artist || r.act || r.name || '',
             start: r.start || r.beginn || r.beginnzeit || '',
             end:   r.end || r.ende || r.endzeit || '',
@@ -383,15 +382,12 @@
           byDay.get(d.day).push(d);
         });
 
-        // pro Tag in UI schreiben
-        dayBlocks.forEach(block=>{
+        document.querySelectorAll('.lineup .line').forEach(block=>{
           const code = (block.getAttribute('data-daytag') || '').toUpperCase();
           const ul = block.querySelector('.acts');
           if (!ul) return;
 
-          const list = (byDay.get(code) || []).slice();
-          // sortiere nach Startzeit, dann Bandname
-          list.sort((a,b)=>{
+          const list = (byDay.get(code) || []).slice().sort((a,b)=>{
             const ma = minutes(a.start), mb = minutes(b.start);
             if (ma!=null && mb!=null) return ma - mb;
             if (ma!=null) return -1;
@@ -399,14 +395,12 @@
             return (a.band||'').localeCompare(b.band||'', 'de');
           });
 
-          // Liste befüllen
           ul.innerHTML = '';
           list.forEach(d=>{
             const li = document.createElement('li');
             li.textContent = d.band;
             ul.appendChild(li);
 
-            // Tooltip-Events
             let hideId;
             function open(){ clearTimeout(hideId); showTip(li, d); }
             function close(){ hideId = setTimeout(hideTip, 120); }
@@ -419,12 +413,14 @@
           });
         });
 
-        // Punkte richtig setzen
         updateLineupSeparators();
         window.addEventListener('resize', ()=>{ setTimeout(updateLineupSeparators,100); });
         if (document.fonts && document.fonts.ready) { document.fonts.ready.then(()=>setTimeout(updateLineupSeparators,0)); }
       })
-      .catch(()=>{ /* still: falls TSV fehlt, bleibt die Liste leer */ });
+      .catch(err=>{
+        // still: wenn TSV fehlt/fehlerhaft -> Listen bleiben leer, Seite läuft weiter
+        console.warn('Line-up TSV konnte nicht geladen werden:', err);
+      });
   })();
   </script>
 </body>
