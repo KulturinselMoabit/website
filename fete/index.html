@@ -14,7 +14,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Rubik+Dirt&display=swap" rel="stylesheet">
 
   <!-- CSS -->
-  <link rel="stylesheet" href="/styles.css?v=fete-dialog-center-scrollfix" />
+  <link rel="stylesheet" href="/styles.css?v=fete-dialog-fix-1" />
 </head>
 <body class="fete-page">
 
@@ -128,7 +128,8 @@
     </div>
   </footer>
 
-  <!-- Modal -->
+  <!-- Modal / Bottom-Sheet -->
+  <!-- WICHTIG: kein 'open' Attribut im Markup -->
   <dialog id="luDialog" class="lu-dialog" aria-label="Banddetails">
     <form method="dialog" class="lu-card">
       <button class="lu-close" aria-label="Schließen">×</button>
@@ -199,7 +200,7 @@
         v.preload='metadata'; v.muted=true; v.playsInline=true; v.setAttribute('playsinline',''); v.loop=true;
         const ok=()=>{ cleanup(); resolve({ok:true, node:v}); };
         const err=()=>{ cleanup(); resolve({ok:false}); };
-        function cleanup(){ v.removeEventListener('loadedmetadata', ok); v.removeEventListener('error', err); }
+        function cleanup(){ v.removeEventListener('loadedmetadata, ok'); v.removeEventListener('error', err); }
         v.addEventListener('loadedmetadata', ok);
         v.addEventListener('error', err);
         v.src = url;
@@ -292,15 +293,22 @@
   <!-- PapaParse (CDN) – ohne SRI & crossorigin -->
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 
-  <!-- JS: Dynamisches Line-up aus Google Sheets CSV -->
+  <!-- JS: Dynamisches Line-up aus lokaler CSV (gleiche Struktur wie vorher) -->
   <script>
   (function(){
-    const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRkYgQhBk53GOGABV_qzv3ZqjgSfR61ZH9_fX-uejRTUOQ4EtAgARUXXIayqaPKWRr5hBRMCH219-_j/pub?output=csv";
-    // Bilder liegen relativ zur /fete/ Seite im Unterordner bandinfo/img/
-    const IMG_BASE = "bandinfo/img/";
+    const CSV_URL = "lineup.csv";          // <- einzige Änderung: lokale Datei
+    const IMG_BASE = "bandinfo/img/";      // relativ zu /fete/
 
     const root   = document.getElementById('lineupRoot');
     const errBox = document.getElementById('luError');
+    const dlg    = document.getElementById('luDialog');
+
+    // SAFEGUARD: Dialog sicher geschlossen beim Start
+    if (dlg) {
+      try { dlg.close(); } catch(_) {}
+      dlg.removeAttribute('open');
+    }
+
     if (!root) return;
 
     const showError = (msg) => { if (errBox){ errBox.style.display=''; errBox.textContent = msg; }};
@@ -339,21 +347,10 @@
     };
 
     function buildImgSrc(image){
-      const v0 = clean(image);
-      if (!v0) return '';
-      if (/^https?:\/\//i.test(v0) || v0.startsWith('//')) return v0;
-
-      let path = v0.replace(/^\/+/, '');
-      const low = path.toLowerCase();
-
-      if (low.startsWith('fete/bandinfo/img/')) path = path.slice('fete/'.length);
-      if (low.startsWith('/fete/bandinfo/img/')) path = path.slice('/fete/'.length);
-      if (low.startsWith('img/')) path = 'bandinfo/' + path;
-      if (!low.startsWith('bandinfo/img/')) path = (IMG_BASE || '') + path;
-
-      path = path.split('/').map(encodeURIComponent).join('/');
-
-      return path;
+      const v = clean(image);
+      if (!v) return '';
+      if (/^https?:\/\//i.test(v) || v.startsWith('//')) return v;
+      return (IMG_BASE || '') + v.replace(/^\/+/, '');
     }
 
     function groupByDay(rows){
@@ -405,6 +402,38 @@
         .replace(/'/g,"&#039;");
     }
 
+    function openDialog(a){
+      const imgEl  = dlg.querySelector('.lu-media');
+      const title  = dlg.querySelector('.lu-title');
+      const timeEl = dlg.querySelector('.lu-time');
+      const desc   = dlg.querySelector('.lu-desc');
+
+      // Bild
+      const src = buildImgSrc(a.image);
+      if (src){
+        const wrap = dlg.querySelector('.lu-media-wrap');
+        wrap.style.display = '';
+        imgEl.src = src;
+        imgEl.alt = a.artist ? `Foto: ${a.artist}` : "Bandfoto";
+        imgEl.onerror = ()=>{ wrap.style.display='none'; };
+      } else {
+        dlg.querySelector('.lu-media-wrap').style.display = 'none';
+        imgEl.src = '';
+        imgEl.alt = '';
+      }
+
+      title.textContent = a.artist || '';
+      timeEl.textContent = (a.start && a.end) ? `${a.start}–${a.end}` : (a.start || '');
+
+      const rawDesc = a.description || "";
+      const normalized = rawDesc.replace(/\r\n?|\n|\\n/g, "\n");
+      const safe = escapeHtml(normalized).replace(/\n/g,"<br>");
+      desc.innerHTML = safe;
+
+      if (typeof dlg.showModal === 'function') dlg.showModal();
+      else dlg.setAttribute('open','');
+    }
+
     function extractDescription(origRow, normalizedRow){
       if (normalizedRow.description != null && String(normalizedRow.description).trim() !== "") {
         return normalizedRow.description;
@@ -420,39 +449,6 @@
       return hit;
     }
 
-    function openDialog(a){
-      const dlg = document.getElementById('luDialog');
-      if (!dlg) return;
-
-      const imgWrap = dlg.querySelector('.lu-media-wrap');
-      const imgEl   = dlg.querySelector('.lu-media');
-      const title   = dlg.querySelector('.lu-title');
-      const timeEl  = dlg.querySelector('.lu-time');
-      const desc    = dlg.querySelector('.lu-desc');
-
-      const src = buildImgSrc(a.image);
-      if (src){
-        imgWrap.style.display = '';
-        imgEl.src = src;
-        imgEl.alt = a.artist ? `Foto: ${a.artist}` : "Bandfoto";
-        imgEl.onerror = ()=>{ imgWrap.style.display='none'; };
-      } else {
-        imgEl.src = '';
-        imgWrap.style.display = 'none';
-      }
-
-      title.textContent = a.artist || '';
-      timeEl.textContent = (a.start && a.end) ? `${a.start}–${a.end}` : (a.start || '');
-
-      const rawDesc = a.description || "";
-      const normalized = rawDesc.replace(/\r\n?|\n|\\n/g, "\n");
-      const safe = escapeHtml(normalized).replace(/\n/g,"<br>");
-      desc.innerHTML = safe;
-
-      if (typeof dlg.showModal === 'function') dlg.showModal();
-      else dlg.setAttribute('open','');
-    }
-
     function startLineup(){
       Papa.parse(CSV_URL, {
         download: true,
@@ -462,9 +458,7 @@
           try {
             const rows = (res.data || []).map(orig=>{
               const norm = {};
-              Object.keys(orig).forEach(k=>{
-                norm[ normalizeKey(k) ] = orig[k];
-              });
+              Object.keys(orig).forEach(k=>{ norm[ normalizeKey(k) ] = orig[k]; });
 
               const artist = clean(norm.artist ?? norm.name);
               const day    = clean(norm.day);
@@ -479,11 +473,7 @@
             }).filter(Boolean);
 
             root.innerHTML = '';
-
-            if (!rows.length){
-              showError('Keine Einträge in der CSV gefunden.');
-              return;
-            }
+            if (!rows.length){ showError('Keine Einträge in der CSV gefunden.'); return; }
 
             const {order, map} = groupByDay(rows);
             order.forEach(dayRaw=>{
@@ -496,28 +486,17 @@
               root.appendChild( renderDayBlock(dayRaw, acts) );
             });
           } catch(e){
-            console.error(e);
-            showError('Fehler beim Verarbeiten der CSV.');
+            console.error(e); showError('Fehler beim Verarbeiten der CSV.');
           }
         },
-        error: (err)=>{
-          console.error(err);
-          showError('CSV konnte nicht geladen werden.');
-        }
+        error: (err)=>{ console.error(err); showError('CSV konnte nicht geladen werden.'); }
       });
     }
 
-    if (window.Papa) {
-      startLineup();
-    } else {
-      window.addEventListener('load', ()=>{
-        if (window.Papa) startLineup();
-        else showError('PapaParse wurde nicht geladen (CDN blockiert?).');
-      });
-    }
+    if (window.Papa) startLineup();
+    else window.addEventListener('load', ()=>{ if (window.Papa) startLineup(); });
 
-    // Dialog schließen (Klick außerhalb, ESC)
-    const dlg = document.getElementById('luDialog');
+    // Dialog schließen (Klick außerhalb, ESC, Close-Button)
     if (dlg){
       dlg.addEventListener('click', (e)=>{
         const card = dlg.querySelector('.lu-card');
