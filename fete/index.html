@@ -14,7 +14,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Rubik+Dirt&display=swap" rel="stylesheet">
 
   <!-- CSS -->
-  <link rel="stylesheet" href="../styles.css?v=simple-banner" />
+  <link rel="stylesheet" href="/styles.css?v=simple-banner" />
 </head>
 <body class="fete-page">
 
@@ -307,16 +307,18 @@
     const stripBOM = (s) => String(s ?? '').replace(/^\uFEFF/, '');
     const clean = (s) => stripBOM(String(s ?? '').trim());
 
+    // ---- Robust: Header normalisieren UND Fallbacks für description ----
     const normalizeKey = (k) => stripBOM(String(k||''))
       .toLowerCase().trim().replace(/\s+/g,'')
       .replace(/bandname|name|band/, 'artist')
-      .replace(/beschreibung|desc/, 'description')
+      .replace(/beschreibung|beschreib|desc|descriptiontext/, 'description')
       .replace(/bildurl|bild|imageurl/, 'image')
       .replace(/^tag$/, 'day')
       .replace(/^zeit$|^time$/, 'start')
       .replace(/^startzeit$/, 'start')
       .replace(/^endzeit$/, 'end');
 
+    // Zeiten tolerant
     const parseTime = (t) => {
       const raw = clean(t);
       if (!raw) return null;
@@ -384,7 +386,7 @@
       return line;
     }
 
-    // Sicheres HTML-Escaping für Beschreibung (mit Zeilenumbrüchen)
+    // Sicheres HTML-Escaping
     function escapeHtml(s){
       return String(s ?? "")
         .replace(/&/g,"&amp;")
@@ -418,12 +420,32 @@
       title.textContent = a.artist || '';
       timeEl.textContent = (a.start && a.end) ? `${a.start}–${a.end}` : (a.start || '');
 
-      // Beschreibung mit Zeilenumbrüchen sicher rendern
-      const safe = escapeHtml(a.description || "").replace(/\n/g,"<br>");
+      // Beschreibung: CRLF/CR/LF und *literales* \n → <br>, XSS-sicher
+      const rawDesc = a.description || "";
+      const normalized = rawDesc.replace(/\r\n?|\n|\\n/g, "\n");
+      const safe = escapeHtml(normalized).replace(/\n/g,"<br>");
       desc.innerHTML = safe;
 
       if (typeof dlg.showModal === 'function') dlg.showModal();
       else dlg.setAttribute('open','');
+    }
+
+    // --- Hilfsfunktion: finde bestmögliche Description-Spalte, falls Header abweicht ---
+    function extractDescription(origRow, normalizedRow){
+      // 1) Bevorzugt normalisierte Felder
+      if (normalizedRow.description != null && String(normalizedRow.description).trim() !== "") {
+        return normalizedRow.description;
+      }
+      // 2) Fallback: suche in Originalkeys alles, was "descr" enthält (z. B. "DeScription", "Beschreibung", "Bandbeschreibung")
+      let hit = "";
+      for (const k of Object.keys(origRow)){
+        const kk = String(k).toLowerCase().trim();
+        if (/(beschreib|descr)/.test(kk)) {
+          const v = origRow[k];
+          if (v != null && String(v).trim() !== "") { hit = v; break; }
+        }
+      }
+      return hit;
     }
 
     function startLineup(){
@@ -434,16 +456,19 @@
         complete: (res)=>{
           try {
             const rows = (res.data || []).map(orig=>{
-              const row = {};
+              // normalisierte Kopie
+              const norm = {};
               Object.keys(orig).forEach(k=>{
-                row[ normalizeKey(k) ] = orig[k];
+                norm[ normalizeKey(k) ] = orig[k];
               });
-              const artist = clean(row.artist || row.name);
-              const day    = clean(row.day);
-              const start  = parseTime(row.start);
-              const end    = parseTime(row.end);
-              const image  = clean(row.image);
-              const description = String(row.description ?? '');
+
+              const artist = clean(norm.artist ?? norm.name);
+              const day    = clean(norm.day);
+              const start  = parseTime(norm.start);
+              const end    = parseTime(norm.end);
+              const image  = clean(norm.image);
+              const descriptionRaw = extractDescription(orig, norm);
+              const description = String(descriptionRaw ?? "");
 
               if (!artist || !day) return null;
               return { artist, day, start, end, image, description };
