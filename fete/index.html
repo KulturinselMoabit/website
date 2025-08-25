@@ -14,7 +14,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Rubik+Dirt&display=swap" rel="stylesheet">
 
   <!-- CSS -->
-  <link rel="stylesheet" href="/styles.css?v=simple-banner" />
+  <link rel="stylesheet" href="/styles.css?v=fete-popfix" />
 </head>
 <body class="fete-page">
 
@@ -128,7 +128,7 @@
     </div>
   </footer>
 
-  <!-- Modal / Bottom-Sheet -->
+  <!-- Modal -->
   <dialog id="luDialog" class="lu-dialog" aria-label="Banddetails">
     <form method="dialog" class="lu-card">
       <button class="lu-close" aria-label="Schließen">×</button>
@@ -199,7 +199,7 @@
         v.preload='metadata'; v.muted=true; v.playsInline=true; v.setAttribute('playsinline',''); v.loop=true;
         const ok=()=>{ cleanup(); resolve({ok:true, node:v}); };
         const err=()=>{ cleanup(); resolve({ok:false}); };
-        function cleanup(){ v.removeEventListener('loadedmetadata', ok); v.removeEventListener('error', err); }
+        function cleanup(){ v.removeEventListener('loadedmetadata, ok'); v.removeEventListener('error', err); }
         v.addEventListener('loadedmetadata', ok);
         v.addEventListener('error', err);
         v.src = url;
@@ -296,7 +296,8 @@
   <script>
   (function(){
     const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRkYgQhBk53GOGABV_qzv3ZqjgSfR61ZH9_fX-uejRTUOQ4EtAgARUXXIayqaPKWRr5hBRMCH219-_j/pub?output=csv";
-    const IMG_BASE = "img/";
+    // Bilder liegen unter /fete/bandinfo/img/ relativ zur /fete/ Seite:
+    const IMG_BASE = "bandinfo/img/";
 
     const root   = document.getElementById('lineupRoot');
     const errBox = document.getElementById('luError');
@@ -307,7 +308,7 @@
     const stripBOM = (s) => String(s ?? '').replace(/^\uFEFF/, '');
     const clean = (s) => stripBOM(String(s ?? '').trim());
 
-    // ---- Robust: Header normalisieren UND Fallbacks für description ----
+    // Header normalisieren + Description-Fallbacks (wie in deiner funktionierenden Version)
     const normalizeKey = (k) => stripBOM(String(k||''))
       .toLowerCase().trim().replace(/\s+/g,'')
       .replace(/bandname|name|band/, 'artist')
@@ -318,7 +319,6 @@
       .replace(/^startzeit$/, 'start')
       .replace(/^endzeit$/, 'end');
 
-    // Zeiten tolerant
     const parseTime = (t) => {
       const raw = clean(t);
       if (!raw) return null;
@@ -339,11 +339,25 @@
       return clean(dayRaw) || "Tag";
     };
 
+    // Bildpfad robust: akzeptiert absolute/relative Varianten, normalisiert auf bandinfo/img/...
     function buildImgSrc(image){
-      const v = clean(image);
-      if (!v) return '';
-      if (/^https?:\/\//i.test(v) || v.startsWith('//')) return v;
-      return (IMG_BASE || '') + v.replace(/^\/+/, '');
+      const v0 = clean(image);
+      if (!v0) return '';
+      if (/^https?:\/\//i.test(v0) || v0.startsWith('//')) return v0;
+
+      let path = v0.replace(/^\/+/, ''); // führende Slashes weg
+      const low = path.toLowerCase();
+
+      if (low.startsWith('fete/bandinfo/img/')) path = path.slice('fete/'.length);      // → bandinfo/img/...
+      if (low.startsWith('/fete/bandinfo/img/')) path = path.slice('/fete/'.length);    // defensiv
+      if (low.startsWith('fete/img/')) path = path.slice('fete/'.length);               // falls jemand "fete/img" eingibt
+      if (low.startsWith('img/')) path = 'bandinfo/' + path;                             // csv hat img/..., wir wollen bandinfo/img/...
+      if (!low.startsWith('bandinfo/img/')) path = (IMG_BASE || '') + path;              // nur Dateiname
+
+      // Dateinamen encoden
+      path = path.split('/').map(encodeURIComponent).join('/');
+
+      return path;
     }
 
     function groupByDay(rows){
@@ -386,7 +400,7 @@
       return line;
     }
 
-    // Sicheres HTML-Escaping
+    // Sicher: HTML escapen, Zeilenumbrüche als <br>
     function escapeHtml(s){
       return String(s ?? "")
         .replace(/&/g,"&amp;")
@@ -396,47 +410,11 @@
         .replace(/'/g,"&#039;");
     }
 
-    function openDialog(a){
-      const dlg = document.getElementById('luDialog');
-      if (!dlg) return;
-
-      const imgEl  = dlg.querySelector('.lu-media');
-      const title  = dlg.querySelector('.lu-title');
-      const timeEl = dlg.querySelector('.lu-time');
-      const desc   = dlg.querySelector('.lu-desc');
-
-      // Bild
-      const src = buildImgSrc(a.image);
-      if (src){
-        imgEl.src = src;
-        imgEl.alt = a.artist ? `Foto: ${a.artist}` : "Bandfoto";
-        imgEl.parentElement.style.display = '';
-        imgEl.onerror = ()=>{ imgEl.parentElement.style.display='none'; };
-      } else {
-        imgEl.src = '';
-        imgEl.parentElement.style.display = 'none';
-      }
-
-      title.textContent = a.artist || '';
-      timeEl.textContent = (a.start && a.end) ? `${a.start}–${a.end}` : (a.start || '');
-
-      // Beschreibung: CRLF/CR/LF und *literales* \n → <br>, XSS-sicher
-      const rawDesc = a.description || "";
-      const normalized = rawDesc.replace(/\r\n?|\n|\\n/g, "\n");
-      const safe = escapeHtml(normalized).replace(/\n/g,"<br>");
-      desc.innerHTML = safe;
-
-      if (typeof dlg.showModal === 'function') dlg.showModal();
-      else dlg.setAttribute('open','');
-    }
-
-    // --- Hilfsfunktion: finde bestmögliche Description-Spalte, falls Header abweicht ---
+    // Fallback: falls Description-Spalten anders heißen
     function extractDescription(origRow, normalizedRow){
-      // 1) Bevorzugt normalisierte Felder
       if (normalizedRow.description != null && String(normalizedRow.description).trim() !== "") {
         return normalizedRow.description;
       }
-      // 2) Fallback: suche in Originalkeys alles, was "descr" enthält (z. B. "DeScription", "Beschreibung", "Bandbeschreibung")
       let hit = "";
       for (const k of Object.keys(origRow)){
         const kk = String(k).toLowerCase().trim();
@@ -448,6 +426,41 @@
       return hit;
     }
 
+    function openDialog(a){
+      const dlg = document.getElementById('luDialog');
+      if (!dlg) return;
+
+      const imgWrap = dlg.querySelector('.lu-media-wrap');
+      const imgEl   = dlg.querySelector('.lu-media');
+      const title   = dlg.querySelector('.lu-title');
+      const timeEl  = dlg.querySelector('.lu-time');
+      const desc    = dlg.querySelector('.lu-desc');
+
+      // Bild
+      const src = buildImgSrc(a.image);
+      if (src){
+        imgWrap.style.display = '';
+        imgEl.src = src;
+        imgEl.alt = a.artist ? `Foto: ${a.artist}` : "Bandfoto";
+        imgEl.onerror = ()=>{ imgWrap.style.display='none'; };
+      } else {
+        imgEl.src = '';
+        imgWrap.style.display = 'none';
+      }
+
+      title.textContent = a.artist || '';
+      timeEl.textContent = (a.start && a.end) ? `${a.start}–${a.end}` : (a.start || '');
+
+      // Beschreibung: CRLF/CR/LF und literales \n → <br>, XSS-sicher
+      const rawDesc = a.description || "";
+      const normalized = rawDesc.replace(/\r\n?|\n|\\n/g, "\n");
+      const safe = escapeHtml(normalized).replace(/\n/g,"<br>");
+      desc.innerHTML = safe;
+
+      if (typeof dlg.showModal === 'function') dlg.showModal();
+      else dlg.setAttribute('open','');
+    }
+
     function startLineup(){
       Papa.parse(CSV_URL, {
         download: true,
@@ -456,7 +469,6 @@
         complete: (res)=>{
           try {
             const rows = (res.data || []).map(orig=>{
-              // normalisierte Kopie
               const norm = {};
               Object.keys(orig).forEach(k=>{
                 norm[ normalizeKey(k) ] = orig[k];
@@ -474,7 +486,7 @@
               return { artist, day, start, end, image, description };
             }).filter(Boolean);
 
-            // Lade-Placeholder entfernen
+            // Lade-Placeholder weg
             root.innerHTML = '';
 
             if (!rows.length){
@@ -504,7 +516,7 @@
       });
     }
 
-    // Start erst, wenn Papa vorhanden ist
+    // Start
     if (window.Papa) {
       startLineup();
     } else {
