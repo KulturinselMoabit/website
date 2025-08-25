@@ -309,6 +309,7 @@ body {
 .fete-page .entry p { margin-bottom: .75rem; }
 .fete-page .entry ul { list-style: none; margin: 0 0 1rem 0; padding: 0; }
 .fete-page .entry li { margin: .25rem 0; }
+/* "Eintritt" zentriert mit Linie in Textbreite */
 .fete-page .entry .section-title{
   display: block;
   width: max-content;
@@ -317,23 +318,27 @@ body {
 }
 
 /* ================= Modal / Bottom-Sheet (nur Fête) ================== */
-/* WICHTIG: geschlossen unsichtbar */
-.fete-page .lu-dialog:not([open]) { display: none; }
-
-/* Geöffnet: Vollflächen-Overlay, zentriert (wie bei der ersten Version) */
-.fete-page .lu-dialog[open]{
+/* Dialog-Grundstil – standardmäßig unsichtbar, erst mit [open] sichtbar */
+.fete-page .lu-dialog{
   border: none;
   background: transparent;
   padding: 0;
   margin: 0;
-  position: fixed;
+  display: none; /* <- Dialog ohne [open] verstecken */
+}
+.fete-page .lu-dialog[open]{
   inset: 0;                 /* volle Viewport-Fläche */
-  display: grid;            /* zentriert am Desktop */
+  width: 100vw;
+  height: 100vh;
+  max-width: none;
+  display: grid;            /* zentrieren am Desktop */
   place-items: center;
 }
-.fete-page .lu-dialog[open]::backdrop { background: rgba(0,0,0,.45); }
+.fete-page .lu-dialog::backdrop {
+  background: rgba(0,0,0,.45);
+}
 
-/* Die sichtbare Box – identische Optik wie „damals“ */
+/* Die sichtbare Box */
 .fete-page .lu-card {
   background: var(--bg);
   color: var(--primary);
@@ -358,7 +363,7 @@ body {
 /* Textbereich – SCROLLBAR für lange Inhalte */
 .fete-page .lu-content {
   padding: 1rem 1rem 1.25rem;
-  overflow: auto;                 /* Scrollbar */
+  overflow: auto;                 /* <-- Scrollbar */
   -webkit-overflow-scrolling: touch;
   scrollbar-gutter: stable both-edges;
 }
@@ -386,9 +391,11 @@ body {
 }
 .fete-page .lu-close:focus-visible{ outline: 2px solid var(--highlight); outline-offset: 2px; }
 
-/* Mobile: Bottom-Sheet (wie beim ersten Mal) */
+/* Mobile: Bottom-Sheet */
 @media (max-width: 768px){
-  .fete-page .lu-dialog[open]{ place-items: end center; }  /* unten andocken */
+  .fete-page .lu-dialog[open]{
+    place-items: end center;  /* unten andocken */
+  }
   .fete-page .lu-card{
     width: 100vw;
     max-height: 90vh;         /* höher auf kleinen Screens */
