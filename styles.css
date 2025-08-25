@@ -318,15 +318,12 @@ body {
 }
 
 /* ================= Modal / Bottom-Sheet (nur Fête) ================== */
-/* Dialog-Grundstil – standardmäßig unsichtbar, erst mit [open] sichtbar */
-.fete-page .lu-dialog{
+/* Dialog selbst als fullscreen Overlay-Container; Card wird darin zentriert */
+.fete-page .lu-dialog {
   border: none;
   background: transparent;
   padding: 0;
   margin: 0;
-  display: none; /* <- Dialog ohne [open] verstecken */
-}
-.fete-page .lu-dialog[open]{
   inset: 0;                 /* volle Viewport-Fläche */
   width: 100vw;
   height: 100vh;
@@ -393,7 +390,7 @@ body {
 
 /* Mobile: Bottom-Sheet */
 @media (max-width: 768px){
-  .fete-page .lu-dialog[open]{
+  .fete-page .lu-dialog{
     place-items: end center;  /* unten andocken */
   }
   .fete-page .lu-card{
@@ -430,3 +427,44 @@ body {
 .fete-page .fete-slider { overflow: hidden; }
 .fete-page .fete-dots { padding: 0 .35rem; }
 .fete-page .fete-control { width: 2rem; height: 2rem; line-height: 2rem; }
+
+
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Fête du Seeee 2025 im Strandbad Tegelsee | Kulturinsel Moabit</title>
+  <meta name="description" content="Erlebe das ehrenamtliche Musikfestival Fête du Seeee am 29.–30.08.2025 im Strandbad Tegelsee. Jetzt Programm entdecken!" />
+  <link rel="canonical" href="https://kulturinselmoabit.org/fete/" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&display=swap" rel="stylesheet" />
+  <!-- „gestempelte“ Schrift nur fürs Line-up -->
+  <link href="https://fonts.googleapis.com/css2?family=Rubik+Dirt&display=swap" rel="stylesheet">
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="../styles.css?v=fete-dialog-fix-1" />
+</head>
+<body class="fete-page">
+
+  <!-- HEADER -->
+  <header id="site-header">
+    <div class="container header-inner">
+      <div class="logo">
+        <img src="/logo.svg" alt="Logo Kulturinsel Moabit" />
+      </div>
+      <nav class="site-nav">
+        <button class="menu-toggle" aria-label="Menü öffnen / schließen">
+          <span></span><span></span><span></span>
+        </button>
+        <ul>
+          <li><a href="/">Startseite</a></li>
+          <li><a href="/fete/" class="active">Fête du Seeee</a></li>
+          <li><a href="/jam/">Jamsession</a></li>
+          <li><a href="/mitmachen/">Mitmachen</a></li>
+          <li><a href="/uber-uns/">Über uns</a></li>
+        </ul>
+      </nav>
+    </div>
