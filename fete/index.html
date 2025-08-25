@@ -10,11 +10,10 @@
 
   <!-- Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&display=swap" rel="stylesheet" />
-  <!-- „gestempelte“ Schrift nur fürs Line-up -->
-  <link href="https://fonts.googleapis.com/css2?family=Rubik+Dirt&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Rubik+Dirt&display=swap" rel="stylesheet" />
 
-  <!-- CSS -->
-  <link rel="stylesheet" href="/styles.css?v=fete-dialog-fix-1" />
+  <!-- CSS (root-relativ, liegt eine Ebene über /fete/) -->
+  <link rel="stylesheet" href="/styles.css?v=fete-pathfix-1" />
 </head>
 <body class="fete-page">
 
@@ -44,7 +43,7 @@
     <section class="container page-inner page-inner--wide">
       <div class="page-text">
 
-        <!-- Banner (einfaches IMG) -->
+        <!-- Banner -->
         <section class="fete-banner" aria-label="Festival-Banner">
           <img class="fete-banner-img" src="fete-banner.svg" alt="Fête du Seeee – Banner" />
         </section>
@@ -88,14 +87,12 @@
           <div class="lineup-wrap">
             <div class="lineup-heading">Line-Up</div>
 
-            <!-- Dynamisch erzeugter Inhalt -->
             <div id="lineupRoot" aria-live="polite">
               <div style="margin:.5rem 0; font-weight:700;">Lade Line-up …</div>
             </div>
             <div id="luError" style="margin-top:.5rem;font-weight:700;color:#FC411F;display:none;"></div>
           </div>
         </section>
-        <!-- ===== /LINE-UP ===== -->
 
         <!-- Eintritt -->
         <section class="entry">
@@ -129,7 +126,6 @@
   </footer>
 
   <!-- Modal / Bottom-Sheet -->
-  <!-- WICHTIG: kein 'open' Attribut im Markup -->
   <dialog id="luDialog" class="lu-dialog" aria-label="Banddetails">
     <form method="dialog" class="lu-card">
       <button class="lu-close" aria-label="Schließen">×</button>
@@ -176,14 +172,8 @@
     if (!nextBtn){ nextBtn = mk('button','fete-control next','›'); nextBtn.setAttribute('aria-label','Nächstes'); slider.appendChild(nextBtn); }
     if (!dotsWrap){ dotsWrap = mk('div','fete-dots'); dotsWrap.setAttribute('role','tablist'); dotsWrap.setAttribute('aria-label','Slideshow-Navigation'); slider.appendChild(dotsWrap); }
 
-    function folderPath(){
-      const p = location.pathname;
-      if (p.endsWith('/')) return p;
-      if (/\/index\.html?$/i.test(p)) return p.replace(/index\.html?$/i,'');
-      if (p.includes('.')) return p.replace(/[^/]+$/, '');
-      return p + '/';
-    }
-    const base = location.origin + folderPath();
+    /* NEU: Basis-URL zuverlässig relativ zur aktuellen Seite */
+    const baseURL = new URL('./', location.href);
 
     function loadImage(url){
       return new Promise(resolve=>{
@@ -200,17 +190,17 @@
         v.preload='metadata'; v.muted=true; v.playsInline=true; v.setAttribute('playsinline',''); v.loop=true;
         const ok=()=>{ cleanup(); resolve({ok:true, node:v}); };
         const err=()=>{ cleanup(); resolve({ok:false}); };
-        function cleanup(){ v.removeEventListener('loadedmetadata, ok'); v.removeEventListener('error', err); }
+        function cleanup(){ v.removeEventListener('loadedmetadata', ok); v.removeEventListener('error', err); }
         v.addEventListener('loadedmetadata', ok);
         v.addEventListener('error', err);
         v.src = url;
       });
     }
     async function probe(n){
-      const jpg = base + `${n}.jpg`;
+      const jpg = new URL(`${n}.jpg`, baseURL).href;
       let r = await loadImage(jpg);
       if (r.ok){ r.node.alt = `Festivalbild ${n}`; return {idx:n, node:r.node}; }
-      const mp4 = base + `${n}.mp4`;
+      const mp4 = new URL(`${n}.mp4`, baseURL).href;
       r = await loadVideo(mp4);
       if (r.ok){ return {idx:n, node:r.node}; }
       return null;
@@ -290,25 +280,20 @@
   })();
   </script>
 
-  <!-- PapaParse (CDN) – ohne SRI & crossorigin -->
+  <!-- PapaParse -->
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 
-  <!-- JS: Dynamisches Line-up aus lokaler CSV (gleiche Struktur wie vorher) -->
+  <!-- JS: Line-up aus lokaler CSV -->
   <script>
   (function(){
-    const CSV_URL = "lineup.csv";          // <- einzige Änderung: lokale Datei
-    const IMG_BASE = "bandinfo/img/";      // relativ zu /fete/
+    const CSV_URL = "lineup.csv";
+    const IMG_BASE = "bandinfo/img/";
 
     const root   = document.getElementById('lineupRoot');
     const errBox = document.getElementById('luError');
     const dlg    = document.getElementById('luDialog');
 
-    // SAFEGUARD: Dialog sicher geschlossen beim Start
-    if (dlg) {
-      try { dlg.close(); } catch(_) {}
-      dlg.removeAttribute('open');
-    }
-
+    if (dlg) { try { dlg.close(); } catch(_) {} dlg.removeAttribute('open'); }
     if (!root) return;
 
     const showError = (msg) => { if (errBox){ errBox.style.display=''; errBox.textContent = msg; }};
@@ -408,7 +393,6 @@
       const timeEl = dlg.querySelector('.lu-time');
       const desc   = dlg.querySelector('.lu-desc');
 
-      // Bild
       const src = buildImgSrc(a.image);
       if (src){
         const wrap = dlg.querySelector('.lu-media-wrap');
@@ -496,7 +480,6 @@
     if (window.Papa) startLineup();
     else window.addEventListener('load', ()=>{ if (window.Papa) startLineup(); });
 
-    // Dialog schließen (Klick außerhalb, ESC, Close-Button)
     if (dlg){
       dlg.addEventListener('click', (e)=>{
         const card = dlg.querySelector('.lu-card');
