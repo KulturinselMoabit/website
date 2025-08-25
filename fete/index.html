@@ -14,7 +14,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Rubik+Dirt&display=swap" rel="stylesheet">
 
   <!-- CSS -->
-  <link rel="stylesheet" href="/styles.css?v=simple-banner" />
+  <link rel="stylesheet" href="../styles.css?v=simple-banner" />
 </head>
 <body class="fete-page">
 
@@ -56,7 +56,7 @@
           <span>29. &amp; 30. August 2025</span>
         </div>
 
-        <!-- Intro-Text (clean) -->
+        <!-- Intro-Text -->
         <section class="info-block">
           <p>
             Dieses Jahr wird unsere Fête du Seeee noch bunter und größer:
@@ -71,7 +71,7 @@
           </p>
         </section>
 
-        <!-- SLIDESHOW (nimmt 1–9.jpg/.mp4 aus demselben Ordner) -->
+        <!-- SLIDESHOW -->
         <section class="fete-hero">
           <div class="fete-slider" id="feteSlider" aria-label="Festival-Impressionen">
             <button class="fete-control prev" aria-label="Vorheriges">‹</button>
@@ -88,35 +88,11 @@
           <div class="lineup-wrap">
             <div class="lineup-heading">Line-Up</div>
 
-            <div class="line">
-              <div class="lineup-daytag">FR. 29. AUGUST</div>
-              <ul class="acts" aria-label="Line-up Freitag, 29. August">
-                <li>Futari</li>
-                <li>Die Brehmes'</li>
-                <li>Kleiner Held</li>
-                <li>Circus Rhapsody</li>
-                <li>Blue Saloon</li>
-                <li>Yooshton und Samoh</li>
-              </ul>
+            <!-- Dynamisch erzeugter Inhalt -->
+            <div id="lineupRoot" aria-live="polite">
+              <div style="margin:.5rem 0; font-weight:700;">Lade Line-up …</div>
             </div>
-
-            <div class="line">
-              <div class="lineup-daytag">SA. 30. AUGUST</div>
-              <ul class="acts" aria-label="Line-up Samstag, 30. August">
-                <li>Kindertheater</li>
-                <li>Kinderchor</li>
-                <li>Christin Rohr</li>
-                <li>Eine musikalische Piratenreise</li>
-                <li>Noah und Safa</li>
-                <li>Julius Kayser</li>
-                <li>Crescendo Planet</li>
-                <li>Kvytlyst</li>
-                <li>Ein schlechter Witz</li>
-                <li>TwoPointO</li>
-                <li>Maindish</li>
-                <li>XIX</li>
-              </ul>
-            </div>
+            <div id="luError" style="margin-top:.5rem;font-weight:700;color:#FC411F;display:none;"></div>
           </div>
         </section>
         <!-- ===== /LINE-UP ===== -->
@@ -151,6 +127,21 @@
       <p>© 2025 Kulturinsel Moabit – alle Rechte vorbehalten</p>
     </div>
   </footer>
+
+  <!-- Modal / Bottom-Sheet -->
+  <dialog id="luDialog" class="lu-dialog" aria-label="Banddetails">
+    <form method="dialog" class="lu-card">
+      <button class="lu-close" aria-label="Schließen">×</button>
+      <div class="lu-media-wrap">
+        <img class="lu-media" alt="" loading="lazy" />
+      </div>
+      <div class="lu-content">
+        <h3 class="lu-title"></h3>
+        <div class="lu-time"></div>
+        <div class="lu-desc"></div>
+      </div>
+    </form>
+  </dialog>
 
   <!-- JS: Burger-Menü -->
   <script>
@@ -283,7 +274,7 @@
 
       show(0);
 
-      // Autoplay (5s), pausiert bei Interaktion/Tab-Wechsel
+      // Autoplay (5s)
       let timer = null, hover = false;
       function next(){ nextBtn.click(); }
       function start(){ if (!timer && slides.length > 1) timer = setInterval(()=>{ if (!hover && !document.hidden) next(); }, 5000); }
@@ -298,29 +289,221 @@
   })();
   </script>
 
-  <!-- JS: Line-up – kein Punkt am Zeilenanfang -->
+  <!-- PapaParse (CDN) – ohne SRI & crossorigin -->
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+
+  <!-- JS: Dynamisches Line-up aus Google Sheets CSV -->
   <script>
-  (function () {
-    function updateLineupSeparators() {
-      document.querySelectorAll('.lineup .acts').forEach(ul => {
-        const items = Array.from(ul.children);
-        let lastTop = null;
-        items.forEach((li, idx) => {
-          li.classList.remove('row-start');
-          const t = li.offsetTop;
-          if (idx === 0 || lastTop === null || Math.abs(t - lastTop) > 1) {
-            li.classList.add('row-start');
-            lastTop = t;
+  (function(){
+    const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRkYgQhBk53GOGABV_qzv3ZqjgSfR61ZH9_fX-uejRTUOQ4EtAgARUXXIayqaPKWRr5hBRMCH219-_j/pub?output=csv";
+    const IMG_BASE = "img/";
+
+    const root   = document.getElementById('lineupRoot');
+    const errBox = document.getElementById('luError');
+    if (!root) return;
+
+    const showError = (msg) => { if (errBox){ errBox.style.display=''; errBox.textContent = msg; }};
+
+    const stripBOM = (s) => String(s ?? '').replace(/^\uFEFF/, '');
+    const clean = (s) => stripBOM(String(s ?? '').trim());
+
+    const normalizeKey = (k) => stripBOM(String(k||''))
+      .toLowerCase().trim().replace(/\s+/g,'')
+      .replace(/bandname|name|band/, 'artist')
+      .replace(/beschreibung|desc/, 'description')
+      .replace(/bildurl|bild|imageurl/, 'image')
+      .replace(/^tag$/, 'day')
+      .replace(/^zeit$|^time$/, 'start')
+      .replace(/^startzeit$/, 'start')
+      .replace(/^endzeit$/, 'end');
+
+    const parseTime = (t) => {
+      const raw = clean(t);
+      if (!raw) return null;
+      let s = raw;
+      if (/^\d{1,2}$/.test(s)) s = s + ':00';
+      s = s.replace('.', ':');
+      const m = s.match(/^(\d{1,2}):(\d{2})$/);
+      if (!m) return null;
+      const hh = +m[1], mm = +m[2];
+      if (hh<0||hh>23||mm<0||mm>59) return null;
+      return String(hh).padStart(2,'0') + ':' + String(mm).padStart(2,'0');
+    };
+
+    const labelForDay = (dayRaw) => {
+      const d = clean(dayRaw).toLowerCase();
+      if (/^(fr|fri|freitag|fr\.|friday)$/.test(d)) return "FR. 29. AUGUST · ab 14 Uhr";
+      if (/^(sa|sam|samstag|sa\.|saturday)$/.test(d)) return "SA. 30. AUGUST · ab 12 Uhr";
+      return clean(dayRaw) || "Tag";
+    };
+
+    function buildImgSrc(image){
+      const v = clean(image);
+      if (!v) return '';
+      if (/^https?:\/\//i.test(v) || v.startsWith('//')) return v;
+      return (IMG_BASE || '') + v.replace(/^\/+/, '');
+    }
+
+    function groupByDay(rows){
+      const order = [];
+      const map = {};
+      rows.forEach(r=>{
+        const dayRaw = clean(r.day);
+        if (!dayRaw) return;
+        if (!map[dayRaw]) { map[dayRaw] = []; order.push(dayRaw); }
+        map[dayRaw].push(r);
+      });
+      return {order, map};
+    }
+
+    function renderDayBlock(dayRaw, acts){
+      const line = document.createElement('div');
+      line.className = 'line';
+
+      const tag = document.createElement('div');
+      tag.className = 'lineup-daytag';
+      tag.textContent = labelForDay(dayRaw);
+      line.appendChild(tag);
+
+      const ul = document.createElement('ul');
+      ul.className = 'acts';
+      ul.setAttribute('role','list');
+
+      acts.forEach(a=>{
+        const li = document.createElement('li');
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'lu-act';
+        btn.textContent = a.artist;
+        btn.addEventListener('click', ()=>openDialog(a));
+        li.appendChild(btn);
+        ul.appendChild(li);
+      });
+
+      line.appendChild(ul);
+      return line;
+    }
+
+    // Sicheres HTML-Escaping für Beschreibung (mit Zeilenumbrüchen)
+    function escapeHtml(s){
+      return String(s ?? "")
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
+    }
+
+    function openDialog(a){
+      const dlg = document.getElementById('luDialog');
+      if (!dlg) return;
+
+      const imgEl  = dlg.querySelector('.lu-media');
+      const title  = dlg.querySelector('.lu-title');
+      const timeEl = dlg.querySelector('.lu-time');
+      const desc   = dlg.querySelector('.lu-desc');
+
+      // Bild
+      const src = buildImgSrc(a.image);
+      if (src){
+        imgEl.src = src;
+        imgEl.alt = a.artist ? `Foto: ${a.artist}` : "Bandfoto";
+        imgEl.parentElement.style.display = '';
+        imgEl.onerror = ()=>{ imgEl.parentElement.style.display='none'; };
+      } else {
+        imgEl.src = '';
+        imgEl.parentElement.style.display = 'none';
+      }
+
+      title.textContent = a.artist || '';
+      timeEl.textContent = (a.start && a.end) ? `${a.start}–${a.end}` : (a.start || '');
+
+      // Beschreibung mit Zeilenumbrüchen sicher rendern
+      const safe = escapeHtml(a.description || "").replace(/\n/g,"<br>");
+      desc.innerHTML = safe;
+
+      if (typeof dlg.showModal === 'function') dlg.showModal();
+      else dlg.setAttribute('open','');
+    }
+
+    function startLineup(){
+      Papa.parse(CSV_URL, {
+        download: true,
+        header: true,
+        skipEmptyLines: true,
+        complete: (res)=>{
+          try {
+            const rows = (res.data || []).map(orig=>{
+              const row = {};
+              Object.keys(orig).forEach(k=>{
+                row[ normalizeKey(k) ] = orig[k];
+              });
+              const artist = clean(row.artist || row.name);
+              const day    = clean(row.day);
+              const start  = parseTime(row.start);
+              const end    = parseTime(row.end);
+              const image  = clean(row.image);
+              const description = String(row.description ?? '');
+
+              if (!artist || !day) return null;
+              return { artist, day, start, end, image, description };
+            }).filter(Boolean);
+
+            // Lade-Placeholder entfernen
+            root.innerHTML = '';
+
+            if (!rows.length){
+              showError('Keine Einträge in der CSV gefunden.');
+              return;
+            }
+
+            const {order, map} = groupByDay(rows);
+            order.forEach(dayRaw=>{
+              const acts = map[dayRaw].sort((a,b)=>{
+                if (a.start && b.start) return a.start.localeCompare(b.start);
+                if (a.start) return -1;
+                if (b.start) return 1;
+                return a.artist.localeCompare(b.artist);
+              });
+              root.appendChild( renderDayBlock(dayRaw, acts) );
+            });
+          } catch(e){
+            console.error(e);
+            showError('Fehler beim Verarbeiten der CSV.');
           }
-        });
+        },
+        error: (err)=>{
+          console.error(err);
+          showError('CSV konnte nicht geladen werden.');
+        }
       });
     }
-    const debounce = (() => { let id; return () => { clearTimeout(id); id = setTimeout(updateLineupSeparators, 100); }; })();
-    window.addEventListener('load', updateLineupSeparators);
-    window.addEventListener('resize', debounce);
-    window.addEventListener('orientationchange', debounce);
-    if (document.fonts && document.fonts.ready) { document.fonts.ready.then(updateLineupSeparators); }
+
+    // Start erst, wenn Papa vorhanden ist
+    if (window.Papa) {
+      startLineup();
+    } else {
+      window.addEventListener('load', ()=>{
+        if (window.Papa) startLineup();
+        else showError('PapaParse wurde nicht geladen (CDN blockiert?).');
+      });
+    }
+
+    // Dialog schließen (Klick außerhalb, ESC)
+    const dlg = document.getElementById('luDialog');
+    if (dlg){
+      dlg.addEventListener('click', (e)=>{
+        const card = dlg.querySelector('.lu-card');
+        if (!card) return;
+        const r = card.getBoundingClientRect();
+        const inside = e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom;
+        if (!inside) dlg.close();
+      });
+      dlg.querySelector('.lu-close')?.addEventListener('click', ()=>dlg.close());
+      dlg.addEventListener('keydown', (e)=>{ if (e.key === 'Escape') dlg.close(); });
+    }
   })();
   </script>
+
 </body>
 </html>
