@@ -318,8 +318,11 @@ body {
 }
 
 /* ================= Modal / Bottom-Sheet (nur Fête) ================== */
-/* Dialog selbst als fullscreen Overlay-Container; Card wird darin zentriert */
-.fete-page .lu-dialog {
+/* WICHTIG: Dialog im geschlossenen Zustand ausblenden */
+.fete-page .lu-dialog:not([open]) { display: none; }
+
+/* Layout erst, wenn geöffnet */
+.fete-page .lu-dialog[open]{
   border: none;
   background: transparent;
   padding: 0;
@@ -328,10 +331,10 @@ body {
   width: 100vw;
   height: 100vh;
   max-width: none;
-  display: grid;            /* zentrieren am Desktop */
+  display: grid;            /* zentriert am Desktop */
   place-items: center;
 }
-.fete-page .lu-dialog::backdrop {
+.fete-page .lu-dialog[open]::backdrop {
   background: rgba(0,0,0,.45);
 }
 
@@ -360,7 +363,7 @@ body {
 /* Textbereich – SCROLLBAR für lange Inhalte */
 .fete-page .lu-content {
   padding: 1rem 1rem 1.25rem;
-  overflow: auto;                 /* <-- Scrollbar */
+  overflow: auto;                 /* Scrollbar */
   -webkit-overflow-scrolling: touch;
   scrollbar-gutter: stable both-edges;
 }
@@ -390,7 +393,7 @@ body {
 
 /* Mobile: Bottom-Sheet */
 @media (max-width: 768px){
-  .fete-page .lu-dialog{
+  .fete-page .lu-dialog[open]{
     place-items: end center;  /* unten andocken */
   }
   .fete-page .lu-card{
