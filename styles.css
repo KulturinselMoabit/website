@@ -147,7 +147,6 @@ body {
    ===================================================================== */
 
 .fete-page {
-  /* Bands ~1/3 kleiner */
   --lineup-min: 1.2rem;
   --lineup-vw:  3.33vw;
   --lineup-max: 2rem;
@@ -191,10 +190,7 @@ body {
   border-radius: 8px;
   background: #ddd;
 }
-.fete-page .fete-slide {
-  position: absolute; inset: 0;
-  opacity: 0; transition: opacity .35s ease; pointer-events: none;
-}
+.fete-page .fete-slide { position: absolute; inset: 0; opacity: 0; transition: opacity .35s ease; pointer-events: none; }
 .fete-page .fete-slide.active { opacity: 1; pointer-events: auto; }
 .fete-page .fete-slide img,
 .fete-page .fete-slide video { width: 100%; height: 100%; object-fit: cover; display: block; }
@@ -211,21 +207,15 @@ body {
 .fete-page .fete-control.next { right: .6rem; }
 
 /* Dots – clean */
-.fete-page .fete-dots {
-  position: absolute; left: 0; right: 0; bottom: .5rem;
-  display: flex; justify-content: center; gap: .4rem; padding: 0 .5rem; z-index: 2;
-}
-.fete-page .fete-dot {
-  width: .5rem; height: .5rem; border-radius: 999px;
-  border: 1px solid var(--primary); background: rgba(255,255,255,.85); cursor: pointer;
-}
+.fete-page .fete-dots { position: absolute; left: 0; right: 0; bottom: .5rem; display: flex; justify-content: center; gap: .4rem; padding: 0 .5rem; z-index: 2; }
+.fete-page .fete-dot { width: .5rem; height: .5rem; border-radius: 999px; border: 1px solid var(--primary); background: rgba(255,255,255,.85); cursor: pointer; }
 .fete-page .fete-dot.active { background: var(--highlight); border-color: var(--highlight); }
 
 /* LINE-UP */
 .fete-page .lineup { margin: 2.2rem 0 2rem; }
 .fete-page .lineup-wrap { text-align: center; }
 
-/* Überschriften (Line-Up & Eintritt) */
+/* Überschriften */
 .fete-page .lineup .lineup-heading,
 .fete-page .section-title{
   display:inline-block;
@@ -265,13 +255,13 @@ body {
   text-transform: uppercase; letter-spacing: .03em; line-height: 1.15;
   color: var(--primary);
   font-size: clamp(var(--lineup-min), var(--lineup-vw), var(--lineup-max));
-  margin: 0 .8em;                 /* Abstand links/rechts */
-  overflow-wrap: normal;          /* keine automatische Trennung */
-  word-break: keep-all;           /* ganze Wörter umbrechen */
-  hyphens: manual;                /* nur manuelle Trennung */
+  margin: 0 .8em;
+  overflow-wrap: normal;
+  word-break: keep-all;
+  hyphens: manual;
 }
 
-/* Klickfläche Bandname (wie Text) + rote Hover-Underline */
+/* Klickfläche Bandname */
 .fete-page .lineup .acts .lu-act{
   background: none; border: none; padding: 0; margin: 0;
   font: inherit; color: inherit; text-transform: inherit; letter-spacing: inherit;
@@ -279,22 +269,15 @@ body {
 }
 .fete-page .lineup .acts .lu-act::after{
   content: '';
-  position: absolute;
-  left: 0; right: 0; bottom: -0.15em;
-  height: 0.18rem;
-  background: var(--highlight);
+  position: absolute; left: 0; right: 0; bottom: -0.15em;
+  height: 0.18rem; background: var(--highlight);
   transform: scaleX(0);
   transform-origin: center;
   transition: transform .25s ease;
 }
 .fete-page .lineup .acts .lu-act:hover::after,
-.fete-page .lineup .acts .lu-act:focus-visible::after{
-  transform: scaleX(1);
-}
-.fete-page .lineup .acts .lu-act:focus-visible{
-  outline: 2px solid var(--highlight);
-  outline-offset: 2px;
-}
+.fete-page .lineup .acts .lu-act:focus-visible::after{ transform: scaleX(1); }
+.fete-page .lineup .acts .lu-act:focus-visible{ outline: 2px solid var(--highlight); outline-offset: 2px; }
 
 /* Keine Punkte zwischen Bands */
 .fete-page .lineup .acts li + li::before{ content: none; }
@@ -309,5 +292,110 @@ body {
 .fete-page .entry p { margin-bottom: .75rem; }
 .fete-page .entry ul { list-style: none; margin: 0 0 1rem 0; padding: 0; }
 .fete-page .entry li { margin: .25rem 0; }
-/* "Eintritt" zentriert mit Linie in Textbreite */
-.fete-page
+.fete-page .entry .section-title{ display: block; width: max-content; margin: .25rem auto 1rem; text-align: center; }
+
+/* ================= Modal / Bottom-Sheet (nur Fête) ================== */
+.fete-page .lu-dialog{
+  border: none;
+  background: transparent;
+  padding: 0;
+  margin: 0;
+  position: fixed;                   /* echtes Overlay */
+  inset: 0;
+  width: 100vw;
+  height: 100vh;                     /* Fallback */
+  height: 100svh;                    /* iOS 15+ */
+  height: 100dvh;                    /* moderne Browser */
+  max-width: none;
+  display: grid;
+  place-items: center;               /* Desktop: zentriert */
+  overflow: hidden;                  /* verhindert Durchscrollen der Seite */
+  overscroll-behavior: contain;
+}
+.fete-page .lu-dialog::backdrop { background: rgba(0,0,0,.45); }
+
+/* Die sichtbare Box */
+.fete-page .lu-card{
+  background: var(--bg);
+  color: var(--primary);
+  border: none;
+  border-radius: 14px;
+  width: min(92vw, 720px);
+  max-width: 100%;
+  max-height: 85vh;                  /* Fallback */
+  max-height: 85svh;
+  max-height: 85dvh;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Bild-Bereich */
+.fete-page .lu-media-wrap { display: none; background:#ddd; }
+.fete-page .lu-media { display:block; width:100%; height:auto; aspect-ratio:16/9; object-fit:cover; }
+
+/* Scrollbereich */
+.fete-page .lu-content{
+  padding: 1rem 1rem calc(1.25rem + env(safe-area-inset-bottom, 0px)); /* Platz für Home-Bar */
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-gutter: stable both-edges;
+  overscroll-behavior: contain;
+}
+.fete-page .lu-title { font-size: clamp(1.2rem, 3.5vw, 1.6rem); font-weight: 800; margin-bottom: .4rem; }
+.fete-page .lu-time  { font-weight: 700; margin-bottom: .6rem; }
+.fete-page .lu-desc  { white-space: pre-wrap; line-height: 1.35; }
+
+/* Close-Button */
+.fete-page .lu-close{
+  position: absolute; top: .5rem; right: .75rem;
+  background: rgba(255,255,255,.9);
+  border: none; border-radius: 999px;
+  width: 32px; height: 32px; line-height: 32px;
+  font-size: 20px; font-weight: 800; color: var(--primary);
+  cursor: pointer;
+  z-index: 5;
+}
+.fete-page .lu-close:focus-visible{ outline: 2px solid var(--highlight); outline-offset: 2px; }
+
+/* Mobile: echtes Bottom-Sheet */
+@media (max-width: 768px){
+  .fete-page .lu-dialog{
+    display: flex;                    /* robuster als Grid in einigen Mobile-Browsern */
+    align-items: flex-end;            /* unten andocken */
+    justify-content: center;
+  }
+  .fete-page .lu-card{
+    width: 100vw;
+    max-height: 90vh;                 /* Fallback */
+    max-height: 90svh;
+    max-height: 90dvh;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+}
+
+/* Mobile-Polish nur für Fête */
+@media (max-width: 768px) {
+  .fete-page .page-text { padding-inline: 12px; }
+  .fete-page .fete-slider { margin-inline: 0; }
+  .fete-page .fete-banner,
+  .fete-page .fete-meta,
+  .fete-page .lineup,
+  .fete-page .entry,
+  .fete-page .info-block {
+    max-width: 100%;
+    margin-inline: 0;
+    padding-inline: 2px;
+  }
+}
+.fete-page img, .fete-page video { display:block; max-width:100%; height:auto; box-sizing:border-box; }
+.fete-page { overflow-x: hidden; }
+.fete-page .lineup .acts { padding-inline: .25rem; }
+.fete-page .fete-slider { overflow: hidden; }
+.fete-page .fete-dots { padding: 0 .35rem; }
+.fete-page .fete-control { width: 2rem; height: 2rem; line-height: 2rem; }
+
+/* Dialog nur sichtbar, wenn [open] gesetzt */
+.fete-page .lu-dialog:not([open]) { display: none !important; }
