@@ -10,10 +10,10 @@
 
   <!-- Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&display=swap" rel="stylesheet" />
-  <link href="https://fonts.googleapis.com/css2?family=Rubik+Dirt&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Rubik+Dirt&display=swap" rel="stylesheet">
 
-  <!-- CSS (root-relativ, liegt eine Ebene über /fete/) -->
-  <link rel="stylesheet" href="/styles.css?v=fete-pathfix-1" />
+  <!-- CSS -->
+  <link rel="stylesheet" href="/styles.css?v=fete-mobile-sheet-fix-4" />
 </head>
 <body class="fete-page">
 
@@ -55,7 +55,7 @@
           <span>29. &amp; 30. August 2025</span>
         </div>
 
-        <!-- Intro-Text -->
+        <!-- Intro -->
         <section class="info-block">
           <p>
             Dieses Jahr wird unsere Fête du Seeee noch bunter und größer:
@@ -103,10 +103,8 @@
             <li>Ermäßigt: 4 €</li>
             <li>Ab 18 Uhr: 2,50 €</li>
           </ul>
-          <p>
-            Kommt vorbei, bringt eure Freund*innen mit und lasst uns gemeinsam am
-            Tegeler See feiern – wir freuen uns auf euch!
-          </p>
+          <p>Kommt vorbei, bringt eure Freund*innen mit und lasst uns gemeinsam am
+            Tegeler See feiern – wir freuen uns auf euch!</p>
         </section>
 
       </div>
@@ -128,7 +126,7 @@
   <!-- Modal / Bottom-Sheet -->
   <dialog id="luDialog" class="lu-dialog" aria-label="Banddetails">
     <form method="dialog" class="lu-card">
-      <button class="lu-close" aria-label="Schließen">×</button>
+      <button type="button" class="lu-close" aria-label="Schließen">×</button>
       <div class="lu-media-wrap">
         <img class="lu-media" alt="" loading="lazy" />
       </div>
@@ -172,8 +170,14 @@
     if (!nextBtn){ nextBtn = mk('button','fete-control next','›'); nextBtn.setAttribute('aria-label','Nächstes'); slider.appendChild(nextBtn); }
     if (!dotsWrap){ dotsWrap = mk('div','fete-dots'); dotsWrap.setAttribute('role','tablist'); dotsWrap.setAttribute('aria-label','Slideshow-Navigation'); slider.appendChild(dotsWrap); }
 
-    /* NEU: Basis-URL zuverlässig relativ zur aktuellen Seite */
-    const baseURL = new URL('./', location.href);
+    function folderPath(){
+      const p = location.pathname;
+      if (p.endsWith('/')) return p;
+      if (/\/index\.html?$/i.test(p)) return p.replace(/index\.html?$/i,'');
+      if (p.includes('.')) return p.replace(/[^/]+$/, '');
+      return p + '/';
+    }
+    const base = location.origin + folderPath();
 
     function loadImage(url){
       return new Promise(resolve=>{
@@ -197,10 +201,10 @@
       });
     }
     async function probe(n){
-      const jpg = new URL(`${n}.jpg`, baseURL).href;
+      const jpg = base + `${n}.jpg`;
       let r = await loadImage(jpg);
       if (r.ok){ r.node.alt = `Festivalbild ${n}`; return {idx:n, node:r.node}; }
-      const mp4 = new URL(`${n}.mp4`, baseURL).href;
+      const mp4 = base + `${n}.mp4`;
       r = await loadVideo(mp4);
       if (r.ok){ return {idx:n, node:r.node}; }
       return null;
@@ -280,20 +284,25 @@
   })();
   </script>
 
-  <!-- PapaParse -->
+  <!-- PapaParse (CDN) -->
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 
-  <!-- JS: Line-up aus lokaler CSV -->
+  <!-- JS: Dynamisches Line-up aus Google Sheets CSV -->
   <script>
   (function(){
-    const CSV_URL = "lineup.csv";
+    const CSV_URL = "https://docs.google.com/spreadsheets/d/1ccOWpPbauEwZNuod_84vyMTbKHqi6srRUll1eN1c72A/export?format=csv&gid=0";
     const IMG_BASE = "bandinfo/img/";
 
     const root   = document.getElementById('lineupRoot');
     const errBox = document.getElementById('luError');
     const dlg    = document.getElementById('luDialog');
 
-    if (dlg) { try { dlg.close(); } catch(_) {} dlg.removeAttribute('open'); }
+    // SAFEGUARD: Dialog sicher geschlossen beim Start
+    if (dlg) {
+      try { dlg.close(); } catch(_) {}
+      dlg.removeAttribute('open');
+    }
+
     if (!root) return;
 
     const showError = (msg) => { if (errBox){ errBox.style.display=''; errBox.textContent = msg; }};
@@ -393,6 +402,7 @@
       const timeEl = dlg.querySelector('.lu-time');
       const desc   = dlg.querySelector('.lu-desc');
 
+      // Bild
       const src = buildImgSrc(a.image);
       if (src){
         const wrap = dlg.querySelector('.lu-media-wrap');
@@ -456,6 +466,7 @@
               return { artist, day, start, end, image, description };
             }).filter(Boolean);
 
+            const root = document.getElementById('lineupRoot');
             root.innerHTML = '';
             if (!rows.length){ showError('Keine Einträge in der CSV gefunden.'); return; }
 
@@ -480,6 +491,7 @@
     if (window.Papa) startLineup();
     else window.addEventListener('load', ()=>{ if (window.Papa) startLineup(); });
 
+    // Dialog schließen (Klick außerhalb, ESC, Close-Button)
     if (dlg){
       dlg.addEventListener('click', (e)=>{
         const card = dlg.querySelector('.lu-card');
