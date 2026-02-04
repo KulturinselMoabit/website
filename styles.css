@@ -410,9 +410,6 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: center;
-
-  /* optisch wie Bannerfläche */
-  background: #fff;              /* falls du es lieber transparent willst: background: transparent; */
   padding: clamp(16px, 2.2vw, 28px);
 }
 
@@ -473,6 +470,7 @@ body {
   background-repeat: repeat;
   background-position: 0 0;
 }
+
 
 
 
