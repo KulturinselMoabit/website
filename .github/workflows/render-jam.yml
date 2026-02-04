@@ -42,3 +42,4 @@ jobs:
           git add index.html jam/index.html
           git commit -m "Render jam data"
           git push
+ 
