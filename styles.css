@@ -465,4 +465,12 @@ body {
   }
   .index-gallery__wide-date{ white-space: normal; }
 }
+/* Background Pattern im Wide Block */
+
+.index-gallery__wide {
+  background-image: url("/loop.png");
+  background-repeat: repeat;
+  background-position: center;
+}
+
 
