@@ -1,11 +1,9 @@
 {
-  "jam_title": "Jam Session",
-  "jam_date_human": "Do 18. Dezember 2026",
-  "jam_date_iso": "2025-12-18",
+  "jam_date_human": "Donnerstag 18. Dezember 2025",
+  "jam_date_short": "18.12.2025",
   "jam_time": "19:00",
   "jam_venue": "Kulturfabrik Moabit",
   "jam_address": "Lehrter Str. 35, 10557 Berlin",
   "jam_start_iso": "2025-12-18T19:00:00+01:00",
-  "jam_url": "https://kulturinselmoabit.org/jam/",
-  "jam_hero_line": "Nächster Termin Donnerstag 18. Dezember 2025, 19:00 Uhr – Kulturfabrik Moabit"
+  "jam_url": "https://kulturinselmoabit.org/jam/"
 }
