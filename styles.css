@@ -399,3 +399,70 @@ body {
 
 /* Dialog nur sichtbar, wenn [open] gesetzt */
 .fete-page .lu-dialog:not([open]) { display: none !important; }
+/* ===========================
+   Text-Block statt /1.png
+   (nur neue Klassen, existing CSS bleibt unberührt)
+   =========================== */
+
+.index-gallery__wide-text{
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  /* optisch wie Bannerfläche */
+  background: #fff;              /* falls du es lieber transparent willst: background: transparent; */
+  padding: clamp(16px, 2.2vw, 28px);
+}
+
+.index-gallery__wide-text-top{
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 16px;
+  margin-bottom: clamp(10px, 1.8vw, 16px);
+}
+
+.index-gallery__wide-coming{
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  line-height: 1;
+  font-size: clamp(16px, 2.1vw, 40px);
+  color: var(--primary);
+}
+
+.index-gallery__wide-date{
+  font-weight: 800;
+  line-height: 1;
+  font-size: clamp(16px, 2.1vw, 40px);
+  color: var(--highlight);
+  white-space: nowrap;
+}
+
+.index-gallery__wide-title{
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 0.95;
+  font-size: clamp(44px, 7.5vw, 132px);
+  color: var(--primary);
+  margin-bottom: clamp(10px, 2.0vw, 18px);
+}
+
+.index-gallery__wide-sub{
+  font-weight: 700;
+  line-height: 1.05;
+  font-size: clamp(16px, 2.6vw, 44px);
+  color: var(--primary);
+}
+
+/* Mobile: Top-Zeile umbrechen */
+@media (max-width: 520px){
+  .index-gallery__wide-text-top{
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .index-gallery__wide-date{ white-space: normal; }
+}
+
