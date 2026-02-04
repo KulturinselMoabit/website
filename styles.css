@@ -471,6 +471,66 @@ body {
   background-position: 0 0;
 }
 
+/* ===== Coming-Up Block: wie Grafik mitskalieren ===== */
+
+/* Topzeile: links/rechts symmetrisch -> saubere Mitte */
+.index-gallery__wide-text-top{
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: baseline;
+  column-gap: clamp(10px, 2vw, 20px);
+}
+
+.index-gallery__wide-coming{
+  justify-self: start;
+  white-space: nowrap;
+}
+
+.index-gallery__wide-date{
+  justify-self: end;
+  white-space: nowrap;
+}
+
+/* Titel wirklich mittig (optisch wie Grafik) */
+.index-gallery__wide-title{
+  text-align: center;
+  width: 100%;
+  white-space: nowrap;   /* keine Umbrüche */
+}
+
+/* Subline: meist ok – optional auch no-wrap */
+.index-gallery__wide-sub{
+  text-align: center;
+  width: 100%;
+  white-space: nowrap;
+}
+
+/* Mitskalieren statt umbrechen: Schriftgrößen stärker an Viewport koppeln */
+.index-gallery__wide-coming{
+  font-size: clamp(14px, 2.2vw, 44px);
+}
+.index-gallery__wide-date{
+  font-size: clamp(14px, 2.2vw, 44px);
+}
+.index-gallery__wide-title{
+  font-size: clamp(34px, 7.5vw, 140px);
+  line-height: 0.95;
+}
+.index-gallery__wide-sub{
+  font-size: clamp(14px, 2.6vw, 46px);
+  line-height: 1.05;
+}
+
+/* Sehr kleine Viewports: lieber leicht verkleinern als umbrechen/zerstören */
+@media (max-width: 420px){
+  .index-gallery__wide-title{ font-size: clamp(28px, 9vw, 120px); }
+  .index-gallery__wide-sub{
+    font-size: clamp(12px, 3.2vw, 36px);
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
 
 
 
