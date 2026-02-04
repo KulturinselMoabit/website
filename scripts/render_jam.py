@@ -11,27 +11,10 @@ DATA_FILE = ROOT / "data" / "jam.json"
 TARGET_INDEX = ROOT / "index.html"
 TARGET_JAM = ROOT / "jam" / "index.html"
 
-# Blocks in HTML (must exist in both files exactly like in your HTML)
-BLOCKS = {
-    "event_jsonld": (
-        re.compile(r"<!--\s*JAM_EVENT_JSONLD_START\s*-->(.*?)<!--\s*JAM_EVENT_JSONLD_END\s*-->",
-                   re.DOTALL),
-        "JAM_EVENT_JSONLD_START",
-        "JAM_EVENT_JSONLD_END",
-    ),
-    "startpage": (
-        re.compile(r"<!--\s*JAM_STARTPAGE_BLOCK_START\s*-->(.*?)<!--\s*JAM_STARTPAGE_BLOCK_END\s*-->",
-                   re.DOTALL),
-        "JAM_STARTPAGE_BLOCK_START",
-        "JAM_STARTPAGE_BLOCK_END",
-    ),
-    "jampage": (
-        re.compile(r"<!--\s*JAM_JAMPAGE_BLOCK_START\s*-->(.*?)<!--\s*JAM_JAMPAGE_BLOCK_END\s*-->",
-                   re.DOTALL),
-        "JAM_JAMPAGE_BLOCK_START",
-        "JAM_JAMPAGE_BLOCK_END",
-    ),
-}
+RE_EVENT = re.compile(r"<!--\s*JAM_EVENT_JSONLD_START\s*-->(.*?)<!--\s*JAM_EVENT_JSONLD_END\s*-->", re.DOTALL)
+RE_STARTPAGE = re.compile(r"<!--\s*JAM_STARTPAGE_BLOCK_START\s*-->(.*?)<!--\s*JAM_STARTPAGE_BLOCK_END\s*-->", re.DOTALL)
+RE_JAM_H3 = re.compile(r"<!--\s*JAM_JAMPAGE_H3_START\s*-->(.*?)<!--\s*JAM_JAMPAGE_H3_END\s*-->", re.DOTALL)
+RE_JAM_UL = re.compile(r"<!--\s*JAM_JAMPAGE_UL_START\s*-->(.*?)<!--\s*JAM_JAMPAGE_UL_END\s*-->", re.DOTALL)
 
 WEEKDAY_DE_SHORT = ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"]
 MONTH_DE = [
@@ -40,7 +23,6 @@ MONTH_DE = [
 ]
 
 def parse_start_iso(s: str) -> datetime:
-    # expects ISO 8601, ideally with timezone like 2026-02-19T19:00:00+01:00
     dt = datetime.fromisoformat(s)
     if dt.tzinfo is None:
         dt = dt.replace(tzinfo=ZoneInfo("Europe/Berlin"))
@@ -51,19 +33,16 @@ def enrich(data: dict) -> dict:
     wd = WEEKDAY_DE_SHORT[dt.weekday()]
     month = MONTH_DE[dt.month - 1]
 
-    data = dict(data)  # copy
-    data["jam_time"] = dt.strftime("%H:%M")
-    data["jam_date_short"] = dt.strftime("%d.%m.%Y")          # 19.02.2026
-    data["jam_date_human"] = f"{wd} {dt.day}. {month} {dt.year}"       # Do 19. Februar 2026
-    data["jam_date_human_short"] = f"{wd} {dt.day}. {month} {dt.year}" # keep year on startpage (as requested)
+    out = dict(data)
+    out["jam_time"] = dt.strftime("%H:%M")
+    out["jam_date_short"] = dt.strftime("%d.%m.%Y")               # 19.02.2026
+    out["jam_date_human"] = f"{wd} {dt.day}. {month} {dt.year}"   # Do 19. Februar 2026
+    out["jam_date_human_short"] = f"{wd} {dt.day}. {month} {dt.year}"  # Startseite mit Jahr
+    return out
 
-    return data
-
-def build_event_jsonld(data: dict) -> str:
-    # address: we keep the structured address fixed for now (Berlin example),
-    # because your input is a single string. If you want, we can parse it.
-    # We still keep jam_address in the visible HTML.
-    # NOTE: No HTML comments inside JSON-LD content.
+def build_event_jsonld(d: dict) -> str:
+    # Hinweis: Adresse im JSON-LD als strukturierte PostalAddress.
+    # Wenn du willst, kann man jam_address später automatisch parsen; hier ist es fest auf Berlin/DE abgestimmt.
     return f"""<!-- JAM_EVENT_JSONLD_START -->
 <script type="application/ld+json">
 {{
@@ -72,13 +51,13 @@ def build_event_jsonld(data: dict) -> str:
   "name": "Jam Session – Kulturinsel Moabit",
   "description": "Offene Jam-Session der Kulturinsel Moabit mit spontaner Musik, kreativen Sounds und offenen Bühnenmomenten in der Kulturfabrik Moabit.",
   "image": "https://kulturinselmoabit.org/jamsession.jpg",
-  "startDate": "{data['jam_start_iso']}",
+  "startDate": "{d["jam_start_iso"]}",
   "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
   "eventStatus": "https://schema.org/EventScheduled",
-  "url": "{data.get('jam_url','https://kulturinselmoabit.org/jam/')}",
+  "url": "{d.get("jam_url","https://kulturinselmoabit.org/jam/")}",
   "location": {{
     "@type": "Place",
-    "name": "{data['jam_venue']}",
+    "name": "{d["jam_venue"]}",
     "address": {{
       "@type": "PostalAddress",
       "streetAddress": "Lehrter Str. 35",
@@ -98,65 +77,64 @@ def build_event_jsonld(data: dict) -> str:
     "price": "0",
     "priceCurrency": "EUR",
     "availability": "https://schema.org/InStock",
-    "url": "{data.get('jam_url','https://kulturinselmoabit.org/jam/')}"
+    "url": "{d.get("jam_url","https://kulturinselmoabit.org/jam/")}"
   }}
 }}
 </script>
 <!-- JAM_EVENT_JSONLD_END -->""".strip()
 
-def build_startpage_block(data: dict) -> str:
-    # This matches your current startpage structure inside .index-gallery__wide-text
-    # (only this inner block is regenerated)
+def build_startpage_block(d: dict) -> str:
+    # 1:1 Template (nur Werte aktualisiert)
     return f"""<!-- JAM_STARTPAGE_BLOCK_START -->
-<div class="index-gallery__wide-text-top">
-  <div class="index-gallery__wide-coming">COMING UP:</div>
-  <div class="index-gallery__wide-date">{data['jam_date_human_short']}</div>
-</div>
+    <div class="index-gallery__wide-text-top">
+      <div class="index-gallery__wide-coming">COMING UP:</div>
+      <div class="index-gallery__wide-date">{d["jam_date_human_short"]}</div>
+    </div>
 
-<div class="index-gallery__wide-title">Jam Session</div>
+    <div class="index-gallery__wide-title">Jam Session</div>
 
-<div class="index-gallery__wide-sub">in der {data['jam_venue']}</div>
-<!-- JAM_STARTPAGE_BLOCK_END -->""".strip()
+    <div class="index-gallery__wide-sub">in der {d["jam_venue"]}</div>
+<!-- JAM_STARTPAGE_BLOCK_END -->""".rstrip()
 
-def build_jampage_block(data: dict) -> str:
-    # Regenerates ONLY the h3 + ul, keeps the rest of the jam page untouched
-    return f"""<!-- JAM_JAMPAGE_BLOCK_START -->
-<h3>Nächster Termin {data['jam_date_human']}, {data['jam_time']}Uhr<br>{data['jam_venue']}</h3>
+def build_jam_h3(d: dict) -> str:
+    # 1:1 Template wie früher: alles in einer Zeile (keine Layout-Änderung)
+    return f"""<!-- JAM_JAMPAGE_H3_START -->
+        <h3>Nächster Termin {d["jam_date_human"]}, {d["jam_time"]}Uhr {d["jam_venue"]}</h3>
+<!-- JAM_JAMPAGE_H3_END -->""".rstrip()
 
-<ul>
-  <li>🧭 <strong>Ort:</strong> {data['jam_venue']}, {data['jam_address']}</li>
-  <li>🗓️ <strong>Datum:</strong> {data['jam_date_short']}</li>
-  <li>⏰ <strong>Uhrzeit:</strong> {data['jam_time']} Uhr</li>
-</ul>
-<!-- JAM_JAMPAGE_BLOCK_END -->""".strip()
+def build_jam_ul_details(d: dict) -> str:
+    # 1:1 Template: gleiche UL/LI Struktur, nur Werte aktualisiert
+    return f"""<!-- JAM_JAMPAGE_UL_START -->
+          <li>🧭 <strong>Ort:</strong> {d["jam_venue"]}, {d["jam_address"]}</li>
+          <li>🗓️ <strong>Datum:</strong> {d["jam_date_short"]}</li>
+          <li>⏰ <strong>Uhrzeit:</strong> {d["jam_time"]} Uhr</li>
+<!-- JAM_JAMPAGE_UL_END -->""".rstrip()
 
-def replace_block(html: str, pattern: re.Pattern, replacement: str) -> str:
-    if not pattern.search(html):
-        raise RuntimeError("Block marker not found in file (pattern did not match).")
-    return pattern.sub(replacement, html, count=1)
+def sub_one(regex: re.Pattern, html: str, replacement: str, label: str) -> str:
+    if not regex.search(html):
+        raise RuntimeError(f"Block nicht gefunden: {label}")
+    return regex.sub(replacement, html, count=1)
 
-def process_file(path: Path, data: dict, is_index: bool) -> None:
-    html = path.read_text(encoding="utf-8")
+def process_index(html: str, d: dict) -> str:
+    html = sub_one(RE_EVENT, html, build_event_jsonld(d), "JAM_EVENT_JSONLD (index)")
+    html = sub_one(RE_STARTPAGE, html, build_startpage_block(d), "JAM_STARTPAGE_BLOCK (index)")
+    return html
 
-    # Always replace JSON-LD block (present in both HTMLs)
-    pat_jsonld, _, _ = BLOCKS["event_jsonld"]
-    html = replace_block(html, pat_jsonld, build_event_jsonld(data))
-
-    if is_index:
-        pat_start, _, _ = BLOCKS["startpage"]
-        html = replace_block(html, pat_start, build_startpage_block(data))
-    else:
-        pat_jam, _, _ = BLOCKS["jampage"]
-        html = replace_block(html, pat_jam, build_jampage_block(data))
-
-    path.write_text(html, encoding="utf-8")
+def process_jam(html: str, d: dict) -> str:
+    html = sub_one(RE_EVENT, html, build_event_jsonld(d), "JAM_EVENT_JSONLD (jam)")
+    html = sub_one(RE_JAM_H3, html, build_jam_h3(d), "JAM_JAMPAGE_H3 (jam)")
+    html = sub_one(RE_JAM_UL, html, build_jam_ul_details(d), "JAM_JAMPAGE_UL (jam)")
+    return html
 
 def main() -> int:
     raw = json.loads(DATA_FILE.read_text(encoding="utf-8"))
-    data = enrich(raw)
+    d = enrich(raw)
 
-    process_file(TARGET_INDEX, data, is_index=True)
-    process_file(TARGET_JAM, data, is_index=False)
+    idx = TARGET_INDEX.read_text(encoding="utf-8")
+    jam = TARGET_JAM.read_text(encoding="utf-8")
+
+    TARGET_INDEX.write_text(process_index(idx, d), encoding="utf-8")
+    TARGET_JAM.write_text(process_jam(jam, d), encoding="utf-8")
     return 0
 
 if __name__ == "__main__":
