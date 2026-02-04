@@ -11,6 +11,25 @@
     rel="stylesheet"
   />
   <link rel="stylesheet" href="/styles.css" />
+
+  <!-- Event JSON-LD (Jamsession) -->
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Event",
+  "name": "Jam Session – Kulturinsel Moabit",
+  "startDate": "<!-- JAM:jam_start_iso -->2025-12-18T19:00:00+01:00<!-- /JAM:jam_start_iso -->",
+  "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
+  "eventStatus": "https://schema.org/EventScheduled",
+  "location": {
+    "@type": "Place",
+    "name": "<!-- JAM:jam_venue -->Kulturfabrik Moabit<!-- /JAM:jam_venue -->",
+    "address": "<!-- JAM:jam_address -->Lehrter Str. 35, 10557 Berlin<!-- /JAM:jam_address -->"
+  },
+  "url": "<!-- JAM:jam_url -->https://kulturinselmoabit.org/jam/<!-- /JAM:jam_url -->"
+}
+</script>
+
 </head>
 <body>
 
@@ -44,7 +63,14 @@
       <div class="page-text">
         <h1>Get up your ass and jam!</h1>
         <div class="divider"></div>
-        <h3>Nächster Termin Donnerstag 18. Dezember 2025, 19:00Uhr Kulturfabrik Moabit</h3>
+
+        <h3>
+          Nächster Termin
+          <!-- JAM:jam_date_human -->Donnerstag 18. Dezember 2025<!-- /JAM:jam_date_human -->,
+          <!-- JAM:jam_time -->19:00<!-- /JAM:jam_time -->Uhr
+          <!-- JAM:jam_venue -->Kulturfabrik Moabit<!-- /JAM:jam_venue -->
+        </h3>
+
         <p>Hallo liebe Musikbegeisterte! 🥁🎸🎧</p>
 
         <p>Lust auf spontanes Musizieren, kreative Sounds und gute Vibes?<br>
@@ -56,9 +82,9 @@
         <p>Kommt vorbei, bringt eure Instrumente, Ideen und gute Laune mit – wir freuen uns auf einen offenen, lockeren Abend voller Musik und Miteinander.</p>
 
         <ul>
-          <li>🧭 <strong>Ort:</strong> Kulturfabrik Moabit, Lehrter Str. 35, 10557 Berlin</li>
-          <li>🗓️ <strong>Datum:</strong> 18.12.2025</li>
-          <li>⏰ <strong>Uhrzeit:</strong> 19:00 Uhr</li>
+          <li>🧭 <strong>Ort:</strong> <!-- JAM:jam_venue -->Kulturfabrik Moabit<!-- /JAM:jam_venue -->, <!-- JAM:jam_address -->Lehrter Str. 35, 10557 Berlin<!-- /JAM:jam_address --></li>
+          <li>🗓️ <strong>Datum:</strong> <!-- JAM:jam_date_short -->18.12.2025<!-- /JAM:jam_date_short --></li>
+          <li>⏰ <strong>Uhrzeit:</strong> <!-- JAM:jam_time -->19:00<!-- /JAM:jam_time --> Uhr</li>
         </ul>
 
         <p><strong>Let’s jam! 🎉🎊🎉</strong></p>
