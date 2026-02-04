@@ -467,10 +467,12 @@ body {
 }
 /* Background Pattern im Wide Block */
 
-.index-gallery__wide {
-  background-image: url("/loop.png");
+.index-gallery__wide{
+  background-color: transparent;        /* falls vorher weiß gesetzt war */
+  background-image: url("./loop.png");
   background-repeat: repeat;
-  background-position: center;
+  background-position: 0 0;
 }
+
 
 
