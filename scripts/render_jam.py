@@ -5,6 +5,7 @@ from pathlib import Path
 from datetime import datetime
 from zoneinfo import ZoneInfo
 
+
 ROOT = Path(__file__).resolve().parents[1]
 DATA_FILE = ROOT / "data" / "jam.json"
 
