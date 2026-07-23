@@ -119,18 +119,18 @@ def format_date_range(start: datetime, end: datetime | None) -> str:
 
     if start.year == end.year and start.month == end.month:
         return (
-            f"{start_weekday} {start.day}.–"
+            f"{start_weekday} {start.day}. & "
             f"{end_weekday} {end.day}. {end_month} {end.year}"
         )
 
     if start.year == end.year:
         return (
-            f"{start_weekday} {start.day}. {start_month}–"
+            f"{start_weekday} {start.day}. {start_month} & "
             f"{end_weekday} {end.day}. {end_month} {end.year}"
         )
 
     return (
-        f"{start_weekday} {start.day}. {start_month} {start.year}–"
+        f"{start_weekday} {start.day}. {start_month} {start.year} & "
         f"{end_weekday} {end.day}. {end_month} {end.year}"
     )
 
