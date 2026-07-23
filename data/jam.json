@@ -1,7 +1,43 @@
 {
-  "jam_start_iso": "2026-07-16T19:00:00+01:00",
-  "jam_venue": "Kulturfabrik Moabit",
-  "jam_address": "Lehrter Str. 35, 10557 Berlin",
-  "jam_url": "https://kulturinselmoabit.org/jam/"
-} 
-   
+  "coming_up": "fete",
+
+  "jam": {
+    "title": "Jam Session",
+    "subtitle": "in der Kulturfabrik Moabit",
+    "start_iso": "2026-03-19T19:00:00+01:00",
+
+    "venue": "Kulturfabrik Moabit",
+    "address": "Lehrter Str. 35, 10557 Berlin",
+
+    "street_address": "Lehrter Str. 35",
+    "postal_code": "10557",
+    "locality": "Berlin",
+    "country": "DE",
+
+    "url": "https://kulturinselmoabit.org/jam/",
+    "image": "https://kulturinselmoabit.org/jamsession.jpg",
+
+    "description": "Offene Jam-Session der Kulturinsel Moabit in der Kulturfabrik Moabit."
+  },
+
+  "fete": {
+    "title": "Fête du Seeee",
+    "subtitle": "im Strandbad Tegelsee",
+
+    "start_iso": "2026-08-01T14:00:00+02:00",
+    "end_iso": "2026-08-02T22:00:00+02:00",
+
+    "venue": "Strandbad Tegelsee",
+    "address": "Schwarzer Weg 95, 13505 Berlin",
+
+    "street_address": "Schwarzer Weg 95",
+    "postal_code": "13505",
+    "locality": "Berlin",
+    "country": "DE",
+
+    "url": "https://kulturinselmoabit.org/fete/",
+    "image": "https://kulturinselmoabit.org/fete.jpg",
+
+    "description": "Das Fête du Seeee Festival der Kulturinsel Moabit im Strandbad Tegelsee."
+  }
+}
