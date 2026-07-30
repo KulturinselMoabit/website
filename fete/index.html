@@ -333,8 +333,8 @@
     const labelForDay = (dayRaw) => {
       const d = clean(dayRaw).toLowerCase();
       if (/^(fr|fri|freitag|fr\.|friday)$/.test(d)) return "FR. 29. AUGUST · ab 14 Uhr";
-      if (/^(sa|sam|samstag|sa\.|saturday)$/.test(d)) return "SA. 01. AUGUST · ab 14 Uhr";
-      if (/^(so|son|sonntag|so\.|sunday)$/.test(d)) return "SO. 02. AUGUST · ab 14 Uhr";
+      if (/^(sa|sam|samstag|sa\.|saturday)$/.test(d)) return "SA. 01. AUGUST · ab 15 Uhr";
+      if (/^(so|son|sonntag|so\.|sunday)$/.test(d)) return "SO. 02. AUGUST · ab 13 Uhr";
       return clean(dayRaw) || "Tag";
     };
 
